@@ -19,23 +19,9 @@ const Footer = () => {
               <a 
                 href="#" 
                 className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors group"
-                aria-label="Facebook"
-              >
-                <Facebook className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
-              </a>
-              <a 
-                href="#" 
-                className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors group"
                 aria-label="YouTube"
               >
                 <Youtube className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
-              </a>
-              <a 
-                href="#" 
-                className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors group"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
               </a>
             </div>
           </div>
