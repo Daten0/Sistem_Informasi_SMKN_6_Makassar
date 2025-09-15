@@ -12,7 +12,7 @@ import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
-    <header className="bg-background border-b border-border py-4 px-6 md:px-8">
+    <header className="sticky top-0 z-50 bg-background border-b border-border py-4 px-6 md:px-8">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         {/* Logo and School Name */}
         <div className="flex items-center gap-4">

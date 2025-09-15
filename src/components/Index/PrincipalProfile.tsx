@@ -9,7 +9,7 @@ const PrincipalProfile = () => {
         </h2>
         
         <div className="bg-card rounded-lg shadow-elegant p-8">
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+          <div className="flex fklex-col md:flex-row items-center md:items-start gap-8">
             {/* Principal Photo */}
             <div className="flex-shrink-0">
               <img
