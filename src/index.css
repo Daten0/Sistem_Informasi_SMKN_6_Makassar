@@ -35,6 +35,16 @@ All colors MUST be HSL.
     --border: 214 32% 91%;
     --input: 214 32% 91%;
     --ring: 217 91% 60%;
+    
+    /* School Brand Colors */
+    --school-yellow: 45 100% 51%;
+    --school-blue: 217 91% 60%;
+    --school-green: 142 76% 36%;
+    --school-purple: 250 84% 54%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--school-blue)), hsl(var(--school-purple)));
+    --gradient-accent: linear-gradient(90deg, hsl(var(--school-yellow)), hsl(var(--school-green)));
 
     /* Custom tokens for vocational school theme */
     --hero-bg: 215 28% 17%;

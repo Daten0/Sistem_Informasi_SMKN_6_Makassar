@@ -10,14 +10,15 @@ const Footer = () => {
             <h3 className="text-xl font-bold text-white mb-4">Follow Us</h3>
             <div className="flex gap-4 justify-center md:justify-start">
               <a 
-                href="#" 
+                target="_blank"
+                href="https://www.instagram.com/smkn6mks?igsh=MTBjZ3Z3aWc4cXlwYw==" 
                 className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors group"
                 aria-label="Instagram"
               >
                 <Instagram className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
               </a>
               <a 
-                href="#" 
+                href="https://youtube.com/@smkn6mks?si=Piu7gE03xg-Tfbcd" 
                 className="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-colors group"
                 aria-label="YouTube"
               >

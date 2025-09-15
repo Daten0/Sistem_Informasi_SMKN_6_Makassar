@@ -1,9 +1,9 @@
-import Header from "@/components/Header";
-import HeroCarousel from "@/components/HeroCarousel";
-import SearchSection from "@/components/SearchSection";
-import PrincipalProfile from "@/components/PrincipalProfile";
-import QuickAccess from "@/components/QuickAccess";
-import Footer from "@/components/Footer";
+import Header from "@/components/Index/Header";
+import HeroCarousel from "@/components/Index/HeroCarousel";
+import SearchSection from "@/components/Index/SearchSection";
+import PrincipalProfile from "@/components/Index/PrincipalProfile";
+import QuickAccess from "@/components/Index/QuickAccess";
+import Footer from "@/components/Index/Footer";
 
 const Index = () => {
   return (

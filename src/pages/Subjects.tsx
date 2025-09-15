@@ -1,5 +1,5 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/Index/Header";
+import Footer from "@/components/Index/Footer";
 
 const Subjects = () => {
   return (

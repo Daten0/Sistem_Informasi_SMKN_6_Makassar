@@ -54,6 +54,10 @@ export default {
         school: {
           primary: "hsl(var(--school-primary))",
           secondary: "hsl(var(--school-secondary))",
+          yellow: "hsl(var(--school-yellow))",
+          blue: "hsl(var(--school-blue))",
+          green: "hsl(var(--school-green))",
+          purple: "hsl(var(--school-purple))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
