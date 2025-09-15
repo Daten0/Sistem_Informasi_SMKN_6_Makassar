@@ -8,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import schoolLogo from "@/assets/school-logo.png";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   return (
@@ -56,8 +57,12 @@ const Header = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem>Tentang Kami</DropdownMenuItem>
-              <DropdownMenuItem>Visi & Misi</DropdownMenuItem>
+              <Link to="/About">
+                <DropdownMenuItem>Tentang Kami</DropdownMenuItem>
+              </Link>
+              <Link to="/VisiMisi">
+                <DropdownMenuItem>Visi & Misi</DropdownMenuItem>
+              </Link>
             </DropdownMenuContent>
           </DropdownMenu>
 

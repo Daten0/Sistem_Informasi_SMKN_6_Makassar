@@ -1,4 +1,4 @@
-import principalImage from "@/assets/principal.jpg";
+import principalImage from "@/assets/principal.png";
 
 const PrincipalProfile = () => {
   return (
@@ -22,7 +22,7 @@ const PrincipalProfile = () => {
             {/* Principal Information */}
             <div className="flex-1 text-center md:text-left">
               <h3 className="text-2xl font-bold text-card-foreground mb-2">
-                Dr. Siti Nurhaliza, M.Ed
+                A. Nursyidah Galigo, S.Pd.,M.Pd
               </h3>
               <p className="text-primary font-semibold mb-4">
                 Principal of SMK Negeri 6 Makassar
@@ -30,7 +30,7 @@ const PrincipalProfile = () => {
               
               <div className="text-muted-foreground leading-relaxed space-y-4">
                 <p>
-                  Dr. Siti Nurhaliza brings over 20 years of experience in vocational education 
+                  A. Nursyidah Galigo, S.Pd.,M.Pd brings over 20 years of experience in vocational education 
                   and has been serving as the Principal of SMK Negeri 6 Makassar since 2018. 
                   She holds a Master's degree in Educational Leadership and a Doctorate in 
                   Vocational Education Management.
