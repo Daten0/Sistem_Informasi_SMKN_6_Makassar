@@ -86,6 +86,30 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        gradient: {
+            '0%, 100%': { 'background-position': '0% 50%' },
+            '50%': { 'background-position': '100% 50%' },
+        },
+        smoke: {
+            '0%': { 
+                'transform': 'translateY(0) translateX(0) rotate(0deg)',
+                'opacity': '0',
+                'filter': 'blur(10px)'
+            },
+            '50%': { 
+                'opacity': '0.7',
+                'filter': 'blur(15px)'
+            },
+            '100%': { 
+                'transform': 'translateY(-100vh) translateX(20vw) rotate(360deg)',
+                'opacity': '0',
+                'filter': 'blur(20px)'
+            },
+        },
+        float: {
+            '0%, 100%': { 'transform': 'translateY(0)' },
+            '50%': { 'transform': 'translateY(-20px)' },
+        },
         "accordion-down": {
           from: {
             height: "0",
@@ -102,8 +126,27 @@ export default {
             height: "0",
           },
         },
+        "gradient-xy": {
+          "0%, 100%": {
+            "background-size": "400% 400%",
+            "background-position": "center center",
+          },
+          "50%": {
+            "background-size": "200% 200%",
+            "background-position": "center center",
+          },
+        },
+      },
+      backgroundSize: {
+        'gradient': '200% 200%',
       },
       animation: {
+        "gradient": "gradient 15s ease infinite",
+        "gradient-xy": "gradient-xy 15s ease infinite",
+        "smoke-one": "smoke 12s linear infinite",
+        "smoke-two": "smoke 18s linear infinite",
+        "smoke-three": "smoke 22s linear infinite",
+        "float": "float 8s ease-in-out infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },

@@ -1,4 +1,6 @@
-import { Instagram, Facebook, Youtube, Linkedin } from "lucide-react";
+import { Instagram, Youtube } from "lucide-react";
+// import  Alamat  from "../../assets/Alamat.png"
+// import  Email  from "../../assets/Email.png"
 
 const Footer = () => {
   return (
@@ -36,7 +38,8 @@ const Footer = () => {
               Jl. Pendidikan No. 123, Makassar, Sulawesi Selatan
             </p>
             <p className="text-white/80 text-sm">
-              Phone: (0411) 123-4567 | Email: info@smkn6makassar.sch.id
+               Email: info@smkn6makassar.sch.id 
+               Phone: (0411) 123-4567
             </p>
           </div>
         </div>

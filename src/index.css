@@ -123,3 +123,16 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes smoky {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: translate(300px, -300px) rotate(720deg);
+    opacity: 0;
+    filter: blur(20px);
+  }
+}

@@ -3,12 +3,15 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import VisiMisi from "./pages/VisiMisi";
 import About from "./pages/About";
 import Index from "./pages/Index";
 import Students from "./pages/Students";
 import Teachers from "./pages/Teachers"; 
 import Subjects from "./pages/Subjects";
 import NotFound from "./pages/NotFound";
+import LoginPages from "./pages/LoginPages";
+import RegisterPages from "./pages/RegisterPages";
 
 const queryClient = new QueryClient();
 
@@ -21,9 +24,12 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/About" element={<About />} />
+          <Route path="/VisiMisi" element={<VisiMisi />} />
           <Route path="/students" element={<Students />} />
           <Route path="/teachers" element={<Teachers />} />
           <Route path="/subjects" element={<Subjects />} />
+          <Route path="/login" element={<LoginPages />} />
+          <Route path="/register" element={<RegisterPages />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

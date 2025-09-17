@@ -56,8 +56,8 @@ const PrincipalProfile = () => {
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Outstanding Principal Award 2022</li>
                   <li>• 95% Graduate Employment Rate</li>
-                  <li>• National Vocational Education Excellence Award</li>
-                  <li>• Industry Partnership Development Leader</li>
+                  <li>• S2 Pendidikan Teknologi dan Kejuruan Universitas Negeri Makassar</li>
+                  <li>• Tata Kecantikan Rambut</li>
                 </ul>
               </div>
             </div>
