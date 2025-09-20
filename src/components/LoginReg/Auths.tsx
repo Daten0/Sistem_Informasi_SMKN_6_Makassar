@@ -40,9 +40,11 @@ const Auths = () => {
         </CardContent>
         <CardFooter className="flex flex-col gap-4 pt-6">
           <Button className="w-full bg-gradient-primary hover:opacity-90 transition-opacity text-lg py-6">Login</Button>
-          <Link to="/register">
-            <Button variant="outline" className="w-full text-lg py-6">Daftar</Button>
-          </Link>
+          <Button variant="outline" className="w-full text-lg py-6">
+            <Link to="/register">
+              Daftar
+            </Link>
+          </Button>
         </CardFooter>
       </Card>
     </div>

@@ -39,9 +39,11 @@ const Registers = () => {
           </form>
         </CardContent>
         <CardFooter className="flex flex-col gap-4 pt-6">
-          <Link to="/login">
-            <Button variant="outline" className="w-full text-lg py-6">Daftar</Button>
-          </Link>
+          <Button variant="outline" className="w-full text-lg py-6">
+            <Link to="/login">
+              Daftar
+            </Link>
+          </Button>
         </CardFooter>
       </Card>
     </div>

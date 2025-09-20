@@ -1,10 +1,10 @@
-import Auth from "@/components/LoginReg/Registers";
+import Registers from "@/components/LoginReg/Registers";
 
 
 const RegisterPages = () => {
   return (
     <div className="min-h-screen">
-      <Auth />
+      <Registers />
     </div>
   );
 };
