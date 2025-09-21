@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/sheet";
 import { Users, BookOpen, GraduationCap } from "lucide-react";
 import schoolLogo from "@/assets/school-logo.png";
+import { useProfile } from "@/pages/AdminPages";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 
 interface HeaderProps {
@@ -17,6 +19,7 @@ interface HeaderProps {
 
 const Header = ({ toggleSidebar }: HeaderProps) => {
   const [isDarkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  const { username, profileImage } = useProfile();
 
   useEffect(() => {
     if (isDarkMode) {
@@ -82,10 +85,12 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
           <Button variant="ghost" onClick={toggleDarkMode}>
             {isDarkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
           </Button>
-          <Link to="/admin/profile">
-            <Button variant="ghost">
-              <User className="w-6 h-6" />
-            </Button>
+          <Link to="/admin/profile" className="flex items-center space-x-2">
+            <Avatar className="w-8 h-8">
+              <AvatarImage src={profileImage || undefined} />
+              <AvatarFallback>{username.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <span className="hidden sm:inline">{username}</span>
           </Link>
         </div>
       </div>

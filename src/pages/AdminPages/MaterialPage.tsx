@@ -15,7 +15,7 @@ const AdminMaterialsPage = () => {
     //   </div>
     // </div>
     <>
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Learning Materials</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Materi Pelajaran</h1>
     </>
     // Learning Materials content goes here
   );

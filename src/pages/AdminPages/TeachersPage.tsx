@@ -14,7 +14,7 @@ const AdminTeachersPage = () => {
     //   </div>
     // </div>
     <>
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Teachers</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Guru</h1>
       {/* Teachers content goes here */}
     </>
   );
