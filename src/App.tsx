@@ -7,7 +7,7 @@ import VisiMisi from "./pages/VisiMisi";
 import About from "./pages/About";
 import Index from "./pages/Index";
 import Students from "./pages/Students";
-import Teachers from "./pages/Teachers"; 
+import Teachers from "./pages/Teachers";
 import Subjects from "./pages/Subjects";
 import NotFound from "./pages/NotFound";
 import LoginPages from "./pages/LoginPages";
@@ -37,7 +37,7 @@ const App = () => (
           <Route path="/subjects" element={<Subjects />} />
           <Route path="/login" element={<LoginPages />} />
           <Route path="/register" element={<RegisterPages />} />
-          <Route path="/admin" element={<AdminPage />} >
+          <Route path="/admin" element={<AdminPage />}>
             <Route index element={<AdminDashboardPage />} />
             <Route path="profile" element={<AdminProfilePage />} />
             <Route path="AddStudents" element={<AdminStudentsPage />} />

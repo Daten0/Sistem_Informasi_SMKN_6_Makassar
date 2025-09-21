@@ -1,150 +1,125 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { useLocation } from "react-router-dom";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Pencil, Trash, UserPlus } from "lucide-react";
 
-interface StudentDisplayProps {
-  studentData?: {
-    fullName: string;
-    nisn: string;
-    gender: string;
-    birthPlace: string;
-    birthDate: string;
-    religion: string;
-    address: string;
-    phoneNumber: string;
-    email: string;
-    parentInfo: {
-      fatherName: string;
-      fatherOccupation: string;
-      fatherPhone: string;
-      motherName: string;
-      motherOccupation: string;
-      motherPhone: string;
-    };
+interface StudentData {
+  id: string;
+  fullName: string;
+  nisn: string;
+  gender: string;
+  birthPlace: string;
+  birthDate: string;
+  religion: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+  kelas?: string;
+  parentInfo: {
+    fatherName: string;
+    fatherOccupation: string;
+    fatherPhone: string;
+    motherName: string;
+    motherOccupation: string;
+    motherPhone: string;
   };
 }
 
 const StudentDisplay = () => {
   const location = useLocation();
-  const studentData = location.state?.studentData;
+  const navigate = useNavigate();
+  const [students, setStudents] = useState<StudentData[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  if (!studentData) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-lg text-gray-600">No student data available</p>
-      </div>
-    );
-  }
+  useEffect(() => {
+    // If we receive a new student from the form, add it to our list
+    if (location.state?.studentData) {
+      const newStudent = {
+        ...location.state.studentData,
+        id: Math.random().toString(36).substr(2, 9), // Generate a random ID
+      };
+      setStudents((prev) => [...prev, newStudent]);
+      // Clear the location state to prevent duplicate additions
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
+
+  const handleEdit = (student: StudentData) => {
+    navigate("/admin/AddStudents", { state: { editingStudent: student } });
+  };
+
+  const handleDelete = (studentId: string) => {
+    if (window.confirm("Are you sure you want to delete this student?")) {
+      setStudents((prev) => prev.filter((s) => s.id !== studentId));
+    }
+  };
+
+  const handleAddNew = () => {
+    navigate("/admin/AddStudents");
+  };
+
+  const filteredStudents = students.filter((student) => student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || student.nisn.includes(searchQuery));
 
   return (
     <div className="container mx-auto p-6">
-      <Card className="w-full max-w-4xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">
-            Student Information
-          </CardTitle>
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle className="text-2xl font-bold">Student List</CardTitle>
+          <Button onClick={handleAddNew} className="bg-primary hover:bg-primary/90">
+            <UserPlus className="w-4 h-4 mr-2" />
+            Add New Student
+          </Button>
         </CardHeader>
         <CardContent>
-          <ScrollArea className="h-[600px] pr-4">
-            <div className="space-y-6">
-              {/* Student Personal Information */}
-              <section>
-                <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Full Name</p>
-                    <p className="font-medium">{studentData.fullName}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">NISN</p>
-                    <p className="font-medium">{studentData.nisn}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Gender</p>
-                    <p className="font-medium">{studentData.gender}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Religion</p>
-                    <p className="font-medium">{studentData.religion}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Birth Place</p>
-                    <p className="font-medium">{studentData.birthPlace}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-500">Birth Date</p>
-                    <p className="font-medium">{studentData.birthDate}</p>
-                  </div>
-                </div>
-              </section>
+          <div className="mb-4">
+            <Input placeholder="Search by name or NISN..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="max-w-sm" />
+          </div>
 
-              <Separator />
-
-              {/* Contact Information */}
-              <section>
-                <h3 className="text-xl font-semibold mb-4">Contact Information</h3>
-                <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-gray-500">Address</p>
-                    <p className="font-medium">{studentData.address}</p>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-gray-500">Phone Number</p>
-                      <p className="font-medium">{studentData.phoneNumber}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Email</p>
-                      <p className="font-medium">{studentData.email}</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <Separator />
-
-              {/* Parent Information */}
-              <section>
-                <h3 className="text-xl font-semibold mb-4">Parent Information</h3>
-                <div className="grid grid-cols-2 gap-6">
-                  {/* Father's Information */}
-                  <div className="space-y-4">
-                    <h4 className="font-medium">Father's Details</h4>
-                    <div>
-                      <p className="text-sm text-gray-500">Name</p>
-                      <p className="font-medium">{studentData.parentInfo.fatherName}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Occupation</p>
-                      <p className="font-medium">{studentData.parentInfo.fatherOccupation}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Phone Number</p>
-                      <p className="font-medium">{studentData.parentInfo.fatherPhone}</p>
-                    </div>
-                  </div>
-
-                  {/* Mother's Information */}
-                  <div className="space-y-4">
-                    <h4 className="font-medium">Mother's Details</h4>
-                    <div>
-                      <p className="text-sm text-gray-500">Name</p>
-                      <p className="font-medium">{studentData.parentInfo.motherName}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Occupation</p>
-                      <p className="font-medium">{studentData.parentInfo.motherOccupation}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-gray-500">Phone Number</p>
-                      <p className="font-medium">{studentData.parentInfo.motherPhone}</p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </ScrollArea>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>NISN</TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Class</TableHead>
+                  <TableHead>Gender</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredStudents.map((student) => (
+                  <TableRow key={student.id}>
+                    <TableCell className="font-medium">{student.nisn}</TableCell>
+                    <TableCell>{student.fullName}</TableCell>
+                    <TableCell>{student.kelas || "-"}</TableCell>
+                    <TableCell>{student.gender}</TableCell>
+                    <TableCell>{student.phoneNumber}</TableCell>
+                    <TableCell>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => handleEdit(student)} className="h-8 w-8 p-0" title="Edit student">
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => handleDelete(student.id)} className="h-8 w-8 p-0 text-destructive hover:text-destructive" title="Delete student">
+                          <Trash className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {filteredStudents.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-4">
+                      No students found. Click "Add New Student" to add one.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
