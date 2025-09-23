@@ -17,7 +17,7 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
       <nav className="mt-6">
         <ul>
           <li>
-            <Link to="/admin/AddStudents" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+            <Link to="/admin/student-display" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
               <Users className="w-5 h-5" />
               <span className="ml-4">Siswa</span>
             </Link>

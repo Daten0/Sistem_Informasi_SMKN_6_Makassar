@@ -11,7 +11,7 @@ const quickAccessItems = [
   },
   {
     icon: GraduationCap,
-    title: "Siswa",
+    title: "Kesiswaan",
     description: "Informasi siswa, prestasi, dan kemajuan akademik",
     href: "/students", 
     color: "text-green-600"

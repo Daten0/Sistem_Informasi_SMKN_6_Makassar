@@ -15,10 +15,10 @@ import RegisterPages from "./pages/RegisterPages";
 import AdminPage from "./pages/AdminPages/index";
 import AdminDashboardPage from "./pages/AdminPages/DashboardPage";
 import AdminProfilePage from "./pages/AdminPages/ProfilePage";
-import AdminStudentsPage from "./pages/AdminPages/StudentPage";
+import AddStudentsPage from "./pages/AdminPages/AddStudent/AddStudentPage";
 import AdminTeachersPage from "./pages/AdminPages/TeachersPage";
 import AdminMaterialsPage from "./pages/AdminPages/MaterialPage";
-import StudentDisplay from "./pages/AdminPages/PenampilStudent/StudentDisplay";
+import AdminStudentDisplay from "./pages/AdminPages/StudentDisplay";
 
 const queryClient = new QueryClient();
 
@@ -40,8 +40,8 @@ const App = () => (
           <Route path="/admin" element={<AdminPage />}>
             <Route index element={<AdminDashboardPage />} />
             <Route path="profile" element={<AdminProfilePage />} />
-            <Route path="AddStudents" element={<AdminStudentsPage />} />
-            <Route path="student-display" element={<StudentDisplay />} />
+            <Route path="AddStudents" element={<AddStudentsPage />} />
+            <Route path="student-display" element={<AdminStudentDisplay />} />
             <Route path="teachers" element={<AdminTeachersPage />} />
             <Route path="materials" element={<AdminMaterialsPage />} />
           </Route>
