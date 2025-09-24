@@ -70,7 +70,7 @@ const Header = () => {
           <Link to="/login">
             <Button className="bg-gradient-primary hover:opacity-90 transition-opacity">
               <User className="w-4 h-4 mr-2" />
-              Login
+              Login Admin
             </Button>
           </Link>
         </nav>
