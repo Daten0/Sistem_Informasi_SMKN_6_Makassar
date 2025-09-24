@@ -22,15 +22,15 @@ const parentSchema = z.object({
   pendidikanAyah: z.string().min(1, "Pendidikan ayah harus dipilih"),
   penghasilanAyah: z.string().min(1, "Penghasilan ayah harus dipilih"),
   teleponAyah: z.string().min(10, "Nomor telepon ayah harus diisi minimal 10 digit"),
-  
+
   namaIbu: z.string().min(2, "Nama ibu harus diisi minimal 2 karakter"),
   pekerjaanIbu: z.string().min(2, "Pekerjaan ibu harus diisi"),
   pendidikanIbu: z.string().min(1, "Pendidikan ibu harus dipilih"),
   penghasilanIbu: z.string().min(1, "Penghasilan ibu harus dipilih"),
   teleponIbu: z.string().min(10, "Nomor telepon ibu harus diisi minimal 10 digit"),
-  
+
   alamatOrangTua: z.string().min(10, "Alamat orang tua harus diisi minimal 10 karakter"),
-  
+
   // Guardian (optional if different from parents)
   namaWali: z.string().optional(),
   pekerjaanWali: z.string().optional(),
@@ -158,41 +158,31 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           {/* Father Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">
-              Data Ayah
-            </h3>
-            
+            <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">Data Ayah</h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="namaAyah" className="text-sm font-medium">Nama Lengkap Ayah *</Label>
-                <Input
-                  id="namaAyah"
-                  placeholder="Masukkan nama lengkap ayah"
-                  {...form.register("namaAyah")}
-                  className="transition-smooth focus:ring-2 focus:ring-primary/20"
-                />
-                {form.formState.errors.namaAyah && (
-                  <p className="text-sm text-destructive">{form.formState.errors.namaAyah.message}</p>
-                )}
+                <Label htmlFor="namaAyah" className="text-sm font-medium">
+                  Nama Lengkap Ayah *
+                </Label>
+                <Input id="namaAyah" placeholder="Masukkan nama lengkap ayah" {...form.register("namaAyah")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
+                {form.formState.errors.namaAyah && <p className="text-sm text-destructive">{form.formState.errors.namaAyah.message}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="pekerjaanAyah" className="text-sm font-medium">Pekerjaan Ayah *</Label>
-                <Input
-                  id="pekerjaanAyah"
-                  placeholder="PNS, Wiraswasta, dll"
-                  {...form.register("pekerjaanAyah")}
-                  className="transition-smooth focus:ring-2 focus:ring-primary/20"
-                />
-                {form.formState.errors.pekerjaanAyah && (
-                  <p className="text-sm text-destructive">{form.formState.errors.pekerjaanAyah.message}</p>
-                )}
+                <Label htmlFor="pekerjaanAyah" className="text-sm font-medium">
+                  Pekerjaan Ayah *
+                </Label>
+                <Input id="pekerjaanAyah" placeholder="PNS, Wiraswasta, dll" {...form.register("pekerjaanAyah")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
+                {form.formState.errors.pekerjaanAyah && <p className="text-sm text-destructive">{form.formState.errors.pekerjaanAyah.message}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="pendidikanAyah" className="text-sm font-medium">Pendidikan Ayah *</Label>
+                <Label htmlFor="pendidikanAyah" className="text-sm font-medium">
+                  Pendidikan Ayah *
+                </Label>
                 <Select onValueChange={(value) => form.setValue("pendidikanAyah", value)}>
                   <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
                     <SelectValue placeholder="Pilih pendidikan" />
@@ -205,13 +195,13 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
                     ))}
                   </SelectContent>
                 </Select>
-                {form.formState.errors.pendidikanAyah && (
-                  <p className="text-sm text-destructive">{form.formState.errors.pendidikanAyah.message}</p>
-                )}
+                {form.formState.errors.pendidikanAyah && <p className="text-sm text-destructive">{form.formState.errors.pendidikanAyah.message}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="penghasilanAyah" className="text-sm font-medium">Penghasilan Ayah *</Label>
+                <Label htmlFor="penghasilanAyah" className="text-sm font-medium">
+                  Penghasilan Ayah *
+                </Label>
                 <Select onValueChange={(value) => form.setValue("penghasilanAyah", value)}>
                   <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
                     <SelectValue placeholder="Pilih penghasilan" />
@@ -224,63 +214,46 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
                     ))}
                   </SelectContent>
                 </Select>
-                {form.formState.errors.penghasilanAyah && (
-                  <p className="text-sm text-destructive">{form.formState.errors.penghasilanAyah.message}</p>
-                )}
+                {form.formState.errors.penghasilanAyah && <p className="text-sm text-destructive">{form.formState.errors.penghasilanAyah.message}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="teleponAyah" className="text-sm font-medium">Nomor Telepon Ayah *</Label>
-                <Input
-                  id="teleponAyah"
-                  placeholder="08123456789"
-                  {...form.register("teleponAyah")}
-                  className="transition-smooth focus:ring-2 focus:ring-primary/20"
-                />
-                {form.formState.errors.teleponAyah && (
-                  <p className="text-sm text-destructive">{form.formState.errors.teleponAyah.message}</p>
-                )}
+                <Label htmlFor="teleponAyah" className="text-sm font-medium">
+                  Nomor Telepon Ayah *
+                </Label>
+                <Input id="teleponAyah" placeholder="08123456789" {...form.register("teleponAyah")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
+                {form.formState.errors.teleponAyah && <p className="text-sm text-destructive">{form.formState.errors.teleponAyah.message}</p>}
               </div>
             </div>
           </div>
 
           {/* Mother Information */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">
-              Data Ibu
-            </h3>
-            
+            <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">Data Ibu</h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="namaIbu" className="text-sm font-medium">Nama Lengkap Ibu *</Label>
-                <Input
-                  id="namaIbu"
-                  placeholder="Masukkan nama lengkap ibu"
-                  {...form.register("namaIbu")}
-                  className="transition-smooth focus:ring-2 focus:ring-primary/20"
-                />
-                {form.formState.errors.namaIbu && (
-                  <p className="text-sm text-destructive">{form.formState.errors.namaIbu.message}</p>
-                )}
+                <Label htmlFor="namaIbu" className="text-sm font-medium">
+                  Nama Lengkap Ibu *
+                </Label>
+                <Input id="namaIbu" placeholder="Masukkan nama lengkap ibu" {...form.register("namaIbu")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
+                {form.formState.errors.namaIbu && <p className="text-sm text-destructive">{form.formState.errors.namaIbu.message}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="pekerjaanIbu" className="text-sm font-medium">Pekerjaan Ibu *</Label>
-                <Input
-                  id="pekerjaanIbu"
-                  placeholder="Ibu Rumah Tangga, Guru, dll"
-                  {...form.register("pekerjaanIbu")}
-                  className="transition-smooth focus:ring-2 focus:ring-primary/20"
-                />
-                {form.formState.errors.pekerjaanIbu && (
-                  <p className="text-sm text-destructive">{form.formState.errors.pekerjaanIbu.message}</p>
-                )}
+                <Label htmlFor="pekerjaanIbu" className="text-sm font-medium">
+                  Pekerjaan Ibu *
+                </Label>
+                <Input id="pekerjaanIbu" placeholder="Ibu Rumah Tangga, Guru, dll" {...form.register("pekerjaanIbu")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
+                {form.formState.errors.pekerjaanIbu && <p className="text-sm text-destructive">{form.formState.errors.pekerjaanIbu.message}</p>}
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="pendidikanIbu" className="text-sm font-medium">Pendidikan Ibu *</Label>
+                <Label htmlFor="pendidikanIbu" className="text-sm font-medium">
+                  Pendidikan Ibu *
+                </Label>
                 <Select onValueChange={(value) => form.setValue("pendidikanIbu", value)}>
                   <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
                     <SelectValue placeholder="Pilih pendidikan" />
@@ -293,13 +266,13 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
                     ))}
                   </SelectContent>
                 </Select>
-                {form.formState.errors.pendidikanIbu && (
-                  <p className="text-sm text-destructive">{form.formState.errors.pendidikanIbu.message}</p>
-                )}
+                {form.formState.errors.pendidikanIbu && <p className="text-sm text-destructive">{form.formState.errors.pendidikanIbu.message}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="penghasilanIbu" className="text-sm font-medium">Penghasilan Ibu *</Label>
+                <Label htmlFor="penghasilanIbu" className="text-sm font-medium">
+                  Penghasilan Ibu *
+                </Label>
                 <Select onValueChange={(value) => form.setValue("penghasilanIbu", value)}>
                   <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
                     <SelectValue placeholder="Pilih penghasilan" />
@@ -312,59 +285,44 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
                     ))}
                   </SelectContent>
                 </Select>
-                {form.formState.errors.penghasilanIbu && (
-                  <p className="text-sm text-destructive">{form.formState.errors.penghasilanIbu.message}</p>
-                )}
+                {form.formState.errors.penghasilanIbu && <p className="text-sm text-destructive">{form.formState.errors.penghasilanIbu.message}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="teleponIbu" className="text-sm font-medium">Nomor Telepon Ibu *</Label>
-                <Input
-                  id="teleponIbu"
-                  placeholder="08123456789"
-                  {...form.register("teleponIbu")}
-                  className="transition-smooth focus:ring-2 focus:ring-primary/20"
-                />
-                {form.formState.errors.teleponIbu && (
-                  <p className="text-sm text-destructive">{form.formState.errors.teleponIbu.message}</p>
-                )}
+                <Label htmlFor="teleponIbu" className="text-sm font-medium">
+                  Nomor Telepon Ibu *
+                </Label>
+                <Input id="teleponIbu" placeholder="08123456789" {...form.register("teleponIbu")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
+                {form.formState.errors.teleponIbu && <p className="text-sm text-destructive">{form.formState.errors.teleponIbu.message}</p>}
               </div>
             </div>
           </div>
 
           {/* Parents Address */}
           <div className="space-y-2">
-            <Label htmlFor="alamatOrangTua" className="text-sm font-medium">Alamat Orang Tua *</Label>
-            <Textarea
-              id="alamatOrangTua"
-              placeholder="Jl. Contoh No. 123, Kec. Contoh, Makassar"
-              {...form.register("alamatOrangTua")}
-              className="min-h-[100px] transition-smooth focus:ring-2 focus:ring-primary/20"
-            />
-            {form.formState.errors.alamatOrangTua && (
-              <p className="text-sm text-destructive">{form.formState.errors.alamatOrangTua.message}</p>
-            )}
+            <Label htmlFor="alamatOrangTua" className="text-sm font-medium">
+              Alamat Orang Tua *
+            </Label>
+            <Textarea id="alamatOrangTua" placeholder="Jl. Contoh No. 123, Kec. Contoh, Makassar" {...form.register("alamatOrangTua")} className="min-h-[100px] transition-smooth focus:ring-2 focus:ring-primary/20" />
+            {form.formState.errors.alamatOrangTua && <p className="text-sm text-destructive">{form.formState.errors.alamatOrangTua.message}</p>}
           </div>
 
           {/* Guardian Information (Optional) */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">
-              Data Wali (Opsional - Jika berbeda dengan orang tua)
-            </h3>
-            
+            <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">Data Wali (Opsional - Jika berbeda dengan orang tua)</h3>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="namaWali" className="text-sm font-medium">Nama Lengkap Wali</Label>
-                <Input
-                  id="namaWali"
-                  placeholder="Masukkan nama lengkap wali"
-                  {...form.register("namaWali")}
-                  className="transition-smooth focus:ring-2 focus:ring-primary/20"
-                />
+                <Label htmlFor="namaWali" className="text-sm font-medium">
+                  Nama Lengkap Wali
+                </Label>
+                <Input id="namaWali" placeholder="Masukkan nama lengkap wali" {...form.register("namaWali")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="hubunganWali" className="text-sm font-medium">Hubungan dengan Siswa</Label>
+                <Label htmlFor="hubunganWali" className="text-sm font-medium">
+                  Hubungan dengan Siswa
+                </Label>
                 <Select onValueChange={(value) => form.setValue("hubunganWali", value)}>
                   <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
                     <SelectValue placeholder="Pilih hubungan" />
@@ -383,17 +341,16 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="pekerjaanWali" className="text-sm font-medium">Pekerjaan Wali</Label>
-                <Input
-                  id="pekerjaanWali"
-                  placeholder="Pekerjaan wali"
-                  {...form.register("pekerjaanWali")}
-                  className="transition-smooth focus:ring-2 focus:ring-primary/20"
-                />
+                <Label htmlFor="pekerjaanWali" className="text-sm font-medium">
+                  Pekerjaan Wali
+                </Label>
+                <Input id="pekerjaanWali" placeholder="Pekerjaan wali" {...form.register("pekerjaanWali")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="pendidikanWali" className="text-sm font-medium">Pendidikan Wali</Label>
+                <Label htmlFor="pendidikanWali" className="text-sm font-medium">
+                  Pendidikan Wali
+                </Label>
                 <Select onValueChange={(value) => form.setValue("pendidikanWali", value)}>
                   <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
                     <SelectValue placeholder="Pilih pendidikan" />
@@ -409,34 +366,24 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="teleponWali" className="text-sm font-medium">Nomor Telepon Wali</Label>
-                <Input
-                  id="teleponWali"
-                  placeholder="08123456789"
-                  {...form.register("teleponWali")}
-                  className="transition-smooth focus:ring-2 focus:ring-primary/20"
-                />
+                <Label htmlFor="teleponWali" className="text-sm font-medium">
+                  Nomor Telepon Wali
+                </Label>
+                <Input id="teleponWali" placeholder="08123456789" {...form.register("teleponWali")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="alamatWali" className="text-sm font-medium">Alamat Wali</Label>
-              <Textarea
-                id="alamatWali"
-                placeholder="Alamat wali (jika berbeda dengan orang tua)"
-                {...form.register("alamatWali")}
-                className="min-h-[80px] transition-smooth focus:ring-2 focus:ring-primary/20"
-              />
+              <Label htmlFor="alamatWali" className="text-sm font-medium">
+                Alamat Wali
+              </Label>
+              <Textarea id="alamatWali" placeholder="Alamat wali (jika berbeda dengan orang tua)" {...form.register("alamatWali")} className="min-h-[80px] transition-smooth focus:ring-2 focus:ring-primary/20" />
             </div>
           </div>
 
           {/* Submit Button */}
           <div className="flex justify-end pt-4">
-            <Button 
-              type="submit" 
-              className="px-8 bg-gradient-primary hover:opacity-90 transition-smooth"
-              disabled={form.formState.isSubmitting}
-            >
+            <Button type="submit" className="px-8 bg-gradient-primary hover:opacity-90 transition-smooth" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? "Menyimpan..." : "Simpan Data Orang Tua/Wali"}
             </Button>
           </div>

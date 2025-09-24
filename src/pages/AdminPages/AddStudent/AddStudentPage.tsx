@@ -71,8 +71,12 @@ const AdminStudentsPage = () => {
         </div>
 
         <div className="flex justify-end gap-4">
-          <button onClick={handleCancel} className="px-4 py-2 border rounded">Back</button>
-          <button onClick={saveCombined} className="px-4 py-2 bg-primary text-white rounded">Save Student + Parent</button>
+          <button onClick={handleCancel} className="px-4 py-2 border rounded">
+            Back
+          </button>
+          <button onClick={saveCombined} className="px-4 py-2 bg-primary text-white rounded">
+            Save Student + Parent
+          </button>
         </div>
       </div>
     </>

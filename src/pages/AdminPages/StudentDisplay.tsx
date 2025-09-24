@@ -18,9 +18,12 @@ interface StudentData {
   phoneNumber: string;
   email: string;
   kelas?: string;
-  parentInfo: {
-    // shape may vary depending on how data was saved (localized keys), so allow any
-  } | any;
+  photo?: string;
+  parentInfo:
+    | {
+        // shape may vary depending on how data was saved (localized keys), so allow any
+      }
+    | any;
 }
 
 const StudentDisplay = () => {
@@ -63,6 +66,25 @@ const StudentDisplay = () => {
 
   const filteredStudents = students.filter((student) => student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || student.nisn.includes(searchQuery));
 
+  const resolveParentInfo = (student: any) => {
+    if (!student) return {};
+    let p = student.parentInfo ?? student.parent ?? null;
+    if (!p) return {};
+    // If parent info is wrapped again (from ParentForm which returned { parentInfo: { ... } })
+    if (p.parentInfo) return p.parentInfo;
+    return p;
+  };
+
+  const getStudentField = (student: any, engKey: string, indoKey: string) => {
+    if (!student) return "-";
+    return student[engKey] ?? student[indoKey] ?? "-";
+  };
+
+  const getParentField = (student: any, engKey: string, indoKey: string) => {
+    const p = resolveParentInfo(student);
+    return p[engKey] ?? p[indoKey] ?? "-";
+  };
+
   return (
     <div className="container mx-auto p-6">
       <Card>
@@ -86,7 +108,7 @@ const StudentDisplay = () => {
                   <TableHead>Nama</TableHead>
                   <TableHead>Kelas</TableHead>
                   <TableHead>Jenis Kelamin</TableHead>
-                  <TableHead>No Hnadphone</TableHead>
+                  <TableHead>No Telepon</TableHead>
                   <TableHead>Aksi</TableHead>
                 </TableRow>
               </TableHeader>
@@ -129,25 +151,75 @@ const StudentDisplay = () => {
         <div className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Detail Siswa: {selectedStudent.fullName}</CardTitle>
+              <CardTitle>Detail Siswa: {getStudentField(selectedStudent, "fullName", "nama") || selectedStudent.fullName}</CardTitle>
             </CardHeader>
             <CardContent>
+              <h4 className="font-semibold">Informasi Siswa</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 mb-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-28 h-28 rounded overflow-hidden bg-muted/20 flex items-center justify-center">
+                    {selectedStudent.photo ? (
+                      // photo stored as data URL
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={selectedStudent.photo} alt={`${selectedStudent.fullName} photo`} className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="text-sm text-muted-foreground">No photo</div>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <p>
+                    <strong>NIS:</strong> {getStudentField(selectedStudent, "nisn", "nisn")}
+                  </p>
+                  <p>
+                    <strong>Nama:</strong> {getStudentField(selectedStudent, "fullName", "nama")}
+                  </p>
+                  <p>
+                    <strong>Kelas:</strong> {getStudentField(selectedStudent, "kelas", "kelas")}
+                  </p>
+                  <p>
+                    <strong>Jenis Kelamin:</strong> {getStudentField(selectedStudent, "gender", "jenisKelamin")}
+                  </p>
+                  <p>
+                    <strong>Telepon:</strong> {getStudentField(selectedStudent, "phoneNumber", "telepon") || getStudentField(selectedStudent, "phoneNumber", "noTelepon")}
+                  </p>
+                  <p>
+                    <strong>Email:</strong> {getStudentField(selectedStudent, "email", "email")}
+                  </p>
+                </div>
+              </div>
+
               <h4 className="font-semibold">Informasi Orang Tua</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
                 <div>
-                  <p><strong>Nama Ayah:</strong> {selectedStudent.parentInfo?.fatherName || selectedStudent.parentInfo?.namaAyah || '-'}</p>
-                  <p><strong>Pekerjaan Ayah:</strong> {selectedStudent.parentInfo?.fatherOccupation || selectedStudent.parentInfo?.pekerjaanAyah || '-'}</p>
-                  <p><strong>Telepon Ayah:</strong> {selectedStudent.parentInfo?.fatherPhone || selectedStudent.parentInfo?.teleponAyah || '-'}</p>
+                  <p>
+                    <strong>Nama Ayah:</strong> {getParentField(selectedStudent, "fatherName", "namaAyah")}
+                  </p>
+                  <p>
+                    <strong>Pekerjaan Ayah:</strong> {getParentField(selectedStudent, "fatherOccupation", "pekerjaanAyah")}
+                  </p>
+                  <p>
+                    <strong>Telepon Ayah:</strong> {getParentField(selectedStudent, "fatherPhone", "teleponAyah")}
+                  </p>
                 </div>
                 <div>
-                  <p><strong>Nama Ibu:</strong> {selectedStudent.parentInfo?.motherName || selectedStudent.parentInfo?.namaIbu || '-'}</p>
-                  <p><strong>Pekerjaan Ibu:</strong> {selectedStudent.parentInfo?.motherOccupation || selectedStudent.parentInfo?.pekerjaanIbu || '-'}</p>
-                  <p><strong>Telepon Ibu:</strong> {selectedStudent.parentInfo?.motherPhone || selectedStudent.parentInfo?.teleponIbu || '-'}</p>
+                  <p>
+                    <strong>Nama Ibu:</strong> {getParentField(selectedStudent, "motherName", "namaIbu")}
+                  </p>
+                  <p>
+                    <strong>Pekerjaan Ibu:</strong> {getParentField(selectedStudent, "motherOccupation", "pekerjaanIbu")}
+                  </p>
+                  <p>
+                    <strong>Telepon Ibu:</strong> {getParentField(selectedStudent, "motherPhone", "teleponIbu")}
+                  </p>
                 </div>
               </div>
 
               <div className="mt-4 flex justify-end">
-                <Button onClick={() => setSelectedStudent(null)} className="px-4">Close</Button>
+                <Button onClick={() => setSelectedStudent(null)} className="px-4">
+                  Close
+                </Button>
               </div>
             </CardContent>
           </Card>

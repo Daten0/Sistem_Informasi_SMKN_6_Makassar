@@ -74,6 +74,10 @@ const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
         noTelepon: initialData.phoneNumber || "",
         email: initialData.email || "",
       });
+      // restore photo preview if available in initialData
+      if (initialData.photo || initialData.photoPreview) {
+        setPhotoPreview(initialData.photo || initialData.photoPreview);
+      }
     }
   }, [initialData]);
 
@@ -111,6 +115,8 @@ const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
       email: data.email || "-",
       kelas: data.kelas.toUpperCase(),
       jurusan: data.jurusan,
+      // include photo data URL so it can be displayed later
+      photo: photoPreview,
     };
 
     if (onSavePartial) {
@@ -132,7 +138,7 @@ const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
               <Label htmlFor="nisn" className="text-sm font-medium">
-                NISN *
+                NIS *
               </Label>
               <Input id="nisn" placeholder="1234567890" {...form.register("nisn")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
               {form.formState.errors.nisn && <p className="text-sm text-destructive">{form.formState.errors.nisn.message}</p>}
@@ -263,7 +269,7 @@ const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
 
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-medium">
-              Email (Opsional)
+              Email *
             </Label>
             <Input id="email" type="email" placeholder="siswa@email.com" {...form.register("email")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
             {form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}
