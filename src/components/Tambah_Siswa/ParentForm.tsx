@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,6 +10,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Save } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+
+interface ParentFormProps {
+  initialData?: any;
+  onSave?: (data: any) => void;
+}
 
 const parentSchema = z.object({
   namaAyah: z.string().min(2, "Nama ayah harus diisi minimal 2 karakter"),
@@ -36,7 +42,7 @@ const parentSchema = z.object({
 
 type ParentFormData = z.infer<typeof parentSchema>;
 
-const ParentForm = () => {
+const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
   const form = useForm<ParentFormData>({
     resolver: zodResolver(parentSchema),
     defaultValues: {
@@ -60,15 +66,66 @@ const ParentForm = () => {
     },
   });
 
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        namaAyah: initialData.parentInfo?.namaAyah || "",
+        pekerjaanAyah: initialData.parentInfo?.pekerjaanAyah || "",
+        pendidikanAyah: initialData.parentInfo?.pendidikanAyah || "",
+        penghasilanAyah: initialData.parentInfo?.penghasilanAyah || "",
+        teleponAyah: initialData.parentInfo?.teleponAyah || "",
+
+        namaIbu: initialData.parentInfo?.namaIbu || "",
+        pekerjaanIbu: initialData.parentInfo?.pekerjaanIbu || "",
+        pendidikanIbu: initialData.parentInfo?.pendidikanIbu || "",
+        penghasilanIbu: initialData.parentInfo?.penghasilanIbu || "",
+        teleponIbu: initialData.parentInfo?.teleponIbu || "",
+
+        alamatOrangTua: initialData.parentInfo?.alamatOrangTua || "",
+
+        namaWali: initialData.parentInfo?.namaWali || "",
+        pekerjaanWali: initialData.parentInfo?.pekerjaanWali || "",
+        pendidikanWali: initialData.parentInfo?.pendidikanWali || "",
+        hubunganWali: initialData.parentInfo?.hubunganWali || "",
+        teleponWali: initialData.parentInfo?.teleponWali || "",
+        alamatWali: initialData.parentInfo?.alamatWali || "",
+      });
+    }
+  }, [initialData]);
+
   const onSubmit = (data: ParentFormData) => {
     console.log("Parent Data:", data);
     toast({
       title: "Data orang tua berhasil disimpan!",
       description: `Data orang tua/wali telah tersimpan dalam sistem.`,
     });
-    
-    // Reset form after successful submission
-    form.reset();
+
+    const parentData = {
+      parentInfo: {
+        namaAyah: data.namaAyah,
+        pekerjaanAyah: data.pekerjaanAyah,
+        pendidikanAyah: data.pendidikanAyah,
+        penghasilanAyah: data.penghasilanAyah,
+        teleponAyah: data.teleponAyah,
+
+        namaIbu: data.namaIbu,
+        pekerjaanIbu: data.pekerjaanIbu,
+        pendidikanIbu: data.pendidikanIbu,
+        penghasilanIbu: data.penghasilanIbu,
+        teleponIbu: data.teleponIbu,
+
+        alamatOrangTua: data.alamatOrangTua,
+
+        namaWali: data.namaWali,
+        pekerjaanWali: data.pekerjaanWali,
+        pendidikanWali: data.pendidikanWali,
+        hubunganWali: data.hubunganWali,
+        teleponWali: data.teleponWali,
+        alamatWali: data.alamatWali,
+      },
+    };
+
+    if (onSave) onSave(parentData);
   };
 
   const pendidikanOptions = [

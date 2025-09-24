@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -35,8 +34,12 @@ const studentSchema = z.object({
 
 type StudentFormData = z.infer<typeof studentSchema>;
 
-const StudentForm = () => {
-  const navigate = useNavigate();
+interface StudentFormProps {
+  initialData?: any;
+  onSavePartial?: (data: any) => void;
+}
+
+const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
@@ -56,6 +59,24 @@ const StudentForm = () => {
     },
   });
 
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        nisn: initialData.nisn || "",
+        nama: initialData.fullName || "",
+        jurusan: initialData.jurusan || "",
+        kelas: initialData.kelas || "",
+        tempatLahir: initialData.birthPlace || "",
+        tanggalLahir: initialData.birthDate ? new Date(initialData.birthDate) : undefined,
+        jenisKelamin: initialData.gender === "Laki-laki" ? "L" : "P",
+        agama: initialData.religion || "",
+        alamat: initialData.address || "",
+        noTelepon: initialData.phoneNumber || "",
+        email: initialData.email || "",
+      });
+    }
+  }, [initialData]);
+
   const handlePhotoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
@@ -73,35 +94,28 @@ const StudentForm = () => {
     console.log("Photo:", photo);
     toast({
       title: "Data siswa berhasil disimpan!",
-      description: `Data untuk ${data.nama} telah tersimpan dalam sistem.`,
+      description: `Data untuk ${data.nama} telah tersimpan (sementara).`,
     });
 
-    // Prepare the student data for display
+    // Prepare the partial student data
     const studentData = {
+      id: initialData?.id || Math.random().toString(36).substr(2, 9),
       fullName: data.nama,
       nisn: data.nisn,
       gender: data.jenisKelamin === "L" ? "Laki-laki" : "Perempuan",
       birthPlace: data.tempatLahir,
-      birthDate: format(data.tanggalLahir, "dd MMMM yyyy"),
+      birthDate: data.tanggalLahir ? data.tanggalLahir.toISOString() : "",
       religion: data.agama.charAt(0).toUpperCase() + data.agama.slice(1),
       address: data.alamat,
       phoneNumber: data.noTelepon,
       email: data.email || "-",
       kelas: data.kelas.toUpperCase(),
       jurusan: data.jurusan,
-      // Since we don't have parent info in this form, we'll set placeholder values
-      parentInfo: {
-        fatherName: "-",
-        fatherOccupation: "-",
-        fatherPhone: "-",
-        motherName: "-",
-        motherOccupation: "-",
-        motherPhone: "-",
-      },
     };
 
-    // Navigate to the display page with the student data
-    navigate("/admin/student-display", { state: { studentData } });
+    if (onSavePartial) {
+      onSavePartial(studentData);
+    }
   };
 
   return (
@@ -287,9 +301,6 @@ const StudentForm = () => {
 
           {/* Submit Button */}
           <div className="flex justify-end gap-4 pt-4">
-            <Button type="button" variant="outline" onClick={() => navigate("/admin/student-display")}>
-              Cancel
-            </Button>
             <Button type="submit" className="px-8 bg-gradient-primary hover:opacity-90 transition-smooth" disabled={form.formState.isSubmitting}>
               {form.formState.isSubmitting ? "Menyimpan..." : "Simpan Data Siswa"}
             </Button>

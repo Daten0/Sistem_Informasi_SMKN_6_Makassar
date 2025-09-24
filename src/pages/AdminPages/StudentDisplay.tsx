@@ -19,13 +19,8 @@ interface StudentData {
   email: string;
   kelas?: string;
   parentInfo: {
-    fatherName: string;
-    fatherOccupation: string;
-    fatherPhone: string;
-    motherName: string;
-    motherOccupation: string;
-    motherPhone: string;
-  };
+    // shape may vary depending on how data was saved (localized keys), so allow any
+  } | any;
 }
 
 const StudentDisplay = () => {
@@ -33,16 +28,19 @@ const StudentDisplay = () => {
   const navigate = useNavigate();
   const [students, setStudents] = useState<StudentData[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStudent, setSelectedStudent] = useState<StudentData | null>(null);
 
   useEffect(() => {
-    // If we receive a new student from the form, add it to our list
+    // Load students from localStorage
+    const stored = JSON.parse(localStorage.getItem("students") || "[]");
+    setStudents(stored);
+
+    // If a single student was passed via navigation state, add it (backwards compatible)
     if (location.state?.studentData) {
-      const newStudent = {
-        ...location.state.studentData,
-        id: Math.random().toString(36).substr(2, 9), // Generate a random ID
-      };
-      setStudents((prev) => [...prev, newStudent]);
-      // Clear the location state to prevent duplicate additions
+      const newStudent = { ...location.state.studentData, id: Math.random().toString(36).substr(2, 9) };
+      const merged = [...stored, newStudent];
+      setStudents(merged);
+      localStorage.setItem("students", JSON.stringify(merged));
       window.history.replaceState({}, document.title);
     }
   }, [location.state]);
@@ -53,7 +51,9 @@ const StudentDisplay = () => {
 
   const handleDelete = (studentId: string) => {
     if (window.confirm("Are you sure you want to delete this student?")) {
-      setStudents((prev) => prev.filter((s) => s.id !== studentId));
+      const next = students.filter((s) => s.id !== studentId);
+      setStudents(next);
+      localStorage.setItem("students", JSON.stringify(next));
     }
   };
 
@@ -83,11 +83,11 @@ const StudentDisplay = () => {
               <TableHeader>
                 <TableRow>
                   <TableHead>NISN</TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Class</TableHead>
-                  <TableHead>Gender</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead>Nama</TableHead>
+                  <TableHead>Kelas</TableHead>
+                  <TableHead>Jenis Kelamin</TableHead>
+                  <TableHead>No Hnadphone</TableHead>
+                  <TableHead>Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -100,6 +100,9 @@ const StudentDisplay = () => {
                     <TableCell>{student.phoneNumber}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
+                        <Button variant="outline" size="sm" onClick={() => setSelectedStudent(student)} className="h-8" title="View details">
+                          View
+                        </Button>
                         <Button variant="outline" size="sm" onClick={() => handleEdit(student)} className="h-8 w-8 p-0" title="Edit student">
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -122,6 +125,34 @@ const StudentDisplay = () => {
           </div>
         </CardContent>
       </Card>
+      {selectedStudent && (
+        <div className="mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Detail Siswa: {selectedStudent.fullName}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <h4 className="font-semibold">Informasi Orang Tua</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <div>
+                  <p><strong>Nama Ayah:</strong> {selectedStudent.parentInfo?.fatherName || selectedStudent.parentInfo?.namaAyah || '-'}</p>
+                  <p><strong>Pekerjaan Ayah:</strong> {selectedStudent.parentInfo?.fatherOccupation || selectedStudent.parentInfo?.pekerjaanAyah || '-'}</p>
+                  <p><strong>Telepon Ayah:</strong> {selectedStudent.parentInfo?.fatherPhone || selectedStudent.parentInfo?.teleponAyah || '-'}</p>
+                </div>
+                <div>
+                  <p><strong>Nama Ibu:</strong> {selectedStudent.parentInfo?.motherName || selectedStudent.parentInfo?.namaIbu || '-'}</p>
+                  <p><strong>Pekerjaan Ibu:</strong> {selectedStudent.parentInfo?.motherOccupation || selectedStudent.parentInfo?.pekerjaanIbu || '-'}</p>
+                  <p><strong>Telepon Ibu:</strong> {selectedStudent.parentInfo?.motherPhone || selectedStudent.parentInfo?.teleponIbu || '-'}</p>
+                </div>
+              </div>
+
+              <div className="mt-4 flex justify-end">
+                <Button onClick={() => setSelectedStudent(null)} className="px-4">Close</Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
