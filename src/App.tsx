@@ -19,6 +19,7 @@ import AddStudentsPage from "./pages/AdminPages/AddStudent/AddStudentPage";
 import AdminTeachersPage from "./pages/AdminPages/TeachersPage";
 import AdminMaterialsPage from "./pages/AdminPages/MaterialPage";
 import AdminStudentDisplay from "./pages/AdminPages/StudentDisplay";
+import AdminBerita from "./pages/AdminPages/Berita";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="student-display" element={<AdminStudentDisplay />} />
             <Route path="teachers" element={<AdminTeachersPage />} />
             <Route path="materials" element={<AdminMaterialsPage />} />
+            <Route path="berita" element={<AdminBerita />} />
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
