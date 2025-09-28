@@ -1,8 +1,9 @@
 import Header from "@/components/Admin/Header";
 import Sidebar from "@/components/Admin/Sidebar";
-import AddNewsForm from "@/components/Berita/Tambah_Berita/AddNewsForm";
+import NewsPreview from "@/components/Berita/Preview/NewsPreview";
 
-const AddBerita = () => {
+
+const PreviewBerita = () => {
   return (
     // <div className="min-h-screen flex bg-gray-100 dark:bg-gray-900">
     //   <Sidebar />
@@ -16,10 +17,10 @@ const AddBerita = () => {
     // </div>
     <>
       <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Berita</h1>
-      <AddNewsForm />
+      <NewsPreview />
     </>
     // Learning Materials content goes here
   );
 };
 
-export default AddBerita;
+export default PreviewBerita;

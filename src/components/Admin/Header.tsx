@@ -56,24 +56,30 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
                     </div>
                     <nav className="mt-6">
                         <ul>
-                        <li>
-                            <Link to="/admin/students" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <Users className="w-5 h-5" />
-                            <span className="ml-4">Students</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/admin/teachers" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <GraduationCap className="w-5 h-5" />
-                            <span className="ml-4">Teachers</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/admin/materials" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-                            <BookOpen className="w-5 h-5" />
-                            <span className="ml-4">Learning Materials</span>
-                            </Link>
-                        </li>
+                          <li>
+                              <Link to="/admin/student-display" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                              <Users className="w-5 h-5" />
+                              <span className="ml-4">Siswa</span>
+                              </Link>
+                          </li>
+                          <li>
+                              <Link to="/admin/teachers" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                              <GraduationCap className="w-5 h-5" />
+                              <span className="ml-4">Guru</span>
+                              </Link>
+                          </li>
+                          <li>
+                              <Link to="/admin/materials" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                              <BookOpen className="w-5 h-5" />
+                              <span className="ml-4">Materi Pembelajaran</span>
+                              </Link>
+                          </li>
+                          <li>
+                              <Link to="/admin/berita" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                              <BookOpen className="w-5 h-5" />
+                              <span className="ml-4">Berita Sekolah</span>
+                              </Link>
+                          </li>
                         </ul>
                     </nav>
                     </SheetContent>
