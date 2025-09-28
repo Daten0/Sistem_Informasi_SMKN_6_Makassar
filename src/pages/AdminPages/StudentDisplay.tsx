@@ -86,40 +86,45 @@ const StudentDisplay = () => {
   };
 
   return (
-    <div className="container mx-auto p-6">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-2xl font-bold">Student List</CardTitle>
-          <Button onClick={handleAddNew} className="bg-primary hover:bg-primary/90">
+    <div className="w-full">
+      <Card className="border-0 shadow-none bg-transparent">
+        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-0 pb-4">
+          <CardTitle className="text-xl sm:text-2xl font-bold text-white">Student List</CardTitle>
+          <Button onClick={handleAddNew} className="w-full sm:w-auto bg-primary hover:bg-primary/90">
             <UserPlus className="w-4 h-4 mr-2" />
             Add New Student
           </Button>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-0">
           <div className="mb-4">
-            <Input placeholder="Search by name or NISN..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="max-w-sm" />
+            <Input 
+              placeholder="Search by name or NISN..." 
+              value={searchQuery} 
+              onChange={(e) => setSearchQuery(e.target.value)} 
+              className="max-w-sm bg-gray-900/50 border-gray-800 text-white placeholder:text-gray-500" 
+            />
           </div>
 
-          <div className="rounded-md border">
+          <div className="rounded-md border border-gray-800 overflow-x-auto">
             <Table>
               <TableHeader>
-                <TableRow>
-                  <TableHead>NISN</TableHead>
-                  <TableHead>Nama</TableHead>
-                  <TableHead>Kelas</TableHead>
-                  <TableHead>Jenis Kelamin</TableHead>
-                  <TableHead>No Telepon</TableHead>
-                  <TableHead>Aksi</TableHead>
+                <TableRow className="bg-gray-900/50">
+                  <TableHead className="text-gray-400">NISN</TableHead>
+                  <TableHead className="text-gray-400">Nama</TableHead>
+                  <TableHead className="text-gray-400 hidden md:table-cell">Kelas</TableHead>
+                  <TableHead className="text-gray-400 hidden md:table-cell">Jenis Kelamin</TableHead>
+                  <TableHead className="text-gray-400 hidden sm:table-cell">No Telepon</TableHead>
+                  <TableHead className="text-gray-400">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredStudents.map((student) => (
-                  <TableRow key={student.id}>
-                    <TableCell className="font-medium">{student.nisn}</TableCell>
-                    <TableCell>{student.fullName}</TableCell>
-                    <TableCell>{student.kelas || "-"}</TableCell>
-                    <TableCell>{student.gender}</TableCell>
-                    <TableCell>{student.phoneNumber}</TableCell>
+                  <TableRow key={student.id} className="border-gray-800">
+                    <TableCell className="font-medium text-white">{student.nisn}</TableCell>
+                    <TableCell className="text-white">{student.fullName}</TableCell>
+                    <TableCell className="hidden md:table-cell text-white">{student.kelas || "-"}</TableCell>
+                    <TableCell className="hidden md:table-cell text-white">{student.gender}</TableCell>
+                    <TableCell className="hidden sm:table-cell text-white">{student.phoneNumber}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm" onClick={() => setSelectedStudent(student)} className="h-8" title="View details">
@@ -149,15 +154,15 @@ const StudentDisplay = () => {
       </Card>
       {selectedStudent && (
         <div className="mt-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Detail Siswa: {getStudentField(selectedStudent, "fullName", "nama") || selectedStudent.fullName}</CardTitle>
+          <Card className="border-gray-800 bg-gray-900/50">
+            <CardHeader className="border-b border-gray-800">
+              <CardTitle className="text-lg sm:text-xl text-white">Detail Siswa: {getStudentField(selectedStudent, "fullName", "nama") || selectedStudent.fullName}</CardTitle>
             </CardHeader>
             <CardContent>
-              <h4 className="font-semibold">Informasi Siswa</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 mb-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-28 h-28 rounded overflow-hidden bg-muted/20 flex items-center justify-center">
+              <h4 className="font-semibold text-lg text-white mb-3">Informasi Siswa</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2 mb-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-lg overflow-hidden bg-gray-800 flex items-center justify-center border border-gray-700">
                     {selectedStudent.photo ? (
                       // photo stored as data URL
                       // eslint-disable-next-line @next/next/no-img-element
@@ -190,8 +195,8 @@ const StudentDisplay = () => {
                 </div>
               </div>
 
-              <h4 className="font-semibold">Informasi Orang Tua</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+              <h4 className="font-semibold text-lg text-white mb-3 mt-6">Informasi Orang Tua</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
                 <div>
                   <p>
                     <strong>Nama Ayah:</strong> {getParentField(selectedStudent, "fatherName", "namaAyah")}

@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Users, BookOpen, GraduationCap } from "lucide-react";
+import { Users, BookOpen, GraduationCap, NewspaperIcon } from "lucide-react";
 import schoolLogo from "@/assets/school-logo.png";
 import { cn } from "@/lib/utils";
 
@@ -32,6 +32,12 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
             <Link to="/admin/materials" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
               <BookOpen className="w-5 h-5" />
               <span className="ml-4">Materi Pembelajaran</span>
+            </Link>
+          </li>
+          <li>
+            <Link to="/admin/berita" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+              <NewspaperIcon className="w-5 h-5" />
+              <span className="ml-4">Berita Sekolah</span>
             </Link>
           </li>
         </ul>
