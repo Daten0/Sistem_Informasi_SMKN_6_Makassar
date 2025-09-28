@@ -1,6 +1,8 @@
-// import Header from "@/components/Admin/Header";
-// import Sidebar from "@/components/Admin/Sidebar";
+import Header from "@/components/Admin/Header";
+import Sidebar from "@/components/Admin/Sidebar";
 
+import NewsDetail from "@/components/Tambah_Berita/NewDetails";
+import AddNewsForm from "@/components/Tambah_Berita/AddNewsForm";
 
 const AdminBerita = () => {
   return (
@@ -15,7 +17,12 @@ const AdminBerita = () => {
     //   </div>
     // </div>
     <>
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Berita Sekolah</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Berita</h1>
+      <AddNewsForm
+        isOpen={true}
+        onClose={() => void 0}
+        onSave={() => {}}
+      />
     </>
     // Learning Materials content goes here
   );

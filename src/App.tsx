@@ -45,7 +45,7 @@ const App = () => (
             <Route path="student-display" element={<AdminStudentDisplay />} />
             <Route path="teachers" element={<AdminTeachersPage />} />
             <Route path="materials" element={<AdminMaterialsPage />} />
-            <Route path="berita" element={<AdminBerita />} />
+            <Route path="berita" element={<AdminBerita />} />dc
           </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
