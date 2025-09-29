@@ -109,7 +109,7 @@ const StudentDisplay = () => {
             <Table>
               <TableHeader>
                 <TableRow className="bg-gray-900/50">
-                  <TableHead className="text-gray-400">NISN</TableHead>
+                  <TableHead className="text-gray-400">NIS</TableHead>
                   <TableHead className="text-gray-400">Nama</TableHead>
                   <TableHead className="text-gray-400 hidden md:table-cell">Kelas</TableHead>
                   <TableHead className="text-gray-400 hidden md:table-cell">Jenis Kelamin</TableHead>
