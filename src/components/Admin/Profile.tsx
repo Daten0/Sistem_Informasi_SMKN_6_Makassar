@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useProfile } from "@/pages/AdminPages";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -17,7 +18,12 @@ const Profile = () => {
     region: "Makassar",
     address: "Jl. Admin No. 1",
     religion: "Islam",
+    mapel: ["DKV", "Matematika", "TKJ"],
+    kelas: ["DKV", "AK", "Tata Kecantikan"],
   });
+
+  const mapelOptions = ["DKV", "Matematika", "TKJ", "Bahasa Indonesia", "IPA"];
+  const kelasOptions = ["DKV", "AK", "Tata Kecantikan", "TKJ", "RPL"];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,6 +41,36 @@ const Profile = () => {
       };
       reader.readAsDataURL(e.target.files[0]);
     }
+  };
+
+  // Add a subject
+  const handleAddMapel = (value: string) => {
+    if (value && !profile.mapel.includes(value)) {
+      setProfile({ ...profile, mapel: [...profile.mapel, value] });
+    }
+  };
+
+  // Remove a subject
+  const handleRemoveMapel = (mapelToRemove: string) => {
+    setProfile({ 
+      ...profile, 
+      mapel: profile.mapel.filter(m => m !== mapelToRemove) 
+    });
+  };
+
+  // Add a class
+  const handleAddKelas = (value: string) => {
+    if (value && !profile.kelas.includes(value)) {
+      setProfile({ ...profile, kelas: [...profile.kelas, value] });
+    }
+  };
+
+  // Remove a class
+  const handleRemoveKelas = (kelasToRemove: string) => {
+    setProfile({ 
+      ...profile, 
+      kelas: profile.kelas.filter(k => k !== kelasToRemove) 
+    });
   };
 
   return (
@@ -82,7 +118,77 @@ const Profile = () => {
           </div>
           <div>
             <Label htmlFor="religion">Agama</Label>
-            <Input id="religion" name="religion" value={profile.religion} onChange={handleInputChange} disabled={!isEditing} />
+            <Input id="religion" name="religion" value={profile.religion} onChange={handleInputChange} disabled={!isEditing} /> 
+          </div>
+          
+          {/* Mata Pelajaran with Select */}
+          <div>
+            <Label>Mata Pelajaran</Label>
+            <div className="space-y-2">
+              <Select onValueChange={handleAddMapel} disabled={!isEditing}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Tambah mata pelajaran" />
+                </SelectTrigger>
+                <SelectContent>
+                  {mapelOptions.map(option => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {/* <div className="flex flex-wrap gap-2">
+                {profile.mapel.map(mapel => (
+                  <div key={mapel} className="bg-secondary px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                    {mapel}
+                    {isEditing && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveMapel(mapel)}
+                        className="text-xs text-red-500 hover:text-red-700"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div> */}
+            </div>
+          </div>
+          
+          {/* Kelas with Select */}
+          <div>
+            <Label>Kelas</Label>
+            <div className="space-y-2">
+              <Select onValueChange={handleAddKelas} disabled={!isEditing}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Tambah kelas" />
+                </SelectTrigger>
+                <SelectContent>
+                  {kelasOptions.map(option => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {/* <div className="flex flex-wrap gap-2">
+                {profile.kelas.map(kelas => (
+                  <div key={kelas} className="bg-secondary px-3 py-1 rounded-full text-sm flex items-center gap-2">
+                    {kelas}
+                    {isEditing && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveKelas(kelas)}
+                        className="text-xs text-red-500 hover:text-red-700"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div> */}
+            </div>
           </div>
         </div>
         <div className="mt-6 flex justify-end space-x-4">

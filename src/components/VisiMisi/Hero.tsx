@@ -19,7 +19,7 @@ const Hero = () => {
             </CardHeader>
             <CardContent>
               <p className="text-gray-700 dark:text-gray-300 text-lg">
-                Menjadi lembaga pendidikan kejuruan yang unggul, menghasilkan lulusan yang kompeten, berkarakter, dan siap bersaing di era global.
+                Menjadi lembaga pendidikan kejuruan yang berkualitas dan berdaya saing tinggi
               </p>
             </CardContent>
           </Card>
@@ -29,10 +29,10 @@ const Hero = () => {
             </CardHeader>
             <CardContent>
               <ul className="list-disc list-inside text-gray-700 dark:text-gray-300 space-y-3 text-lg">
-                <li>Menyelenggarakan pendidikan dan pelatihan kejuruan yang berkualitas dan relevan dengan kebutuhan industri.</li>
-                <li>Mengembangkan kurikulum yang adaptif terhadap perkembangan ilmu pengetahuan dan teknologi.</li>
-                <li>Membentuk siswa yang berakhlak mulia, mandiri, dan memiliki jiwa wirausaha.</li>
-                <li>Meningkatkan kerjasama dengan dunia usaha dan dunia industri untuk program magang dan penyerapan lulusan.</li>
+                <li>Merancang Pembelajaran yang menarik dan menyenangkan yang mampu memotivasi peserta didik untuk selalu belajar dan menemukan Pembelajaran </li>
+                <li>menciptakan lingkungan sekolah yang membentuk Peserta didik memiliki Akhlak Mulia melalui Rutinitas Kegiatan Keagamaan dan Menerapkan Ajaran Agama melalui cara berinteraksi di sekolah</li>
+                <li>Mengembangkan Program Sekolah dengan Ide dan Gagasan Cepat tanggap terhadap Perubahan yang terjadi untuk merancang inovasi</li>
+                <li>Mengembangkan dan Memfasilitasi Peningkatan Prestasi Peserta didik sesuai minat dan bakatnya melalui proses Pendampingan dan Kerjasama dengan Orang Tua.</li>
               </ul>
             </CardContent>
           </Card>

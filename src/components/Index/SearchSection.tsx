@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 
 const SearchSection = () => {
-  const [searchType, setSearchType] = useState("students");
+  const [searchType, setSearchType] = useState("Berita Terkini");
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = () => {
@@ -25,13 +25,13 @@ const SearchSection = () => {
     <section className="py-16 px-6 md:px-8 bg-gradient-primary">
       <div className="max-w-4xl mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
-          Cari Siswa dan Guru
+          Cari Berita Terkini
         </h2>
         
         <div className="bg-white/95 backdrop-blur-sm rounded-lg p-6 shadow-elegant">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search Type Selector */}
-            <Select value={searchType} onValueChange={setSearchType}>
+            {/* <Select value={searchType} onValueChange={setSearchType}>
               <SelectTrigger className="md:w-48">
                 <SelectValue />
               </SelectTrigger>
@@ -39,7 +39,7 @@ const SearchSection = () => {
                 <SelectItem value="students">Siswa</SelectItem>
                 <SelectItem value="teachers">Guru</SelectItem>
               </SelectContent>
-            </Select>
+            </Select> */}
 
             {/* Search Input */}
             <div className="flex-1 relative">
