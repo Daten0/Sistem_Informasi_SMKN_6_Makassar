@@ -1,84 +1,56 @@
 import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import carousel1 from "@/assets/carousel-1.jpg";
-import carousel2 from "@/assets/carousel-2.jpg";
-import carousel3 from "@/assets/carousel-3.jpg";
-import carousel4 from "@/assets/carousel-4.jpg";
-import carousel5 from "@/assets/carousel-5.jpg";
-import carousel6 from "@/assets/carousel-6.jpg";
+import { useNews } from "@/contexts/NewsContext";
+import { Link } from "react-router-dom";
 
-const carouselImages = [
-  {
-    src: carousel1,
-    alt: "Gambar Desain Komunikasi Visual",
-    title: "Desain Komunikasi Visual",
-    description: "Program Desain Komunikasi Visual"
-  },
-  {
-    src: carousel2,
-    alt: "Gambar Tata Boga", 
-    title: "Tata Boga",
-    description: "Program Tata Boga"
-  },
-  {
-    src: carousel3,
-    alt: "Perhotelan",
-    title: "Perhotelan", 
-    description: "Program Perhotelan"
-  },
-  {
-    src: carousel4,
-    alt: "Akutansi",
-    title: "Akutansi",
-    description: "Program Akutansi"
-  },
-  {
-    src: carousel5,
-    alt: "Tata Kecantikan",
-    title: "Tata Kecantikan",
-    description: "Program Tata Kecantikan"
-  },
-  {
-    src: carousel6,
-    alt: "Tata Busana",
-    title: "Tata Busana",
-    description: "Program Tata Busana"
-  }
-];
 
 const HeroCarousel = () => {
+  const { newsItems } = useNews();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const carouselItems = newsItems.slice(0, 3);
+
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+      setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
     }, 5000); // Auto-advance every 5 seconds
 
     return () => clearInterval(timer);
-  }, []);
+  }, [carouselItems.length]);
 
   const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % carouselImages.length);
+    setCurrentSlide((prev) => (prev + 1) % carouselItems.length);
   };
 
   const prevSlide = () => {
-    setCurrentSlide((prev) => (prev - 1 + carouselImages.length) % carouselImages.length);
+    setCurrentSlide((prev) => (prev - 1 + carouselItems.length) % carouselItems.length);
   };
+
+  if (carouselItems.length === 0) {
+    return (
+      <section className="relative h-[600px] bg-hero-bg overflow-hidden flex items-center justify-center">
+        <div className="text-center text-white">
+          <h2 className="text-2xl md:text-3xl font-semibold">No news available</h2>
+          <p className="text-lg md:text-xl text-gray-200">Please add some news to see them here.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative h-[600px] bg-hero-bg overflow-hidden">
       {/* Background Images */}
-      {carouselImages.map((image, index) => (
+      {carouselItems.map((item, index) => (
         <div
-          key={index}
+          key={item.id}
           className={`absolute inset-0 transition-opacity duration-1000 ${
             index === currentSlide ? "opacity-100" : "opacity-0"
           }`}
         >
           <img
-            src={image.src}
-            alt={image.alt}
+            src={item.image}
+            alt={item.title}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/50" />
@@ -91,11 +63,14 @@ const HeroCarousel = () => {
           
           <div className="space-y-2">
             <h2 className="text-2xl md:text-3xl font-semibold">
-              {carouselImages[currentSlide].title}
+              {carouselItems[currentSlide].title}
             </h2>
             <p className="text-lg md:text-xl text-gray-200">
-              {carouselImages[currentSlide].description}
+              {carouselItems[currentSlide].excerpt}
             </p>
+            <Link to={`/admin/berita/preview/${carouselItems[currentSlide].id}`}>
+              <Button variant="secondary" className="mt-4">Read More</Button>
+            </Link>
           </div>
         </div>
       </div>
@@ -121,7 +96,7 @@ const HeroCarousel = () => {
 
       {/* Slide Indicators */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-        {carouselImages.map((_, index) => (
+        {carouselItems.map((_, index) => (
           <button
             key={index}
             className={`w-3 h-3 rounded-full transition-all ${
