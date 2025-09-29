@@ -68,7 +68,18 @@ const defaultNewsItems: NewsItem[] = [
 ];
 
 export function NewsProvider({ children }: { children: React.ReactNode }) {
-  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>(() => {
+    const stored = localStorage.getItem('newsItems');
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch (error) {
+        console.error('Error loading news from localStorage:', error);
+        return defaultNewsItems;
+      }
+    }
+    return defaultNewsItems;
+  });
 
   // Load from localStorage on mount
   useEffect(() => {
