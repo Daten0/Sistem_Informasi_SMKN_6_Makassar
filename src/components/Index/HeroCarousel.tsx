@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 const HeroCarousel = () => {
   const { newsItems } = useNews();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const carouselItems = newsItems.slice(0, 3);
+  const carouselItems = newsItems.slice(0, 10);
 
 
   useEffect(() => {
@@ -68,7 +68,7 @@ const HeroCarousel = () => {
             <p className="text-lg md:text-xl text-gray-200">
               {carouselItems[currentSlide].excerpt}
             </p>
-            <Link to={`/admin/berita/preview/${carouselItems[currentSlide].id}`}>
+            <Link to={`/preview/${carouselItems[currentSlide].id}`}>
               <Button variant="secondary" className="mt-4">Read More</Button>
             </Link>
           </div>

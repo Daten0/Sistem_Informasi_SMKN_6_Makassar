@@ -1,23 +1,31 @@
 import { useState } from "react";
-import { Search } from "lucide-react";
+import { Search, Newspaper, Tag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useNews } from "@/contexts/NewsContext";
+import { Link } from "react-router-dom";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 
 const SearchSection = () => {
   const [searchType, setSearchType] = useState("Berita Terkini");
   const [searchQuery, setSearchQuery] = useState("");
+  const { newsItems } = useNews();
+  const [searchResults, setSearchResults] = useState<typeof newsItems>([]);
+  const [searchPerformed, setSearchPerformed] = useState(false);
 
   const handleSearch = () => {
+    setSearchPerformed(true);
     if (searchQuery.trim()) {
-      console.log(`Searching for ${searchType}: ${searchQuery}`);
-      // Here you would implement the actual search functionality
+      const lowercasedQuery = searchQuery.toLowerCase();
+      const results = newsItems.filter(
+        (item) =>
+          item.title.toLowerCase().includes(lowercasedQuery) ||
+          item.tags.some((tag) => tag.toLowerCase().includes(lowercasedQuery))
+      );
+      setSearchResults(results);
+    } else {
+      setSearchResults([]);
     }
   };
 
@@ -30,22 +38,12 @@ const SearchSection = () => {
         
         <div className="bg-white/95 backdrop-blur-sm rounded-lg p-6 shadow-elegant">
           <div className="flex flex-col md:flex-row gap-4">
-            {/* Search Type Selector */}
-            {/* <Select value={searchType} onValueChange={setSearchType}>
-              <SelectTrigger className="md:w-48">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="students">Siswa</SelectItem>
-                <SelectItem value="teachers">Guru</SelectItem>
-              </SelectContent>
-            </Select> */}
 
             {/* Search Input */}
             <div className="flex-1 relative">
               <Input
                 type="text"
-                placeholder={`Search for ${searchType}...`}
+                placeholder="Cari berdasarkan judul..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pr-12"
@@ -60,9 +58,47 @@ const SearchSection = () => {
               </Button>
             </div>
           </div>
-
-          
         </div>
+        {searchPerformed && (
+          <div className="text-left">
+            {searchResults.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {searchResults.map((item) => (
+                  <Link to={`/preview/${item.id}`} key={item.id}>
+                    <Card className="bg-white hover:shadow-lg transition-shadow duration-300">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-lg">
+                          <Newspaper className="w-5 h-5 text-primary" />
+                          {item.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground line-clamp-3">
+                          {item.excerpt}
+                        </p>
+                        <div className="flex flex-wrap gap-2 mt-4">
+                          {item.tags.map((tag) => (
+                            <div
+                              key={tag}
+                              className="flex items-center bg-gray-100 rounded-full px-2 py-1 text-xs"
+                            >
+                              <Tag className="w-3 h-3 mr-1 text-gray-500" />
+                              {tag}
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center text-white py-8">
+                <p className="text-lg">Tidak ada berita yang ditemukan.</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </section>
   );

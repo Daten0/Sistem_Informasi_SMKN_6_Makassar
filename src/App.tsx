@@ -24,6 +24,7 @@ import AdminBerita from "./pages/AdminPages/Berita";
 import PreviewBerita from "./pages/AdminPages/previewBerita/preview";
 import AddBerita from "./pages/AdminPages/AddBerita/AddBerita";
 import EditBerita from "./pages/AdminPages/EditBerita/EditBerita";
+import BeritaPreview from "./pages/PreviewNews";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
+          <Route path="/preview/:id" element={<BeritaPreview />} />
           <Route path="/About" element={<About />} />
           <Route path="/VisiMisi" element={<VisiMisi />} />
           <Route path="/students" element={<Students />} />
