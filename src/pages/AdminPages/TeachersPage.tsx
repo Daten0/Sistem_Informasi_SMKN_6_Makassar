@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { EmployeeTable, type Employee } from '../../components/tambah_guru/EmployeeTable'
 import { SearchBar } from '../../components/tambah_guru/SearchBar'
 import PersonalInfo from '../../components/tambah_guru/PersonalInfo'

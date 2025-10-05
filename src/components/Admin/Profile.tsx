@@ -5,7 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useProfile } from "@/pages/AdminPages";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger
+ } from "@/components/ui/dropdown-menu";
 
 const Profile = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -43,33 +47,21 @@ const Profile = () => {
     }
   };
 
-  // Add a subject
-  const handleAddMapel = (value: string) => {
-    if (value && !profile.mapel.includes(value)) {
-      setProfile({ ...profile, mapel: [...profile.mapel, value] });
-    }
-  };
-
-  // Remove a subject
-  const handleRemoveMapel = (mapelToRemove: string) => {
-    setProfile({ 
-      ...profile, 
-      mapel: profile.mapel.filter(m => m !== mapelToRemove) 
+  const handleMapelSelection = (mapelToToggle: string) => {
+    setProfile((prevProfile) => {
+      const mapel = prevProfile.mapel.includes(mapelToToggle)
+        ? prevProfile.mapel.filter((m) => m !== mapelToToggle)
+        : [...prevProfile.mapel, mapelToToggle];
+      return { ...prevProfile, mapel };
     });
   };
 
-  // Add a class
-  const handleAddKelas = (value: string) => {
-    if (value && !profile.kelas.includes(value)) {
-      setProfile({ ...profile, kelas: [...profile.kelas, value] });
-    }
-  };
-
-  // Remove a class
-  const handleRemoveKelas = (kelasToRemove: string) => {
-    setProfile({ 
-      ...profile, 
-      kelas: profile.kelas.filter(k => k !== kelasToRemove) 
+  const handleKelasSelection = (kelasToToggle: string) => {
+    setProfile((prevProfile) => {
+      const kelas = prevProfile.kelas.includes(kelasToToggle)
+        ? prevProfile.kelas.filter((k) => k !== kelasToToggle)
+        : [...prevProfile.kelas, kelasToToggle];
+      return { ...prevProfile, kelas };
     });
   };
 
@@ -121,30 +113,36 @@ const Profile = () => {
             <Input id="religion" name="religion" value={profile.religion} onChange={handleInputChange} disabled={!isEditing} /> 
           </div>
           
-          {/* Mata Pelajaran with Select */}
+          {/* Mata Pelajaran with DropDown */}
           <div>
             <Label>Mata Pelajaran</Label>
             <div className="space-y-2">
-              <Select onValueChange={handleAddMapel} disabled={!isEditing}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Tambah mata pelajaran" />
-                </SelectTrigger>
-                <SelectContent>
-                  {mapelOptions.map(option => (
-                    <SelectItem key={option} value={option}>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" disabled={!isEditing} className="w-full justify-start">
+                    Pilih Mata Pelajaran
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {mapelOptions.map((option) => (
+                    <DropdownMenuCheckboxItem
+                      key={option}
+                      checked={profile.mapel.includes(option)}
+                      onCheckedChange={() => handleMapelSelection(option)}
+                    >
                       {option}
-                    </SelectItem>
+                    </DropdownMenuCheckboxItem>
                   ))}
-                </SelectContent>
-              </Select>
-              {/* <div className="flex flex-wrap gap-2">
-                {profile.mapel.map(mapel => (
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <div className="flex flex-wrap gap-2">
+                {profile.mapel.map((mapel) => (
                   <div key={mapel} className="bg-secondary px-3 py-1 rounded-full text-sm flex items-center gap-2">
                     {mapel}
                     {isEditing && (
                       <button
                         type="button"
-                        onClick={() => handleRemoveMapel(mapel)}
+                        onClick={() => handleMapelSelection(mapel)}
                         className="text-xs text-red-500 hover:text-red-700"
                       >
                         ×
@@ -152,34 +150,40 @@ const Profile = () => {
                     )}
                   </div>
                 ))}
-              </div> */}
+              </div>
             </div>
           </div>
           
-          {/* Kelas with Select */}
+          {/* Kelas with Dropdown */}
           <div>
             <Label>Kelas</Label>
             <div className="space-y-2">
-              <Select onValueChange={handleAddKelas} disabled={!isEditing}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Tambah kelas" />
-                </SelectTrigger>
-                <SelectContent>
-                  {kelasOptions.map(option => (
-                    <SelectItem key={option} value={option}>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" disabled={!isEditing} className="w-full justify-start">
+                    Pilih Kelas
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {kelasOptions.map((option) => (
+                    <DropdownMenuCheckboxItem
+                      key={option}
+                      checked={profile.kelas.includes(option)}
+                      onCheckedChange={() => handleKelasSelection(option)}
+                    >
                       {option}
-                    </SelectItem>
+                    </DropdownMenuCheckboxItem>
                   ))}
-                </SelectContent>
-              </Select>
-              {/* <div className="flex flex-wrap gap-2">
-                {profile.kelas.map(kelas => (
+                </DropdownMenuContent>
+              </DropdownMenu>
+              <div className="flex flex-wrap gap-2">
+                {profile.kelas.map((kelas) => (
                   <div key={kelas} className="bg-secondary px-3 py-1 rounded-full text-sm flex items-center gap-2">
                     {kelas}
                     {isEditing && (
                       <button
                         type="button"
-                        onClick={() => handleRemoveKelas(kelas)}
+                        onClick={() => handleKelasSelection(kelas)}
                         className="text-xs text-red-500 hover:text-red-700"
                       >
                         ×
@@ -187,7 +191,7 @@ const Profile = () => {
                     )}
                   </div>
                 ))}
-              </div> */}
+              </div>
             </div>
           </div>
         </div>
