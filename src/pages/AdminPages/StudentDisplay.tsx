@@ -89,7 +89,7 @@ const StudentDisplay = () => {
     <div className="w-full">
       <Card className="border-0 shadow-none bg-transparent">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-0 pb-4">
-          <CardTitle className="text-xl sm:text-2xl font-bold text-white">Student List</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl font-bold text-black dark:text-white">Student List</CardTitle>
           <Button onClick={handleAddNew} className="w-full sm:w-auto bg-primary hover:bg-primary/90">
             <UserPlus className="w-4 h-4 mr-2" />
             Add New Student
