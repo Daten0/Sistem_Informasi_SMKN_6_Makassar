@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { SubjectCard } from "@/components/tambah_kesiswaan/SubjectCard";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -12,6 +13,7 @@ interface Subject {
 }
 
 const AdminMaterialsPage = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   // Sample data - replace with actual data
@@ -54,7 +56,10 @@ const AdminMaterialsPage = () => {
       {/* Search and Add Section */}
       <Card className="p-6">
         <div className="flex justify-end">
-          <Button className="w-full sm:w-auto">
+          <Button 
+            onClick={() => navigate('add-subject')} 
+            className="w-full sm:w-auto"
+          >
             <Plus className="mr-2 h-4 w-4" />
             Tambah Jurusan
           </Button>

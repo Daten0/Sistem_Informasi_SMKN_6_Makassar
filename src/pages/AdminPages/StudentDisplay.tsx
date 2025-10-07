@@ -89,46 +89,46 @@ const StudentDisplay = () => {
     <div className="w-full">
       <Card className="border-0 shadow-none bg-transparent">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-0 pb-4">
-          <CardTitle className="text-xl sm:text-2xl font-bold text-black dark:text-white">Student List</CardTitle>
+          <CardTitle className="text-xl sm:text-2xl font-bold text-black dark:text-white">List Siswa</CardTitle>
           <Button onClick={handleAddNew} className="w-full sm:w-auto bg-primary hover:bg-primary/90">
             <UserPlus className="w-4 h-4 mr-2" />
-            Add New Student
+            Tambah Siswa
           </Button>
         </CardHeader>
         <CardContent className="px-0">
           <div className="mb-4">
             <Input 
-              placeholder="Search by name or NISN..." 
+              placeholder="Cari berdasarkan Nama atau NISN..." 
               value={searchQuery} 
               onChange={(e) => setSearchQuery(e.target.value)} 
-              className="max-w-sm bg-gray-900/50 border-gray-800 text-white placeholder:text-gray-500" 
+              className="max-w-sm bg-white dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 text-gray-900 dark:text-white placeholder:text-gray-500" 
             />
           </div>
 
-          <div className="rounded-md border border-gray-800 overflow-x-auto">
+          <div className="rounded-md border border-gray-200 dark:border-gray-800 overflow-x-auto bg-white dark:bg-transparent">
             <Table>
               <TableHeader>
-                <TableRow className="bg-gray-900/50">
-                  <TableHead className="text-gray-400">NIS</TableHead>
-                  <TableHead className="text-gray-400">Nama</TableHead>
-                  <TableHead className="text-gray-400 hidden md:table-cell">Kelas</TableHead>
-                  <TableHead className="text-gray-400 hidden md:table-cell">Jenis Kelamin</TableHead>
-                  <TableHead className="text-gray-400 hidden sm:table-cell">No Telepon</TableHead>
-                  <TableHead className="text-gray-400">Aksi</TableHead>
+                <TableRow className="bg-gray-50 dark:bg-gray-900/50">
+                  <TableHead className="text-gray-600 dark:text-gray-400">NIS</TableHead>
+                  <TableHead className="text-gray-600 dark:text-gray-400">Nama</TableHead>
+                  <TableHead className="text-gray-600 dark:text-gray-400 hidden md:table-cell">Kelas</TableHead>
+                  <TableHead className="text-gray-600 dark:text-gray-400 hidden md:table-cell">Jenis Kelamin</TableHead>
+                  <TableHead className="text-gray-600 dark:text-gray-400 hidden sm:table-cell">No Telepon</TableHead>
+                  <TableHead className="text-gray-600 dark:text-gray-400">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredStudents.map((student) => (
-                  <TableRow key={student.id} className="border-gray-800">
-                    <TableCell className="font-medium text-white">{student.nisn}</TableCell>
-                    <TableCell className="text-white">{student.fullName}</TableCell>
-                    <TableCell className="hidden md:table-cell text-white">{student.kelas || "-"}</TableCell>
-                    <TableCell className="hidden md:table-cell text-white">{student.gender}</TableCell>
-                    <TableCell className="hidden sm:table-cell text-white">{student.phoneNumber}</TableCell>
+                  <TableRow key={student.id} className="border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                    <TableCell className="font-medium text-gray-900 dark:text-white">{student.nisn}</TableCell>
+                    <TableCell className="text-gray-900 dark:text-white">{student.fullName}</TableCell>
+                    <TableCell className="hidden md:table-cell text-gray-900 dark:text-white">{student.kelas || "-"}</TableCell>
+                    <TableCell className="hidden md:table-cell text-gray-900 dark:text-white">{student.gender}</TableCell>
+                    <TableCell className="hidden sm:table-cell text-gray-900 dark:text-white">{student.phoneNumber}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm" onClick={() => setSelectedStudent(student)} className="h-8" title="View details">
-                          View
+                          Lihat
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => handleEdit(student)} className="h-8 w-8 p-0" title="Edit student">
                           <Pencil className="h-4 w-4" />
@@ -142,8 +142,8 @@ const StudentDisplay = () => {
                 ))}
                 {filteredStudents.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center py-4">
-                      No students found. Click "Add New Student" to add one.
+                    <TableCell colSpan={6} className="text-center py-4 text-gray-500 dark:text-gray-400">
+                      Siswa tidak ditemukan. Klik "Tambah Siswa" untuk menambahkan.
                     </TableCell>
                   </TableRow>
                 )}

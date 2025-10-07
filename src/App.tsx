@@ -25,6 +25,7 @@ import PreviewBerita from "./pages/AdminPages/previewBerita/preview";
 import AddBerita from "./pages/AdminPages/AddBerita/AddBerita";
 import EditBerita from "./pages/AdminPages/EditBerita/EditBerita";
 import BeritaPreview from "./pages/PreviewNews";
+import AddSubject from "./components/tambah_kesiswaan/AddSubject";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,7 @@ const App = () => (
             <Route path="student-display" element={<AdminStudentDisplay />} />
             <Route path="teachers" element={<AdminTeachersPage />} />
             <Route path="materials" element={<AdminMaterialsPage />} />
+            <Route path="materials/add-subject" element={<AddSubject />} />
             <Route path="berita" element={<AdminBerita />} />
             <Route path="berita/buatBerita" element={<AddBerita/>} />
             <Route path="berita/editBerita/:id" element={<EditBerita />} />
