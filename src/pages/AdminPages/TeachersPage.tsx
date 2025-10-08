@@ -15,12 +15,6 @@ const AdminTeachersPage = () => {
   const [selectedTeacher, setSelectedTeacher] = useState<Employee | null>(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
-  // Stats data - can be replaced with actual counts
-  const stats = [
-    { icon: UsersRound, label: 'Total Guru', value: '45' },
-    { icon: School, label: 'Kelas', value: '24' },
-  ]
-
   // Mock data for demonstration - replace with actual data fetch
   const teachers: Employee[] = [
     {
@@ -55,20 +49,6 @@ const AdminTeachersPage = () => {
         </p>
       </div>
 
-      {/* Stats Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        {stats.map((stat, index) => (
-          <Card key={index} className="p-6 flex items-center space-x-4 hover:shadow-md transition-shadow">
-            <div className="p-3 bg-primary/10 rounded-lg">
-              <stat.icon className="h-6 w-6 text-primary" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
-              <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-            </div>
-          </Card>
-        ))}
-      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left section: Search, Filter, and Table */}
