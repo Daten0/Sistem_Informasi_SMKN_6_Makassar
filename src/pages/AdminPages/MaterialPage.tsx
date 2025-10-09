@@ -1,30 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { SubjectCard } from "@/components/tambah_kesiswaan/SubjectCard";
+import { SemesterCard } from "@/components/tambah_kesiswaan/SemesterCard";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 
 interface Subject {
   id: string;
   abbreviation: string;
   fullName: string;
+  semesters: number[];
 }
 
 const AdminMaterialsPage = () => {
+  const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
+  const [semesters, setSemesters] = useState<number[]>([]);
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [subjects, setSubjects] = useState<Subject[]>([]);
 
-  // Sample data - replace with actual data
-  const subjects: Subject[] = [
-    { id: "1", abbreviation: "DKV", fullName: "Desain Komunikasi Visual" },
-    { id: "2", abbreviation: "TB", fullName: "Tata Busana" },
-    { id: "3", abbreviation: "PH", fullName: "Perhotelan" },
-    { id: "4", abbreviation: "BG", fullName: "Tata Boga" },
-    { id: "5", abbreviation: "TKC", fullName: "Tata Kecantikan" },
-    { id: "6", abbreviation: "AK", fullName: "Akutansi" },
-  ];
+  // Load subjects from localStorage on component mount
+  useEffect(() => {
+    const storedSubjects = localStorage.getItem('subjects');
+    if (storedSubjects) {
+      setSubjects(JSON.parse(storedSubjects));
+    } else {
+      // Initial sample data
+      const initialSubjects = [
+        { id: "1", abbreviation: "DKV", fullName: "Desain Komunikasi Visual", semesters: [1, 2, 3, 4, 5, 6] },
+        { id: "2", abbreviation: "TB", fullName: "Tata Busana", semesters: [1, 2, 3, 4, 5, 6] },
+        { id: "3", abbreviation: "PH", fullName: "Perhotelan", semesters: [1, 2, 3, 4, 5, 6] },
+        { id: "4", abbreviation: "BG", fullName: "Tata Boga", semesters: [1, 2, 3, 4, 5, 6] },
+        { id: "5", abbreviation: "TKC", fullName: "Tata Kecantikan", semesters: [1, 2, 3, 4, 5, 6] },
+        { id: "6", abbreviation: "AK", fullName: "Akutansi", semesters: [1, 2, 3, 4, 5, 6] },
+      ];
+      localStorage.setItem('subjects', JSON.stringify(initialSubjects));
+      setSubjects(initialSubjects);
+    }
+  }, []);
 
   // Filter subjects based on search
   const filteredSubjects = subjects.filter(
@@ -33,14 +49,30 @@ const AdminMaterialsPage = () => {
       subject.fullName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleSubjectClick = (subject: Subject) => {
+    setSelectedSubject(subject);
+    // Always ensure 6 semesters
+    setSemesters([1, 2, 3, 4, 5, 6]);
+  };
+
+  const handleAddCourse = () => {
+    if (selectedSubject) {
+      navigate('add-course');
+    }
+  };
+
   const handleEdit = (id: string) => {
     console.log("Edit subject with id:", id);
     // Implement edit functionality
   };
 
   const handleDelete = (id: string) => {
-    console.log("Delete subject with id:", id);
-    // Implement delete functionality
+    if (window.confirm('Apakah Anda yakin ingin menghapus jurusan ini?')) {
+      const updatedSubjects = subjects.filter(subject => subject.id !== id);
+      localStorage.setItem('subjects', JSON.stringify(updatedSubjects));
+      setSubjects(updatedSubjects);
+      toast.success('Jurusan berhasil dihapus');
+    }
   };
 
   return (
@@ -55,7 +87,15 @@ const AdminMaterialsPage = () => {
 
       {/* Search and Add Section */}
       <Card className="p-6">
-        <div className="flex justify-end">
+        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
+          <div className="w-full sm:w-72">
+            <Input
+              placeholder="Cari jurusan..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full"
+            />
+          </div>
           <Button 
             onClick={() => navigate('add-subject')} 
             className="w-full sm:w-auto"
@@ -69,13 +109,14 @@ const AdminMaterialsPage = () => {
       {/* Subjects Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredSubjects.map((subject) => (
-          <SubjectCard
-            key={subject.id}
-            abbreviation={subject.abbreviation}
-            fullName={subject.fullName}
-            onEdit={() => handleEdit(subject.id)}
-            onDelete={() => handleDelete(subject.id)}
-          />
+          <div key={subject.id} onClick={() => handleSubjectClick(subject)} className="cursor-pointer">
+            <SubjectCard
+              abbreviation={subject.abbreviation}
+              fullName={subject.fullName}
+              onEdit={(e) => { e.stopPropagation(); handleEdit(subject.id); }}
+              onDelete={(e) => { e.stopPropagation(); handleDelete(subject.id); }}
+            />
+          </div>
         ))}
       </div>
 
@@ -88,6 +129,34 @@ const AdminMaterialsPage = () => {
               : "Belum ada mata pelajaran. Klik tombol tambah untuk menambahkan mata pelajaran baru."}
           </p>
         </Card>
+      )}
+
+      {/* Semester Cards Section */}
+      {selectedSubject && (
+        <div className="mt-8">
+          <Card className="p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold">
+                Semester - {selectedSubject.fullName}
+              </h2>
+              <Button onClick={handleAddCourse}>
+                <Plus className="mr-2 h-4 w-4" />
+                Tambah Mata Pelajaran
+              </Button>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {semesters.map((semester) => (
+                <SemesterCard
+                  key={semester}
+                  semesterNumber={semester}
+                  majorId={selectedSubject.id}
+                  onClick={() => navigate(`${selectedSubject.id}/semester/${semester}`)}
+                />
+              ))}
+            </div>
+          </Card>
+        </div>
       )}
     </div>
   );

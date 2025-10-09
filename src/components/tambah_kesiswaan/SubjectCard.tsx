@@ -1,12 +1,13 @@
 import { Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import React from "react";
 
 interface SubjectCardProps {
   abbreviation: string;
   fullName: string;
-  onEdit?: () => void;
-  onDelete?: () => void;
+  onEdit?: (e: React.MouseEvent) => void;
+  onDelete?: (e: React.MouseEvent) => void;
 }
 
 export const SubjectCard = ({

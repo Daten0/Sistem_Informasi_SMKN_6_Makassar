@@ -31,9 +31,27 @@ const AddSubject = () => {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
+    // Get existing subjects
+    const existingSubjects = JSON.parse(localStorage.getItem('subjects') || '[]');
+    
+    // Create new subject with 6 semesters
+    const newSubject = {
+      id: Math.random().toString(36).substr(2, 9),
+      abbreviation: values.label,
+      fullName: values.name,
+      semesters: [1, 2, 3, 4, 5, 6]
+    };
+    
+    // Add to existing subjects
+    const updatedSubjects = [...existingSubjects, newSubject];
+    
+    // Save to localStorage
+    localStorage.setItem('subjects', JSON.stringify(updatedSubjects));
+    
     toast.success("Jurusan berhasil ditambahkan", {
       description: `${values.label} - ${values.name}`,
     });
+    
     navigate("/admin/materials");
   };
 
