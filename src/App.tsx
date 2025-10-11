@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import LoginPages from "./pages/LoginPages";
 import RegisterPages from "./pages/RegisterPages";
 import AdminPage from "./pages/AdminPages/index";
+import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboardPage from "./pages/AdminPages/DashboardPage";
 import AdminProfilePage from "./pages/AdminPages/ProfilePage";
 import AddStudentsPage from "./pages/AdminPages/AddStudent/AddStudentPage";
@@ -37,7 +38,6 @@ const App = () => (
       <NewsProvider>
         <Toaster />
         <Sonner />
-      <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/preview/:id" element={<BeritaPreview />} />
@@ -48,7 +48,11 @@ const App = () => (
           <Route path="/subjects" element={<Subjects />} />
           <Route path="/login" element={<LoginPages />} />
           <Route path="/register" element={<RegisterPages />} />
-          <Route path="/admin" element={<AdminPage />}>
+          <Route path="/admin" element={
+              <ProtectedRoute>
+                <AdminPage />
+              </ProtectedRoute>
+            }>
             <Route index element={<AdminDashboardPage />} />
             <Route path="profile" element={<AdminProfilePage />} />
             <Route path="AddStudents" element={<AddStudentsPage />} />
@@ -66,8 +70,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </BrowserRouter>
-    </NewsProvider>
+      </NewsProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
