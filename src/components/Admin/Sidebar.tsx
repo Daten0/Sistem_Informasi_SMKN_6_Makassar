@@ -31,7 +31,11 @@ const Sidebar = ({ isOpen }: SidebarProps) => {
           <li>
             <Link to="/admin/materials" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
               <BookOpen className="w-5 h-5" />
+<<<<<<< HEAD
               <span className="ml-4">Kesiswaan</span>
+=======
+              <span className="ml-4">Akademik</span>
+>>>>>>> 600b8bcc1a6e8f97edf72778723d3fe2016cd988
             </Link>
           </li>
           <li>
