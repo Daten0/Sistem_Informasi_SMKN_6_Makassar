@@ -45,9 +45,9 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
             <div className="lg:hidden">
                 <Sheet>
                     <SheetTrigger asChild>
-                    <Button variant="ghost">
-                        <Menu className="w-6 h-6" />
-                    </Button>
+                      <Button variant="ghost">
+                          <Menu className="w-6 h-6" />
+                      </Button>
                     </SheetTrigger>
                     <SheetContent side="left" className="w-64 bg-white dark:bg-gray-800 shadow-md">
                     <div className="p-6 flex items-center space-x-4">
@@ -58,20 +58,20 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
                         <ul>
                           <li>
                               <Link to="/admin/student-display" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-                              <Users className="w-5 h-5" />
-                              <span className="ml-4">Siswa</span>
+                                <Users className="w-5 h-5" />
+                                <span className="ml-4">Siswa</span>
                               </Link>
                           </li>
                           <li>
                               <Link to="/admin/teachers" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-                              <GraduationCap className="w-5 h-5" />
-                              <span className="ml-4">Guru</span>
+                                <GraduationCap className="w-5 h-5" />
+                                <span className="ml-4">Guru</span>
                               </Link>
                           </li>
                           <li>
                               <Link to="/admin/materials" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
-                              <BookOpen className="w-5 h-5" />
-                              <span className="ml-4">Akademik</span>
+                                <BookOpen className="w-5 h-5" />
+                                <span className="ml-4">Akademik</span>
                               </Link>
                           </li>
                           <li>
