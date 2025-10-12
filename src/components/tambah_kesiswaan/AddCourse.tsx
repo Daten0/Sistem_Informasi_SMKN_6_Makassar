@@ -1,34 +1,45 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+
+interface Major {
+  id: string;
+  abbreviation: string;
+  fullName: string;
+}
 
 const AddCourse = () => {
   const navigate = useNavigate();
+  const { majorId } = useParams<{ majorId: string }>();
   const { toast } = useToast();
+  const [majors, setMajors] = useState<Major[]>([]);
   const [formData, setFormData] = useState({
+    // Use a unique ID for each course
+    id: Date.now(),
     semester: "",
     jumlahPertemuan: "",
     durasi: "",
     jenisMapel: "",
     namaMapel: "",
-    jurusan: "",
   });
+
+  useEffect(() => {
+    // Load majors from localStorage to populate the dropdown
+    const storedMajors = localStorage.getItem("subjects");
+    if (storedMajors) {
+      setMajors(JSON.parse(storedMajors));
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Basic validation
-    if (!formData.semester || !formData.namaMapel || !formData.jenisMapel || !formData.jurusan) {
+    if (!formData.semester || !formData.namaMapel || !formData.jenisMapel || !majorId) {
       toast({
         title: "Error",
         description: "Mohon lengkapi semua field yang diperlukan",
@@ -37,15 +48,27 @@ const AddCourse = () => {
       return;
     }
 
+    // Save the new course to localStorage
+    const existingCourses = JSON.parse(localStorage.getItem("courses") || "[]");
+    const newCourse = {
+      id: formData.id,
+      name: formData.namaMapel,
+      meetings: parseInt(formData.jumlahPertemuan) || 0,
+      duration: parseInt(formData.durasi) || 0,
+      semester: parseInt(formData.semester),
+      group: formData.jenisMapel, // 'umum', 'khusus', 'pilihan'
+      majorId: majorId, // 'dkv', 'tb', etc.
+    };
+    localStorage.setItem("courses", JSON.stringify([...existingCourses, newCourse]));
+
     toast({
       title: "Berhasil",
       description: "Mata pelajaran berhasil ditambahkan",
     });
 
     // Navigate back after submission
-    setTimeout(() => {
-      navigate("/admin/materials");
-    }, 1000);
+    // A short delay to allow the user to see the toast message
+    setTimeout(() => navigate(-1), 1000);
   };
 
   return (
@@ -65,12 +88,7 @@ const AddCourse = () => {
                 <Label htmlFor="semester" className="text-base font-semibold text-foreground">
                   Semester
                 </Label>
-                <Select
-                  value={formData.semester}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, semester: value })
-                  }
-                >
+                <Select value={formData.semester} onValueChange={(value) => setFormData({ ...formData, semester: value })}>
                   <SelectTrigger className="h-12 bg-muted border-0 text-base font-medium">
                     <SelectValue placeholder="Pilih Semester" />
                   </SelectTrigger>
@@ -89,32 +107,14 @@ const AddCourse = () => {
                 <Label htmlFor="jumlahPertemuan" className="text-base font-semibold text-foreground">
                   Jumlah Pertemuan
                 </Label>
-                <Input
-                  id="jumlahPertemuan"
-                  type="number"
-                  value={formData.jumlahPertemuan}
-                  onChange={(e) =>
-                    setFormData({ ...formData, jumlahPertemuan: e.target.value })
-                  }
-                  className="h-12 bg-muted border-0 text-base"
-                  placeholder=""
-                />
+                <Input id="jumlahPertemuan" type="number" value={formData.jumlahPertemuan} onChange={(e) => setFormData({ ...formData, jumlahPertemuan: e.target.value })} className="h-12 bg-muted border-0 text-base" placeholder="" />
               </div>
 
               <div className="space-y-3">
                 <Label htmlFor="durasi" className="text-base font-semibold text-foreground">
                   Durasi
                 </Label>
-                <Input
-                  id="durasi"
-                  type="text"
-                  value={formData.durasi}
-                  onChange={(e) =>
-                    setFormData({ ...formData, durasi: e.target.value })
-                  }
-                  className="h-12 bg-muted border-0 text-base"
-                  placeholder=""
-                />
+                <Input id="durasi" type="text" value={formData.durasi} onChange={(e) => setFormData({ ...formData, durasi: e.target.value })} className="h-12 bg-muted border-0 text-base" placeholder="" />
               </div>
             </div>
 
@@ -124,12 +124,7 @@ const AddCourse = () => {
                 <Label htmlFor="jenisMapel" className="text-base font-semibold text-foreground">
                   Jenis Mata Pelajaran
                 </Label>
-                <Select
-                  value={formData.jenisMapel}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, jenisMapel: value })
-                  }
-                >
+                <Select value={formData.jenisMapel} onValueChange={(value) => setFormData({ ...formData, jenisMapel: value })}>
                   <SelectTrigger className="h-12 bg-muted border-0 text-base font-medium">
                     <SelectValue placeholder="Pilih Jenis" />
                   </SelectTrigger>
@@ -145,54 +140,13 @@ const AddCourse = () => {
                 <Label htmlFor="namaMapel" className="text-base font-semibold text-foreground">
                   Nama Mata Pelajaran
                 </Label>
-                <Input
-                  id="namaMapel"
-                  type="text"
-                  value={formData.namaMapel}
-                  onChange={(e) =>
-                    setFormData({ ...formData, namaMapel: e.target.value })
-                  }
-                  className="h-12 bg-muted border-0 text-base"
-                  placeholder=""
-                />
-              </div>
-            </div>
-
-            {/* Third Row: Jurusan */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <Label htmlFor="jurusan" className="text-base font-semibold text-foreground">
-                  Jurusan
-                </Label>
-                <Select
-                  value={formData.jurusan}
-                  onValueChange={(value) =>
-                    setFormData({ ...formData, jurusan: value })
-                  }
-                >
-                  <SelectTrigger className="h-12 bg-muted border-0 text-base font-medium">
-                    <SelectValue placeholder="Pilih Jurusan" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="dkv">Desain Komunikasi Visual</SelectItem>
-                    <SelectItem value="ti">Tata Busana</SelectItem>
-                    <SelectItem value="si">Perhotelan</SelectItem>
-                    <SelectItem value="si">Tata Boga</SelectItem>
-                    <SelectItem value="si">Tata Kecantikan</SelectItem>
-                    <SelectItem value="si">Akutansi</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Input id="namaMapel" type="text" value={formData.namaMapel} onChange={(e) => setFormData({ ...formData, namaMapel: e.target.value })} className="h-12 bg-muted border-0 text-base" placeholder="" />
               </div>
             </div>
 
             {/* Submit Button */}
             <div className="flex justify-end pt-4">
-              <Button
-                type="submit"
-                variant="default"
-                size="lg"
-                className="px-12 text-base font-semibold"
-              >
+              <Button type="submit" variant="default" size="lg" className="px-12 text-base font-semibold">
                 SIMPAN
               </Button>
             </div>
