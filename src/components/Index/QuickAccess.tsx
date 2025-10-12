@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 const quickAccessItems = [
   {
     icon: BookOpen,
-    title: "Materi Pembelajaran",
+    title: "Akademik",
     description: "Jelajahi kurikulum dan materi pembelajaran kami yang komprehensif",
     href: "/subjects",
     color: "text-blue-600"
