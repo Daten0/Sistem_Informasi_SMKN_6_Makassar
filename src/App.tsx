@@ -26,6 +26,14 @@ import PreviewBerita from "./pages/AdminPages/previewBerita/preview";
 import AddBerita from "./pages/AdminPages/AddBerita/AddBerita";
 import EditBerita from "./pages/AdminPages/EditBerita/EditBerita";
 import BeritaPreview from "./pages/PreviewNews";
+import AddSubject from "./components/tambah_kesiswaan/AddSubject";
+import AddCourse from "./components/tambah_kesiswaan/AddCourse";
+import SemesterDetail1 from "./components/tambah_kesiswaan/SemesterDetail1";
+import SemesterDetail2 from "./components/tambah_kesiswaan/SemesterDetail2";
+import SemesterDetail3 from "./components/tambah_kesiswaan/SemesterDetail3";
+import SemesterDetail4 from "./components/tambah_kesiswaan/SemesterDetail4";
+import SemesterDetail5 from "./components/tambah_kesiswaan/SemesterDetail5";
+import SemesterDetail6 from "./components/tambah_kesiswaan/SemesterDetail6";
 
 const queryClient = new QueryClient();
 
@@ -45,19 +53,34 @@ const App = () => (
           <Route path="/subjects" element={<Subjects />} />
           <Route path="/login" element={<LoginPages />} />
           <Route path="/register" element={<RegisterPages />} />
-          <Route path="/admin" element={
+          <Route
+            path="/admin"
+            element={
               <ProtectedRoute>
                 <AdminPage />
               </ProtectedRoute>
-            }>
+            }
+          >
             <Route index element={<AdminDashboardPage />} />
             <Route path="profile" element={<AdminProfilePage />} />
             <Route path="AddStudents" element={<AddStudentsPage />} />
             <Route path="student-display" element={<AdminStudentDisplay />} />
             <Route path="teachers" element={<AdminTeachersPage />} />
             <Route path="materials" element={<AdminMaterialsPage />} />
+            <Route path="materials/add-subject" element={<AddSubject />} />
+            {/* Keep old route for fallback, but new dynamic route is preferred */}
+            <Route path="materials/:majorId/add-course" element={<AddCourse />} />
+
+            {/* Dynamic Routes for All Majors */}
+            <Route path="materials/:majorId/semester/1" element={<SemesterDetail1 />} />
+            <Route path="materials/:majorId/semester/2" element={<SemesterDetail2 />} />
+            <Route path="materials/:majorId/semester/3" element={<SemesterDetail3 />} />
+            <Route path="materials/:majorId/semester/4" element={<SemesterDetail4 />} />
+            <Route path="materials/:majorId/semester/5" element={<SemesterDetail5 />} />
+            <Route path="materials/:majorId/semester/6" element={<SemesterDetail6 />} />
+
             <Route path="berita" element={<AdminBerita />} />
-            <Route path="berita/buatBerita" element={<AddBerita/>} />
+            <Route path="berita/buatBerita" element={<AddBerita />} />
             <Route path="berita/editBerita/:id" element={<EditBerita />} />
             <Route path="berita/preview/:id" element={<PreviewBerita />} />
           </Route>
