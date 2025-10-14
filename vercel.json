@@ -1,4 +1,10 @@
 {
+ "routes": [
+    {
+      "src": "/admin(/.*)?",
+      "status": 404
+    }
+  ],
   "rewrites": [
     {
       "source": "/(.*)",
