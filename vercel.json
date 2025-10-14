@@ -3,9 +3,7 @@
     {
       "src": "/admin(/.*)?",
       "status": 404
-    }
-  ],
-  "rewrites": [
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
