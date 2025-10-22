@@ -1,4 +1,4 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import React from "react";
@@ -26,13 +26,6 @@ export const SubjectCard = ({
           <p className="text-base text-muted-foreground">{fullName}</p>
         </div>
         <div className="flex gap-2 ml-4">
-          <Button
-            size="icon"
-            onClick={onEdit}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
           <Button
             size="icon"
             variant="destructive"
