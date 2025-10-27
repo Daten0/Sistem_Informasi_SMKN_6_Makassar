@@ -58,7 +58,7 @@ const SemesterDetails = () => {
         {/* Back Button */}
         <Button
           variant="ghost"
-          onClick={() => navigate("/admin/materials")}
+          onClick={() => navigate("/admin/kejuruan")}
           className="gap-2 hover:bg-secondary"
         >
           <ArrowLeft className="h-5 w-5" />

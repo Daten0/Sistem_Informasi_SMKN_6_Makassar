@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
-interface Major {
+interface Kejuruan {
   id: string;
   abbreviation: string;
   fullName: string;
@@ -14,9 +14,9 @@ interface Major {
 
 const AddCourse = () => {
   const navigate = useNavigate();
-  const { majorId } = useParams<{ majorId: string }>();
+  const { kejuruanId } = useParams<{ kejuruanId: string }>();
   const { toast } = useToast();
-  const [majors, setMajors] = useState<Major[]>([]);
+  const [kejuruan, setKejuruan] = useState<Kejuruan[]>([]);
   const [formData, setFormData] = useState({
     // Use a unique ID for each course
     id: Date.now(),
@@ -31,7 +31,7 @@ const AddCourse = () => {
     // Load majors from localStorage to populate the dropdown
     const storedMajors = localStorage.getItem("subjects");
     if (storedMajors) {
-      setMajors(JSON.parse(storedMajors));
+      setKejuruan(JSON.parse(storedMajors));
     }
   }, []);
 
@@ -39,7 +39,7 @@ const AddCourse = () => {
     e.preventDefault();
 
     // Basic validation
-    if (!formData.semester || !formData.namaMapel || !formData.jenisMapel || !majorId) {
+    if (!formData.semester || !formData.namaMapel || !formData.jenisMapel || !kejuruanId) {
       toast({
         title: "Error",
         description: "Mohon lengkapi semua field yang diperlukan",
@@ -57,7 +57,7 @@ const AddCourse = () => {
       duration: parseInt(formData.durasi) || 0,
       semester: parseInt(formData.semester),
       group: formData.jenisMapel, // 'umum', 'khusus', 'pilihan'
-      majorId: majorId, // 'dkv', 'tb', etc.
+      kejuruanId: kejuruanId, // 'dkv', 'tb', etc.
     };
     localStorage.setItem("courses", JSON.stringify([...existingCourses, newCourse]));
 
