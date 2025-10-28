@@ -9,38 +9,115 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Save, X } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useNews } from "@/contexts/NewsContext";
-import { useToast } from "@/hooks/use-toast";
+import supabase from "@/supabase";
+import { toast } from "sonner";
+
+// Define the type for the news item based on your database schema
+interface NewsItem {
+    id: string;
+    judul_berita: string;
+    ringkasan: string;
+    konten: string;
+    pembuat_berita: string;
+    kategori_berita: string;
+    publikasi_berita: "published" | "draft";
+    tags: string[];
+    gambar_berita?: string;
+}
+
 
 export default function EditNews() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getNewsById, updateNewsItem } = useNews();
-  const { toast } = useToast();
 
-  const newsItem = getNewsById(Number(id));
-
+  const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
-  const [status, setStatus] = useState<"published" | "draft">("draft");
+  const [status, setStatus] = useState<"publikasi" | "draft">("draft");
   const [tags, setTags] = useState("");
   const [image, setImage] = useState("");
-
+  const [loading, setLoading] = useState(true);
+  
   useEffect(() => {
-    if (newsItem) {
-      setTitle(newsItem.title);
-      setExcerpt(newsItem.excerpt);
-      setContent(newsItem.content);
-      setAuthor(newsItem.author);
-      setCategory(newsItem.category);
-      setStatus(newsItem.status);
-      setTags(newsItem.tags.join(", "));
-      setImage(newsItem.image);
+    const fetchNewsItem = async () => {
+      if (!id) return;
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("list_berita")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error("Error fetching news item:", error);
+        toast.error("Gagal memuat berita.");
+        setNewsItem(null);
+      } else {
+        setNewsItem(data);
+        setTitle(data.judul_berita);
+        setExcerpt(data.ringkasan || "");
+        setContent(data.konten || "");
+        setAuthor(data.pembuat_berita);
+        setCategory(data.kategori_berita);
+        setStatus(data.publikasi_berita);
+        setTags(data.tags ? data.tags.join(", ") : "");
+        setImage(data.gambar_berita || "");
+      }
+      setLoading(false);
+    };
+
+    fetchNewsItem();
+  }, [id]);
+
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!title.trim() || !content.trim()) {
+      toast.error("Judul dan konten wajib diisi.");
+      return;
     }
-  }, [newsItem]);
+
+    const updatedNews = {
+      judul_berita: title.trim(),
+      ringkasan: excerpt.trim(),
+      konten: content.trim(),
+      pembuat_berita: author,
+      kategori_berita: category,
+      publikasi_berita: status,
+      tags: tags.split(",").map(tag => tag.trim()).filter(Boolean),
+      gambar_berita: image,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (!id) return;
+
+    const { error } = await supabase
+      .from("list_berita")
+      .update(updatedNews)
+      .eq("id", id);
+
+    if (error) {
+      console.error("Error updating news item:", error);
+      toast.error("Gagal memperbarui berita.");
+    } else {
+      toast.success("Berita berhasil diperbarui!");
+      navigate("/admin/berita");
+    }
+  };
+
+  const removeBadge = (tagToRemove: string) => {
+    const tagList = tags.split(",").map(tag => tag.trim()).filter(Boolean);
+    const newTags = tagList.filter(tag => tag !== tagToRemove);
+    setTags(newTags.join(", "));
+  };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   if (!newsItem) {
     return (
@@ -55,45 +132,6 @@ export default function EditNews() {
       </div>
     );
   }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!title.trim() || !excerpt.trim() || !content.trim()) {
-      toast({
-        title: "Error!",
-        description: "Mohon lengkapi semua field yang wajib diisi",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    const updatedNews = {
-      title: title.trim(),
-      excerpt: excerpt.trim(),
-      content: content.trim(),
-      author: author.trim() || "Admin",
-      category: category || "umum",
-      status,
-      tags: tags.split(",").map(tag => tag.trim()).filter(Boolean),
-      image: image || "/api/placeholder/300/200"
-    };
-
-    updateNewsItem(newsItem.id, updatedNews);
-
-    toast({
-      title: "Berhasil!",
-      description: "Berita berhasil diperbarui",
-    });
-
-    navigate("/admin/berita");
-  };
-
-  const removeBadge = (tagToRemove: string) => {
-    const tagList = tags.split(",").map(tag => tag.trim()).filter(Boolean);
-    const newTags = tagList.filter(tag => tag !== tagToRemove);
-    setTags(newTags.join(", "));
-  };
 
   return (
     <div className="space-y-8">
@@ -134,12 +172,15 @@ export default function EditNews() {
 
               <div className="space-y-2">
                 <Label htmlFor="author">Penulis</Label>
-                <Input
-                  id="author"
-                  value={author}
-                  onChange={(e) => setAuthor(e.target.value)}
-                  placeholder="Nama penulis..."
-                />
+                <Select value={author} onValueChange={setAuthor}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pilih penulis" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Admin">Admin</SelectItem>
+                    <SelectItem value="Guru">Guru</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
@@ -149,25 +190,23 @@ export default function EditNews() {
                     <SelectValue placeholder="Pilih kategori" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="teknologi">Teknologi</SelectItem>
-                    <SelectItem value="bisnis">Bisnis</SelectItem>
-                    <SelectItem value="kesehatan">Kesehatan</SelectItem>
-                    <SelectItem value="pendidikan">Pendidikan</SelectItem>
-                    <SelectItem value="olahraga">Olahraga</SelectItem>
-                    <SelectItem value="umum">Umum</SelectItem>
+                    <SelectItem value="Prestasi">Prestasi</SelectItem>
+                    <SelectItem value="Terkini">Terkini</SelectItem>
+                    <SelectItem value="Ekskul">Ekskul</SelectItem>
+                    <SelectItem value="Daily">Daily</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="status">Status</Label>
-                <Select value={status} onValueChange={(value: "published" | "draft") => setStatus(value)}>
+                <Select value={status} onValueChange={(value: "publikasi" | "draft") => setStatus(value)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="draft">Draft</SelectItem>
-                    <SelectItem value="published">Published</SelectItem>
+                    <SelectItem value="publikasi">Published</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
