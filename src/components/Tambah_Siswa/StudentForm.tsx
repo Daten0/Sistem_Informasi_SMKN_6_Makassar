@@ -189,7 +189,6 @@ const StudentForm = ({ initialData, onSavePartial, studentId }: StudentFormProps
               </Select>
               {form.formState.errors.kejuruan && <p className="text-sm text-destructive">{form.formState.errors.kejuruan.message}</p>}
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="kelas" className="text-sm font-medium">
                 Kelas *
