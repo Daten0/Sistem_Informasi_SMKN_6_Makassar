@@ -13,13 +13,14 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon, Upload, Save } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import supabase from "@/supabase";
 
 const studentSchema = z.object({
-  nisn: z.string().min(10, "NISN harus 10 digit").max(10, "NISN harus 10 digit"),
+  nis: z.string().min(10, "NIS harus 10 digit").max(10, "NIS harus 10 digit"),
   nama: z.string().min(2, "Nama harus diisi minimal 2 karakter"),
-  jurusan: z.string().min(1, "Jurusan harus dipilih"),
+  kejuruan: z.string().min(1, "Kejuruan harus dipilih"),
   kelas: z.string().min(1, "Kelas harus dipilih"),
   tempatLahir: z.string().min(2, "Tempat lahir harus diisi"),
   tanggalLahir: z.date({
@@ -29,7 +30,6 @@ const studentSchema = z.object({
   agama: z.string().min(1, "Agama harus dipilih"),
   alamat: z.string().min(10, "Alamat harus diisi minimal 10 karakter"),
   noTelepon: z.string().min(10, "Nomor telepon harus diisi minimal 10 digit"),
-  email: z.string().email("Format email tidak valid").optional(),
 });
 
 type StudentFormData = z.infer<typeof studentSchema>;
@@ -37,34 +37,34 @@ type StudentFormData = z.infer<typeof studentSchema>;
 interface StudentFormProps {
   initialData?: any;
   onSavePartial?: (data: any) => void;
+  studentId?: string;
 }
 
-const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
+const StudentForm = ({ initialData, onSavePartial, studentId }: StudentFormProps) => {
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
   const form = useForm<StudentFormData>({
     resolver: zodResolver(studentSchema),
     defaultValues: {
-      nisn: "",
+      nis: "",
       nama: "",
-      jurusan: "",
+      kejuruan: "",
       kelas: "",
       tempatLahir: "",
       jenisKelamin: "",
       agama: "",
       alamat: "",
       noTelepon: "",
-      email: "",
     },
   });
 
   useEffect(() => {
     if (initialData) {
       form.reset({
-        nisn: initialData.nisn || "",
+        nis: initialData.nisn || "",
         nama: initialData.fullName || "",
-        jurusan: initialData.jurusan || "",
+        kejuruan: initialData.kejuruan || "",
         kelas: initialData.kelas || "",
         tempatLahir: initialData.birthPlace || "",
         tanggalLahir: initialData.birthDate ? new Date(initialData.birthDate) : undefined,
@@ -72,7 +72,6 @@ const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
         agama: initialData.religion || "",
         alamat: initialData.address || "",
         noTelepon: initialData.phoneNumber || "",
-        email: initialData.email || "",
       });
       // restore photo preview if available in initialData
       if (initialData.photo || initialData.photoPreview) {
@@ -92,37 +91,53 @@ const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
       reader.readAsDataURL(file);
     }
   };
-
-  const onSubmit = (data: StudentFormData) => {
-    console.log("Student Data:", data);
-    console.log("Photo:", photo);
-    toast({
-      title: "Data siswa berhasil disimpan!",
-      description: `Data untuk ${data.nama} telah tersimpan (sementara).`,
-    });
-
-    // Prepare the partial student data
-    const studentData = {
-      id: initialData?.id || Math.random().toString(36).substr(2, 9),
-      fullName: data.nama,
-      nisn: data.nisn,
-      gender: data.jenisKelamin === "L" ? "Laki-laki" : "Perempuan",
-      birthPlace: data.tempatLahir,
-      birthDate: data.tanggalLahir ? data.tanggalLahir.toISOString() : "",
-      religion: data.agama.charAt(0).toUpperCase() + data.agama.slice(1),
-      address: data.alamat,
-      phoneNumber: data.noTelepon,
-      email: data.email || "-",
-      kelas: data.kelas.toUpperCase(),
-      jurusan: data.jurusan,
-      // include photo data URL so it can be displayed later
-      photo: photoPreview,
+  
+  const onSubmit = async (data: StudentFormData) => {
+    const studentDataForSupabase = {
+      id: studentId,
+      nis: data.nis,
+      nama_lengkap: data.nama,
+      kejuruan: data.kejuruan,
+      kelas: data.kelas,
+      tempat_lahir: data.tempatLahir,
+      tanggal_lahir: data.tanggalLahir.toISOString().split("T")[0],
+      jenis_kelamin: data.jenisKelamin,
+      agama: data.agama,
+      nomor_telepon: data.noTelepon,
+      alamat_lengkap: data.alamat,
+      foto_siswa: photoPreview
     };
 
     if (onSavePartial) {
-      onSavePartial(studentData);
+      onSavePartial({
+        displayData: {
+          id: initialData?.id || Math.random().toString(36).substr(2, 9),
+          fullName: data.nama,
+          nisn: data.nis,
+          gender: data.jenisKelamin,
+          birthPlace: data.tempatLahir,
+          birthDate: data.tanggalLahir ? data.tanggalLahir.toISOString() : "",
+          religion: data.agama.charAt(0).toUpperCase() + data.agama.slice(1),
+          address: data.alamat,
+          phoneNumber: data.noTelepon,
+          kelas: data.kelas.toUpperCase(),
+          kejuruan: data.kejuruan,
+          photo: photoPreview,
+        },
+        supabaseData: studentDataForSupabase,
+      });
+      toast.success("Data siswa berhasil divalidasi dan disimpan sementara.");
+    } else {
+      // Fallback for direct submission if onSavePartial is not provided
+      const { error } = await supabase.from("add_siswa").insert([studentDataForSupabase]);
+      if (error) {
+        toast.error(`Gagal menyimpan data siswa: ${error.message}`);
+      } else {
+        toast.success("Data siswa berhasil disimpan ke database!");
+      }
     }
   };
+
 
   return (
     <Card className="w-full max-w-4xl mx-auto shadow-medium">
@@ -140,8 +155,8 @@ const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
               <Label htmlFor="nisn" className="text-sm font-medium">
                 NIS *
               </Label>
-              <Input id="nisn" placeholder="1234567890" {...form.register("nisn")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
-              {form.formState.errors.nisn && <p className="text-sm text-destructive">{form.formState.errors.nisn.message}</p>}
+              <Input id="nis" placeholder="1234567890" {...form.register("nis")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
+              {form.formState.errors.nis && <p className="text-sm text-destructive">{form.formState.errors.nis.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -159,20 +174,20 @@ const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
               <Label htmlFor="jurusan" className="text-sm font-medium">
                 Jurusan *
               </Label>
-              <Select onValueChange={(value) => form.setValue("jurusan", value)}>
+              <Select onValueChange={(value) => form.setValue("kejuruan", value)}>
                 <SelectTrigger className="transition-smooth focus:ring-2 focus:ring-primary/20">
-                  <SelectValue placeholder="Pilih jurusan" />
+                  <SelectValue placeholder="Pilih kejuruan" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="tkj">Desain Komunikasi Visual</SelectItem>
-                  <SelectItem value="rpl">Tata Boga</SelectItem>
-                  <SelectItem value="mm">Perhotelan</SelectItem>
-                  <SelectItem value="akl">Akutansi</SelectItem>
-                  <SelectItem value="otkp">Tata Kecantikan</SelectItem>
-                  <SelectItem value="bdp">Tata Busana</SelectItem>
+                  <SelectItem value="DKV">Desain Komunikasi Visual</SelectItem>
+                  <SelectItem value="BG">Tata Boga</SelectItem>
+                  <SelectItem value="PH">Perhotelan</SelectItem>
+                  <SelectItem value="AK">Akutansi</SelectItem>
+                  <SelectItem value="TK">Tata Kecantikan</SelectItem>
+                  <SelectItem value="TB">Tata Busana</SelectItem>
                 </SelectContent>
               </Select>
-              {form.formState.errors.jurusan && <p className="text-sm text-destructive">{form.formState.errors.jurusan.message}</p>}
+              {form.formState.errors.kejuruan && <p className="text-sm text-destructive">{form.formState.errors.kejuruan.message}</p>}
             </div>
 
             <div className="space-y-2">
@@ -228,8 +243,8 @@ const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
                   <SelectValue placeholder="Pilih jenis kelamin" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="L">Laki-laki</SelectItem>
-                  <SelectItem value="P">Perempuan</SelectItem>
+                  <SelectItem value="Laki-laki">Laki-laki</SelectItem>
+                  <SelectItem value="Perempuan">Perempuan</SelectItem>
                 </SelectContent>
               </Select>
               {form.formState.errors.jenisKelamin && <p className="text-sm text-destructive">{form.formState.errors.jenisKelamin.message}</p>}
@@ -266,15 +281,6 @@ const StudentForm = ({ initialData, onSavePartial }: StudentFormProps) => {
               {form.formState.errors.noTelepon && <p className="text-sm text-destructive">{form.formState.errors.noTelepon.message}</p>}
             </div>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-sm font-medium">
-              Email *
-            </Label>
-            <Input id="email" type="email" placeholder="siswa@email.com" {...form.register("email")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
-            {form.formState.errors.email && <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>}
-          </div>
-
           <div className="space-y-2">
             <Label htmlFor="alamat" className="text-sm font-medium">
               Alamat Lengkap *

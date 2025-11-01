@@ -9,27 +9,42 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Save } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner";
+import supabase from "@/supabase";
 
 interface ParentFormProps {
   initialData?: any;
   onSave?: (data: any) => void;
+  studentId?: string;
 }
 
 const parentSchema = z.object({
-  namaAyah: z.string().min(2, "Nama ayah harus diisi minimal 2 karakter"),
-  pekerjaanAyah: z.string().min(2, "Pekerjaan ayah harus diisi"),
-  pendidikanAyah: z.string().min(1, "Pendidikan ayah harus dipilih"),
-  penghasilanAyah: z.string().min(1, "Penghasilan ayah harus dipilih"),
-  teleponAyah: z.string().min(10, "Nomor telepon ayah harus diisi minimal 10 digit"),
+  // namaAyah: z.string().min(2, "Nama ayah harus diisi minimal 2 karakter"),
+  // pekerjaanAyah: z.string().min(2, "Pekerjaan ayah harus diisi"),
+  // pendidikanAyah: z.string().min(1, "Pendidikan ayah harus dipilih"),
+  // penghasilanAyah: z.string().min(1, "Penghasilan ayah harus dipilih"),
+  // teleponAyah: z.string().min(10, "Nomor telepon ayah harus diisi minimal 10 digit"),
 
-  namaIbu: z.string().min(2, "Nama ibu harus diisi minimal 2 karakter"),
-  pekerjaanIbu: z.string().min(2, "Pekerjaan ibu harus diisi"),
-  pendidikanIbu: z.string().min(1, "Pendidikan ibu harus dipilih"),
-  penghasilanIbu: z.string().min(1, "Penghasilan ibu harus dipilih"),
-  teleponIbu: z.string().min(10, "Nomor telepon ibu harus diisi minimal 10 digit"),
+  // namaIbu: z.string().min(2, "Nama ibu harus diisi minimal 2 karakter"),
+  // pekerjaanIbu: z.string().min(2, "Pekerjaan ibu harus diisi"),
+  // pendidikanIbu: z.string().min(1, "Pendidikan ibu harus dipilih"),
+  // penghasilanIbu: z.string().min(1, "Penghasilan ibu harus dipilih"),
+  // teleponIbu: z.string().min(10, "Nomor telepon ibu harus diisi minimal 10 digit"),
 
-  alamatOrangTua: z.string().min(10, "Alamat orang tua harus diisi minimal 10 karakter"),
+  // alamatOrangTua: z.string().min(10, "Alamat orang tua harus diisi minimal 10 karakter"),
+  namaAyah: z.string().optional(),
+  pekerjaanAyah: z.string().optional(),
+  pendidikanAyah: z.string().optional(),
+  penghasilanAyah: z.string().optional(),
+  teleponAyah: z.string().optional(),
+
+  namaIbu: z.string().optional(),
+  pekerjaanIbu: z.string().optional(),
+  pendidikanIbu: z.string().optional(),
+  penghasilanIbu: z.string().optional(),
+  teleponIbu: z.string().optional(),
+
+  alamatOrangTua: z.string().optional(),
 
   // Guardian (optional if different from parents)
   namaWali: z.string().optional(),
@@ -42,7 +57,7 @@ const parentSchema = z.object({
 
 type ParentFormData = z.infer<typeof parentSchema>;
 
-const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
+const ParentForm = ({ initialData, onSave, studentId }: ParentFormProps) => {
   const form = useForm<ParentFormData>({
     resolver: zodResolver(parentSchema),
     defaultValues: {
@@ -93,39 +108,42 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
     }
   }, [initialData]);
 
-  const onSubmit = (data: ParentFormData) => {
-    console.log("Parent Data:", data);
-    toast({
-      title: "Data orang tua berhasil disimpan!",
-      description: `Data orang tua/wali telah tersimpan dalam sistem.`,
-    });
-
-    const parentData = {
-      parentInfo: {
-        namaAyah: data.namaAyah,
-        pekerjaanAyah: data.pekerjaanAyah,
-        pendidikanAyah: data.pendidikanAyah,
-        penghasilanAyah: data.penghasilanAyah,
-        teleponAyah: data.teleponAyah,
-
-        namaIbu: data.namaIbu,
-        pekerjaanIbu: data.pekerjaanIbu,
-        pendidikanIbu: data.pendidikanIbu,
-        penghasilanIbu: data.penghasilanIbu,
-        teleponIbu: data.teleponIbu,
-
-        alamatOrangTua: data.alamatOrangTua,
-
-        namaWali: data.namaWali,
-        pekerjaanWali: data.pekerjaanWali,
-        pendidikanWali: data.pendidikanWali,
-        hubunganWali: data.hubunganWali,
-        teleponWali: data.teleponWali,
-        alamatWali: data.alamatWali,
-      },
+  const onSubmit = async (data: ParentFormData) => {
+    const parentDataForSupabase = {
+      student_id: studentId,
+      nama_lengkap_ayah: data.namaAyah,
+      pekerjaan_ayah: data.pekerjaanAyah,
+      pendidikan_ayah: data.pendidikanAyah,
+      penghasilan_ayah: data.penghasilanAyah,
+      nomor_telepon_ayah: data.teleponAyah,
+      nama_lengkap_ibu: data.namaIbu,
+      pekerjaan_ibu: data.pekerjaanIbu,
+      pendidikan_ibu: data.pendidikanIbu,
+      penghasilan_ibu: data.penghasilanIbu,
+      nomor_telepon_ibu: data.teleponIbu,
+      alamat_orang_tua: data.alamatOrangTua,
+      nama_lengkap_wali: data.namaWali,
+      pekerjaan_wali: data.pekerjaanWali,
+      pendidikan_wali: data.pendidikanWali,
+      hubungan_dengan_siswa: data.hubunganWali,
+      nomor_telepon_wali: data.teleponWali,
+      alamat_wali: data.alamatWali,
     };
 
-    if (onSave) onSave(parentData);
+    if (onSave) {
+      onSave({
+        supabaseData: parentDataForSupabase,
+      });
+      toast.success("Data orang tua berhasil divalidasi dan disimpan sementara.");
+    } else {
+      // Fallback for direct submission if onSave is not provided
+      const { error } = await supabase.from("data_ortu").insert([parentDataForSupabase]);
+      if (error) {
+        toast.error(`Gagal menyimpan data orang tua: ${error.message}`);
+      } else {
+        toast.success("Data orang tua berhasil disimpan ke database!");
+      }
+    }
   };
 
   const pendidikanOptions = [
@@ -159,7 +177,6 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
           {/* Father Information */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-primary border-b border-border pb-2">Data Ayah</h3>
-
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="namaAyah" className="text-sm font-medium">
@@ -195,7 +212,7 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
                     ))}
                   </SelectContent>
                 </Select>
-                {form.formState.errors.pendidikanAyah && <p className="text-sm text-destructive">{form.formState.errors.pendidikanAyah.message}</p>}
+                 {form.formState.errors.pendidikanAyah && <p className="text-sm text-destructive">{form.formState.errors.pendidikanAyah.message}</p>}
               </div>
 
               <div className="space-y-2">
@@ -219,7 +236,7 @@ const ParentForm = ({ initialData, onSave }: ParentFormProps) => {
 
               <div className="space-y-2">
                 <Label htmlFor="teleponAyah" className="text-sm font-medium">
-                  Nomor Telepon Ayah *
+                  Nomor Telepon Ayah
                 </Label>
                 <Input id="teleponAyah" placeholder="08123456789" {...form.register("teleponAyah")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
                 {form.formState.errors.teleponAyah && <p className="text-sm text-destructive">{form.formState.errors.teleponAyah.message}</p>}
