@@ -21,7 +21,7 @@ const PrincipalProfile = () => {
 
             {/* Principal Information */}
             <div className="flex-1 text-center md:text-left">
-              <h3 className="text-2xl font-bold text-card-foreground mb-2">
+              <h3 className="text-2xl font-boldn text-card-foreground mb-2">
                 A. Nursyidah Galigo, S.Pd.,M.Pd
               </h3>
               <p className="text-primary font-semibold mb-4">
