@@ -62,7 +62,7 @@ const StudentForm = ({ initialData, onSavePartial, studentId }: StudentFormProps
   useEffect(() => {
     if (initialData) {
       form.reset({
-        nis: initialData.nisn || "",
+        nis: initialData.nis || "",
         nama: initialData.fullName || "",
         kejuruan: initialData.kejuruan || "",
         kelas: initialData.kelas || "",
@@ -113,7 +113,7 @@ const StudentForm = ({ initialData, onSavePartial, studentId }: StudentFormProps
         displayData: {
           id: initialData?.id || Math.random().toString(36).substr(2, 9),
           fullName: data.nama,
-          nisn: data.nis,
+          nis: data.nis,
           gender: data.jenisKelamin,
           birthPlace: data.tempatLahir,
           birthDate: data.tanggalLahir ? data.tanggalLahir.toISOString() : "",

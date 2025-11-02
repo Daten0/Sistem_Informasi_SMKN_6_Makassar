@@ -37,6 +37,12 @@ const StudentDisplay = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<StudentData | null>(null);
   const [qrCodeValue, setQrCodeValue] = useState<string>("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery]);
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -89,23 +95,49 @@ const StudentDisplay = () => {
     navigate("/admin/AddStudents", { state: { editingStudent: student } });
   };
 
-  const handleDelete = async (studentId: string) => {
-    if (window.confirm("Are you sure you want to delete this student?")) {
-      const { error } = await supabase.from("add_siswa").delete().eq("id", studentId);
+  const filteredStudents = students.filter(
+    (student) =>
+      student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      String(student.nis).includes(searchQuery)
+  );
 
-      if (error) {
-        console.error("Error deleting student:", error);
+  // Pagination logic
+  const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+  const paginatedStudents = filteredStudents.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
+
+  const handleDelete = async (studentId: string) => {
+    if (window.confirm("Are you sure you want to delete this student? This will also delete associated parent data.")) {
+      // First, delete the parent data from 'data_ortu'
+      const { error: parentError } = await supabase.from("data_ortu").delete().eq("student_id", studentId);
+
+      if (parentError) {
+        console.error("Error deleting parent data:", parentError);
+        // Stop the process if parent data deletion fails.
+        return;
+      }
+
+      // Then, delete the student from 'add_siswa'
+      const { error: studentError } = await supabase.from("add_siswa").delete().eq("id", studentId);
+
+      if (studentError) {
+        console.error("Error deleting student:", studentError);
       } else {
         setStudents(students.filter((s) => s.id !== studentId));
       }
     }
-  };
+  }
 
   const handleAddNew = () => {
     navigate("/admin/AddStudents");
   };
-
-  const filteredStudents = students.filter((student) => student.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || student.nis.includes(searchQuery));
 
   const handlePrint = () => {
     const qrCodeElement = document.getElementById("qr-code-to-print");
@@ -196,7 +228,7 @@ const StudentDisplay = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredStudents.map((student) => (
+                {paginatedStudents.map((student) => (
                   <TableRow key={student.id} className="border-gray-200 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
                     <TableCell className="font-medium text-gray-900 dark:text-white">{student.nis}</TableCell>
                     <TableCell className="text-gray-900 dark:text-white">{student.fullName}</TableCell>
@@ -230,6 +262,19 @@ const StudentDisplay = () => {
               </TableBody>
             </Table>
           </div>
+          {totalPages > 1 && (
+            <div className="flex items-center justify-end space-x-2 py-4">
+              <Button variant="outline" size="sm" onClick={handlePreviousPage} disabled={currentPage === 1}>
+                Previous
+              </Button>
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button variant="outline" size="sm" onClick={handleNextPage} disabled={currentPage === totalPages}>
+                Next
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
       {selectedStudent && (
