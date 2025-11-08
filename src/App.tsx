@@ -28,6 +28,12 @@ import EditBerita from "./pages/AdminPages/EditBerita/EditBerita";
 import BeritaPreview from "./pages/PreviewNews";
 import AddSubject from "./components/Akademik/AddJurusan";
 import AddCourse from "./components/Akademik/AddCourse";
+import CourseDetailDKV from "./components/dashboard_akademik/CourseDetailDKV";
+import CourseDetailPH from "./components/dashboard_akademik/CourseDetailPH";
+import CourseDetailAK from "./components/dashboard_akademik/CourseDetailAK";
+import CourseDetailBG from "./components/dashboard_akademik/CourseDetailBG";
+import CourseDetailBS from "./components/dashboard_akademik/CourseDetailBS";
+import CourseDetailTKC from "./components/dashboard_akademik/CourseDetailTKC";
 import SemesterDetail1 from "./components/Akademik/SemesterDetail1";
 import SemesterDetail2 from "./components/Akademik/SemesterDetail2";
 import SemesterDetail3 from "./components/Akademik/SemesterDetail3";
@@ -53,6 +59,12 @@ const App = () => (
           <Route path="/subjects" element={<Subjects />} />
           <Route path="/login" element={<LoginPages />} />
           <Route path="/register" element={<RegisterPages />} />
+          <Route path="/subjects/dkv" element={<CourseDetailDKV />} />
+          <Route path="/subjects/ph" element={<CourseDetailPH />} />
+          <Route path="/subjects/ak" element={<CourseDetailAK />} />
+          <Route path="/subjects/bg" element={<CourseDetailBG />} />
+          <Route path="/subjects/bs" element={<CourseDetailBS />} />
+          <Route path="/subjects/tkc" element={<CourseDetailTKC />} />
           <Route
             path="/admin"
             element={
