@@ -25,16 +25,6 @@ export const SubjectCard = ({
           </h3>
           <p className="text-base text-muted-foreground">{fullName}</p>
         </div>
-        <div className="flex gap-2 ml-4">
-          <Button
-            size="icon"
-            variant="destructive"
-            onClick={onDelete}
-            className="bg-destructive hover:bg-destructive/90"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
-        </div>
       </div>
     </Card>
   );

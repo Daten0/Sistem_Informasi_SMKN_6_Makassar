@@ -46,10 +46,26 @@ const AdminMaterialsPage = () => {
   );
 
   const handleSubjectClick = (subject: Subject) => {
-    // Navigate directly to the semester detail page corresponding to the major's ID.
-    const majorPath = subject.label_jurusan.toLowerCase();
-    const semesterNumber = subject.id; // "1", "2", "3", etc.
-    navigate(`/admin/kejuruan/${majorPath}/semester/${semesterNumber}`);
+    const majorPath = subject.label_jurusan.toLowerCase() as keyof typeof majorToSemesterMap;
+
+    const majorToSemesterMap = {
+      dkv: 1,
+      ak: 2,
+      ph: 3,
+      bg: 4,
+      tkc: 5,
+      bs: 6,
+    };
+
+    const semesterNumber = majorToSemesterMap[majorPath];
+
+    if (semesterNumber) {
+      navigate(`/admin/kejuruan/${majorPath}/semester/${semesterNumber}`);
+    } else {
+      // Fallback for majors not in the map, though you might want to handle this differently.
+      // For now, it will navigate using the subject's ID.
+      navigate(`/admin/kejuruan/${majorPath}/semester/${subject.id}`); // Or a default page
+    }
   };
 
   const handleAddCourse = () => {
@@ -90,7 +106,7 @@ const AdminMaterialsPage = () => {
         </p>
       </div>
 
-      {/* Search and Add Section */}
+      {/* Search and Add Section
       <Card className="p-6">
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
           <div className="w-full sm:w-72">
@@ -109,7 +125,7 @@ const AdminMaterialsPage = () => {
             Tambah Jurusan
           </Button>
         </div>
-      </Card>
+      </Card> */}
 
       {/* Subjects Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -122,14 +138,6 @@ const AdminMaterialsPage = () => {
             <SubjectCard
               abbreviation={subject.label_jurusan}
               fullName={subject.nama_jurusan}
-              // onEdit={(e) => {
-              //   e.stopPropagation();
-              //   handleEdit(subject.id);
-              // }}
-              onDelete={(e) => {
-                e.stopPropagation();
-                handleDelete(subject.id);
-              }}
             />
           </div>
         ))}

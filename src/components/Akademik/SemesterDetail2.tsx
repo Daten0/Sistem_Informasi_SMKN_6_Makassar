@@ -23,12 +23,6 @@ const SemesterDetails = () => {
 
   const [courses, setCourses] = useState<Course[]>([]);
 
-  useEffect(() => {
-    const allCourses = JSON.parse(localStorage.getItem("courses") || "[]");
-    const filteredCourses = allCourses.filter((course: Course) => course.majorId === majorId && course.semester === semesterNum);
-    setCourses(filteredCourses);
-  }, [majorId, semesterNum]);
-
   const handleDelete = (id: number, name: string) => {
     const allCourses = JSON.parse(localStorage.getItem("courses") || "[]");
     const updatedCourses = allCourses.filter((c: Course) => c.id !== id);
@@ -65,13 +59,6 @@ const SemesterDetails = () => {
           Kembali
         </Button>
 
-        {/* Page Header */}
-        <Card className="bg-card border-none shadow-[var(--shadow-card)]">
-          <div className="p-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground text-center">{majorName} - Semester</h1>
-          </div>
-        </Card>
-
         {/* Courses Table */}
         <Card className="bg-card border-none shadow-[var(--shadow-card)] overflow-hidden">
           <div className="p-6 flex justify-end">
@@ -88,7 +75,6 @@ const SemesterDetails = () => {
                   <TableHead className="text-foreground font-bold text-base">Mata Pembelajaran</TableHead>
                   <TableHead className="text-foreground font-bold text-base text-center">Jumlah Pertemuan</TableHead>
                   <TableHead className="text-foreground font-bold text-base text-center">Durasi Waktu</TableHead>
-                  <TableHead className="text-foreground font-bold text-base text-center">Semester</TableHead>
                   <TableHead className="text-foreground font-bold text-base text-center w-32">Action</TableHead>
                 </TableRow>
               </TableHeader>
@@ -108,7 +94,6 @@ const SemesterDetails = () => {
                         <TableCell className="font-medium">{course.name}</TableCell>
                         <TableCell className="text-center">{course.meetings}</TableCell>
                         <TableCell className="text-center">{course.duration}</TableCell>
-                        <TableCell className="text-center">Semester {course.semester}</TableCell>
                         <TableCell className="text-center">
                           <Button variant="ghost" size="sm" onClick={() => handleDelete(course.id, course.name)} className="text-destructive hover:text-destructive hover:bg-destructive/10 font-bold">
                             <Trash2 className="h-4 w-4 mr-1" />

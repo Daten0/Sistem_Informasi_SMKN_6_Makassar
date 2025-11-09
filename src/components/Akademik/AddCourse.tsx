@@ -20,7 +20,6 @@ const AddCourse = () => {
   const [formData, setFormData] = useState({
     // Use a unique ID for each course
     id: Date.now(),
-    semester: "",
     jumlahPertemuan: "",
     durasi: "",
     jenisMapel: "",
@@ -39,7 +38,7 @@ const AddCourse = () => {
     e.preventDefault();
 
     // Basic validation
-    if (!formData.semester || !formData.namaMapel || !formData.jenisMapel || !kejuruanId) {
+    if (!formData.namaMapel || !formData.jenisMapel || !kejuruanId) {
       toast({
         title: "Error",
         description: "Mohon lengkapi semua field yang diperlukan",
@@ -55,7 +54,6 @@ const AddCourse = () => {
       name: formData.namaMapel,
       meetings: parseInt(formData.jumlahPertemuan) || 0,
       duration: parseInt(formData.durasi) || 0,
-      semester: parseInt(formData.semester),
       group: formData.jenisMapel, // 'umum', 'khusus', 'pilihan'
       kejuruanId: kejuruanId, // 'dkv', 'tb', etc.
     };
@@ -84,24 +82,7 @@ const AddCourse = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* First Row: Semester, Jumlah Pertemuan, Durasi */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-3">
-                <Label htmlFor="semester" className="text-base font-semibold text-foreground">
-                  Semester
-                </Label>
-                <Select value={formData.semester} onValueChange={(value) => setFormData({ ...formData, semester: value })}>
-                  <SelectTrigger className="h-12 bg-muted border-0 text-base font-medium">
-                    <SelectValue placeholder="Pilih Semester" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Semester 1</SelectItem>
-                    <SelectItem value="2">Semester 2</SelectItem>
-                    <SelectItem value="3">Semester 3</SelectItem>
-                    <SelectItem value="4">Semester 4</SelectItem>
-                    <SelectItem value="5">Semester 5</SelectItem>
-                    <SelectItem value="6">Semester 6</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+
 
               <div className="space-y-3">
                 <Label htmlFor="jumlahPertemuan" className="text-base font-semibold text-foreground">

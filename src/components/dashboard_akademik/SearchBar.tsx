@@ -20,9 +20,6 @@ export const SearchBar = ({ value, onChange, placeholder = "cari di sini" }: Sea
         />
         <div className="flex items-center gap-3">
           <button className="p-2 hover:bg-muted rounded-md transition-colors">
-            <Menu className="w-6 h-6 text-muted-foreground" />
-          </button>
-          <button className="p-2 hover:bg-muted rounded-md transition-colors">
             <Search className="w-6 h-6 text-muted-foreground" />
           </button>
         </div>
