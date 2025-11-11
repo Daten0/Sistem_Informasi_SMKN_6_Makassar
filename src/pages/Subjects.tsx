@@ -14,7 +14,6 @@ const programs = [
   { id: 6, title: "Tata Busana" },
 ];
 
-
 const Subjects = () => {
   const navigate = useNavigate();
 
@@ -56,16 +55,14 @@ const Subjects = () => {
             />
           ))}
 
-        {filteredPrograms.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">
-              Tidak ada program yang ditemukan
-            </p>
-          </div>
-        )}
+          {filteredPrograms.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">
+                Tidak ada program yang ditemukan
+              </p>
+            </div>
+          )}
         </div>
-
-        
       </main>
       <Footer />
     </div>

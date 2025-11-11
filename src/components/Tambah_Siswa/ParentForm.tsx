@@ -82,31 +82,29 @@ const ParentForm = ({ initialData, onSave, studentId }: ParentFormProps) => {
   });
 
   useEffect(() => {
-    if (initialData) {
+    if (initialData && initialData.parentInfo) {
+      const p = initialData.parentInfo;
       form.reset({
-        namaAyah: initialData.parentInfo?.namaAyah || "",
-        pekerjaanAyah: initialData.parentInfo?.pekerjaanAyah || "",
-        pendidikanAyah: initialData.parentInfo?.pendidikanAyah || "",
-        penghasilanAyah: initialData.parentInfo?.penghasilanAyah || "",
-        teleponAyah: initialData.parentInfo?.teleponAyah || "",
-
-        namaIbu: initialData.parentInfo?.namaIbu || "",
-        pekerjaanIbu: initialData.parentInfo?.pekerjaanIbu || "",
-        pendidikanIbu: initialData.parentInfo?.pendidikanIbu || "",
-        penghasilanIbu: initialData.parentInfo?.penghasilanIbu || "",
-        teleponIbu: initialData.parentInfo?.teleponIbu || "",
-
-        alamatOrangTua: initialData.parentInfo?.alamatOrangTua || "",
-
-        namaWali: initialData.parentInfo?.namaWali || "",
-        pekerjaanWali: initialData.parentInfo?.pekerjaanWali || "",
-        pendidikanWali: initialData.parentInfo?.pendidikanWali || "",
-        hubunganWali: initialData.parentInfo?.hubunganWali || "",
-        teleponWali: initialData.parentInfo?.teleponWali || "",
-        alamatWali: initialData.parentInfo?.alamatWali || "",
+        namaAyah: p.nama_lengkap_ayah || "",
+        pekerjaanAyah: p.pekerjaan_ayah || "",
+        pendidikanAyah: p.pendidikan_ayah || "",
+        penghasilanAyah: p.penghasilan_ayah || "",
+        teleponAyah: p.nomor_telepon_ayah || "",
+        namaIbu: p.nama_lengkap_ibu || "",
+        pekerjaanIbu: p.pekerjaan_ibu || "",
+        pendidikanIbu: p.pendidikan_ibu || "",
+        penghasilanIbu: p.penghasilan_ibu || "",
+        teleponIbu: p.nomor_telepon_ibu || "",
+        alamatOrangTua: p.alamat_orang_tua || "",
+        namaWali: p.nama_lengkap_wali || "",
+        pekerjaanWali: p.pekerjaan_wali || "",
+        pendidikanWali: p.pendidikan_wali || "",
+        hubunganWali: p.hubungan_dengan_siswa || "",
+        teleponWali: p.nomor_telepon_wali || "",
+        alamatWali: p.alamat_wali || "",
       });
     }
-  }, [initialData]);
+  }, [initialData, form]);
 
   const onSubmit = async (data: ParentFormData) => {
     const parentDataForSupabase = {

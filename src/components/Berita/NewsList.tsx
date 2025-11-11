@@ -14,7 +14,6 @@ import {
   FileText
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useNews } from "@/contexts/NewsContext";
 import { useToast } from "@/hooks/use-toast";
 import supabase from "@/supabase";
 import { toast as sonner } from "sonner";
@@ -29,7 +28,6 @@ interface NewsItem {
   kategori_berita: "Prestasi" | "Terkini" | "Ekskul" | "Daily";
   tags: string[];
   gambar_berita: string;
-  pembuat_berita: "Admin" | "Guru";
 }
 
 export default function NewsList() {
@@ -145,10 +143,6 @@ export default function NewsList() {
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center">
-                      <User className="h-3 w-3 mr-1" />
-                      {news.pembuat_berita}
-                    </div>
-                    <div className="flex items-center">
                       <Calendar className="h-3 w-3 mr-1" />
                       {new Date(news.created_at).toLocaleDateString()}
                     </div>
@@ -196,7 +190,7 @@ export default function NewsList() {
           <p className="text-muted-foreground mb-4">
             {searchTerm ? "Coba ubah kata kunci pencarian" : "Mulai dengan membuat berita pertama Anda"}
           </p>
-          <Link to="/admin/news/create">
+          <Link to="/admin/berita/buatBerita">
             <Button>
               <Plus className="h-4 w-4 mr-2" />
               Tambah Berita

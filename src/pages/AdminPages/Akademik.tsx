@@ -79,21 +79,6 @@ const AdminMaterialsPage = () => {
   //   // Implement edit functionality
   // };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus jurusan ini?")) {
-      const { error } = await supabase.from("kejuruan").delete().eq("id", id);
-
-      if (error) {
-        toast.error("Error deleting major", {
-          description: error.message,
-        });
-      } else {
-        toast.success("Jurusan berhasil dihapus");
-        fetchKejuruan(); // Refresh the list
-      }
-    }
-  };
-
   return (
     <div className="space-y-6">
       {/* Header Section */}

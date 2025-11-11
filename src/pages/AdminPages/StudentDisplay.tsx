@@ -4,9 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Pencil, Trash, UserPlus, QrCode, Printer } from "lucide-react";
-import * as QRCode from "qrcode.react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import { Pencil, Trash, UserPlus } from "lucide-react";
 import supabase from "@/supabase";
 
 interface StudentData {
@@ -19,7 +17,7 @@ interface StudentData {
   religion: string;
   address: string;
   phoneNumber: string;
-  kehadiran: boolean;
+  terdaftar: boolean;
   kejuruan: string;
   kelas?: string;
   photo?: string;
@@ -36,7 +34,6 @@ const StudentDisplay = () => {
   const [students, setStudents] = useState<StudentData[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<StudentData | null>(null);
-  const [qrCodeValue, setQrCodeValue] = useState<string>("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
@@ -56,7 +53,7 @@ const StudentDisplay = () => {
           agama,
           alamat_lengkap,
           nomor_telepon,
-          kehadiran,
+          terdaftar,
           kejuruan,
           kelas,
           foto_siswa,
@@ -78,7 +75,7 @@ const StudentDisplay = () => {
         religion: student.agama,
         address: student.alamat_lengkap,
         phoneNumber: student.nomor_telepon,
-        kehadiran: student.kehadiran,
+        terdaftar: student.terdaftar,
         kejuruan: student.kejuruan,
         kelas: student.kelas,
         photo: student.foto_siswa,
@@ -92,7 +89,7 @@ const StudentDisplay = () => {
   }, []);
 
   const handleEdit = (student: StudentData) => {
-    navigate("/admin/AddStudents", { state: { editingStudent: student } });
+    navigate(`/admin/student-display/Edit_student/${student.id}`, { state: { editingStudent: student } });
   };
 
   const filteredStudents = students.filter(
@@ -135,26 +132,6 @@ const StudentDisplay = () => {
     }
   }
 
-  const handleAddNew = () => {
-    navigate("/admin/AddStudents");
-  };
-
-  const handlePrint = () => {
-    const qrCodeElement = document.getElementById("qr-code-to-print");
-    if (qrCodeElement) {
-      const printWindow = window.open("", "_blank");
-      if (printWindow) {
-        printWindow.document.write("<html><head><title>Print QR Code</title>");
-        printWindow.document.write("<style>@media print { body { display: flex; justify-content: center; align-items: center; height: 100%; } }</style>");
-        printWindow.document.write("</head><body>");
-        printWindow.document.write(qrCodeElement.innerHTML);
-        printWindow.document.write("</body></html>");
-        printWindow.document.close();
-        printWindow.print();
-      }
-    }
-  };
-
   const resolveParentInfo = (student: any) => {
     if (!student) return {};
     let p = student.parentInfo ?? student.parent ?? null;
@@ -174,34 +151,6 @@ const StudentDisplay = () => {
       <Card className="border-0 shadow-none bg-transparent">
         <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 px-0 pb-4">
           <CardTitle className="text-xl sm:text-2xl font-bold text-black dark:text-white">List Siswa</CardTitle>
-          <div className="flex gap-2">
-            <Button onClick={handleAddNew} className="w-full sm:w-auto bg-primary hover:bg-primary/90">
-              <UserPlus className="w-4 h-4 mr-2" />
-              Tambah Siswa
-            </Button>
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline" className="w-full sm:w-auto">
-                  <QrCode className="w-4 h-4 mr-2" />
-                  Generate QR
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Scan to Add Student</DialogTitle>
-                </DialogHeader>
-                <div className="flex justify-center py-4" id="qr-code-to-print">
-                  <QRCode.QRCodeSVG value={`${window.location.origin}/admin/AddStudents`} size={256} />
-                </div>
-                <DialogFooter>
-                  <Button onClick={handlePrint} variant="outline">
-                    <Printer className="w-4 h-4 mr-2" />
-                    Print QR
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
         </CardHeader>
         <CardContent className="px-0">
           <div className="mb-4">
@@ -223,7 +172,7 @@ const StudentDisplay = () => {
                   <TableHead className="text-gray-600 dark:text-gray-400 hidden sm:table-cell">No Telepon</TableHead>
                   <TableHead className="text-gray-600 dark:text-gray-400 hidden md:table-cell">Kelas</TableHead>
                   <TableHead className="text-gray-600 dark:text-gray-400 hidden sm:table-cell">Kejuruan</TableHead>
-                  <TableHead className="text-gray-600 dark:text-gray-400 hidden sm:table-cell">Kehadiran</TableHead>
+                  <TableHead className="text-gray-600 dark:text-gray-400 hidden sm:table-cell">Terdaftar</TableHead>
                   <TableHead className="text-gray-600 dark:text-gray-400">Aksi</TableHead>
                 </TableRow>
               </TableHeader>
@@ -236,7 +185,7 @@ const StudentDisplay = () => {
                     <TableCell className="hidden sm:table-cell text-gray-900 dark:text-white">{student.phoneNumber}</TableCell>
                     <TableCell className="hidden md:table-cell text-gray-900 dark:text-white">{student.kelas || "-"}</TableCell>
                     <TableCell className="hidden md:table-cell text-gray-900 dark:text-white">{student.kejuruan || "-"}</TableCell>
-                    <TableCell className="hidden md:table-cell text-gray-900 dark:text-white">{student.kehadiran ? "Hadir" : "Tidak Hadir"}</TableCell>
+                    <TableCell className="hidden md:table-cell text-gray-900 dark:text-white">{student.terdaftar ? "Terdaftar" : "Tidak Terdaftar"}</TableCell>
                     <TableCell>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm" onClick={() => setSelectedStudent(student)} className="h-8" title="View details">
@@ -316,7 +265,7 @@ const StudentDisplay = () => {
                     <strong>Kejuruan:</strong> {selectedStudent.kejuruan}
                   </p>
                   <p>
-                    <strong>Status Kehadiran:</strong> {selectedStudent.kehadiran ? "Hadir" : "Tidak Hadir"}
+                    <strong>Status Terdaftar:</strong> {selectedStudent.terdaftar ? "Terdaftar" : "Tidak Terdaftar"}
                   </p>
                 </div>
               </div>

@@ -18,7 +18,6 @@ interface NewsItem {
   kategori_berita: "Prestasi" | "Terkini" | "Ekskul" | "Daily";
   tags: string[];
   gambar_berita: string;
-  pembuat_berita: "Admin" | "Guru";
 }
 
 export default function NewsPreview() {
@@ -119,10 +118,6 @@ export default function NewsPreview() {
 
             {/* Meta Information */}
             <div className="flex flex-wrap items-center gap-6 py-4 border-y border-border">
-              <div className="flex items-center text-muted-foreground">
-                <User className="h-4 w-4 mr-2" />
-                <span className="font-medium">{newsItem.pembuat_berita}</span>
-              </div>
               <div className="flex items-center text-muted-foreground">
                 <Calendar className="h-4 w-4 mr-2" />
                 <span>{new Date(newsItem.created_at).toLocaleDateString()}</span>

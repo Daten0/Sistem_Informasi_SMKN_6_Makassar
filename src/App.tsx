@@ -17,10 +17,10 @@ import AdminPage from "./pages/AdminPages/index";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboardPage from "./pages/AdminPages/DashboardPage";
 import AdminProfilePage from "./pages/AdminPages/ProfilePage";
-import AddStudentsPage from "./pages/AdminPages/AddStudent/AddStudentPage";
 import AdminTeachersPage from "./pages/AdminPages/TeachersPage";
 import AdminMaterialsPage from "./pages/AdminPages/Akademik";
 import AdminStudentDisplay from "./pages/AdminPages/StudentDisplay";
+import EditStudentPage from "./pages/AdminPages/Edit_student/EditStudent";
 import AdminBerita from "./pages/AdminPages/Berita";
 import PreviewBerita from "./pages/AdminPages/previewBerita/preview";
 import AddBerita from "./pages/AdminPages/AddBerita/AddBerita";
@@ -40,6 +40,8 @@ import SemesterDetail3 from "./components/Akademik/SemesterDetail3";
 import SemesterDetail4 from "./components/Akademik/SemesterDetail4";
 import SemesterDetail5 from "./components/Akademik/SemesterDetail5";
 import SemesterDetail6 from "./components/Akademik/SemesterDetail6";
+import GuruFormPage from "./pages/Guru_form/Index";
+import SiswaFormPage from "./pages/Siswa_form/Index";
 
 const queryClient = new QueryClient();
 
@@ -59,6 +61,8 @@ const App = () => (
           <Route path="/subjects" element={<Subjects />} />
           <Route path="/login" element={<LoginPages />} />
           <Route path="/register" element={<RegisterPages />} />
+          <Route path="/students/SiswaForm" element={<SiswaFormPage />} />
+          <Route path="/teachers/GuruForm" element={<GuruFormPage />} />
           <Route path="/subjects/dkv" element={<CourseDetailDKV />} />
           <Route path="/subjects/ph" element={<CourseDetailPH />} />
           <Route path="/subjects/ak" element={<CourseDetailAK />} />
@@ -75,8 +79,11 @@ const App = () => (
           >
             <Route index element={<AdminDashboardPage />} />
             <Route path="profile" element={<AdminProfilePage />} />
-            <Route path="AddStudents" element={<AddStudentsPage />} />
             <Route path="student-display" element={<AdminStudentDisplay />} />
+            <Route
+              path="student-display/Edit_student/:id"
+              element={<EditStudentPage />}
+            />
             <Route path="teachers" element={<AdminTeachersPage />} />
             <Route path="kejuruan" element={<AdminMaterialsPage />} />
             <Route path="kejuruan/add-kejuruan" element={<AddSubject />} />

@@ -14,15 +14,14 @@ import { toast } from "sonner";
 
 // Define the type for the news item based on your database schema
 interface NewsItem {
-    id: string;
-    judul_berita: string;
-    ringkasan: string;
-    konten: string;
-    pembuat_berita: string;
-    kategori_berita: string;
-    publikasi_berita: "published" | "draft";
-    tags: string[];
-    gambar_berita?: string;
+  id: string;
+  judul_berita: string;
+  ringkasan: string;
+  konten: string;
+  kategori_berita: string;
+  publikasi_berita: "published" | "draft";
+  tags: string[];
+  gambar_berita?: string;
 }
 
 
@@ -34,7 +33,6 @@ export default function EditNews() {
   const [title, setTitle] = useState("");
   const [excerpt, setExcerpt] = useState("");
   const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
   const [category, setCategory] = useState("");
   const [status, setStatus] = useState<"publikasi" | "draft">("draft");
   const [tags, setTags] = useState("");
@@ -60,7 +58,6 @@ export default function EditNews() {
         setTitle(data.judul_berita);
         setExcerpt(data.ringkasan || "");
         setContent(data.konten || "");
-        setAuthor(data.pembuat_berita);
         setCategory(data.kategori_berita);
         setStatus(data.publikasi_berita);
         setTags(data.tags ? data.tags.join(", ") : "");
@@ -85,7 +82,6 @@ export default function EditNews() {
       judul_berita: title.trim(),
       ringkasan: excerpt.trim(),
       konten: content.trim(),
-      pembuat_berita: author,
       kategori_berita: category,
       publikasi_berita: status,
       tags: tags.split(",").map(tag => tag.trim()).filter(Boolean),
@@ -168,19 +164,6 @@ export default function EditNews() {
                   placeholder="Masukkan judul berita..."
                   required
                 />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="author">Penulis</Label>
-                <Select value={author} onValueChange={setAuthor}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih penulis" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="Guru">Guru</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
 
               <div className="space-y-2">

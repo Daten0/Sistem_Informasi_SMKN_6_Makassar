@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, Menu } from "lucide-react";
+import { Search, QrCode, Printer } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,9 +9,99 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import * as QRCode from "qrcode.react";
+import supabase from "@/supabase";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import StudentProfile from "@/components/dashboard_kesiswaan/StudentProfile";
+
+export interface Student {
+  id: string;
+  nis: number;
+  nama_lengkap: string;
+  kejuruan: string;
+  kelas: string;
+  tempat_lahir: string;
+  tanggal_lahir: string;
+  agama: string;
+  alamat_lengkap: string;
+  foto_siswa: string | null;
+  jenis_kelamin: string;
+  nomor_telepon: string;
+  created_at: string;
+  updated_at: string | null;
+  terdaftar: boolean;
+}
 
 const SearchCard = () => {
   const [searchType, setSearchType] = useState("siswa");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searched, setSearched] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+
+  const handleSearch = async () => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      setSearched(false);
+      return;
+    }
+
+    setLoading(true);
+    setSearched(true);
+
+    try {
+      let query = supabase.from("add_siswa").select("*");
+
+      const orFilters = [];
+      orFilters.push(`nama_lengkap.ilike.%${searchQuery}%`);
+
+      if (!isNaN(parseInt(searchQuery, 10))) {
+        orFilters.push(`nis.eq.${searchQuery}`);
+      }
+
+      query = query.or(orFilters.join(","));
+
+      const { data, error } = await query;
+
+      if (error) {
+        throw error;
+      }
+
+      setSearchResults(data || []);
+    } catch (error) {
+      console.error("Error searching students:", error);
+      setSearchResults([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePrint = () => {
+    const qrCodeElement = document.getElementById("qr-code-to-print");
+    if (qrCodeElement) {
+      const printWindow = window.open("", "_blank");
+      if (printWindow) {
+        printWindow.document.write('<html><head><title>Print QR Code</title></head><body>');
+        printWindow.document.write(qrCodeElement.innerHTML);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.print();
+      }
+    }
+  };
+
+  if (selectedStudent) {
+    return <StudentProfile student={selectedStudent} onBack={() => setSelectedStudent(null)} />;
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4">
@@ -37,21 +127,93 @@ const SearchCard = () => {
                 type="text"
                 placeholder={`Cari ${searchType === 'siswa' ? 'Siswa' : 'Alumni'} Di Sini`}
                 className="w-full h-12 pl-4 pr-12 text-base md:text-lg border-0 bg-secondary/30 focus:bg-secondary/50 transition-colors"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
             </div>
             <Button 
               size="icon"
               className="h-12 w-12 shrink-0 bg-muted hover:bg-muted/80 text-muted-foreground"
               aria-label="Search"
+              onClick={handleSearch}
+              disabled={loading}
             >
 
               <Search className="h-6 w-6" />
             </Button>
-            
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  size="icon"
+                  className="h-12 w-12 shrink-0 bg-muted hover:bg-muted/80 text-muted-foreground"
+                  aria-label="Generate QR Code"
+                >
+                  <QrCode className="h-6 w-6" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Scan untuk Mendaftar</DialogTitle>
+                </DialogHeader>
+                <div className="flex justify-center py-4" id="qr-code-to-print">
+                  <QRCode.QRCodeSVG value={`${window.location.origin}/students/SiswaForm`} size={256} />
+                </div>
+                <DialogFooter>
+                  <Button onClick={handlePrint} variant="outline">
+                    <Printer className="w-4 h-4 mr-2" />
+                    Print QR
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </div>
       
+      {/* Registration Prompt */}
+      {searchType === "siswa" && (
+        <div className="mt-6 text-center">
+          <p className="text-base md:text-lg text-foreground">
+            Belum Terdaftar Sebagai Siswa?{" "}
+            <a
+              href="/students/SiswaForm"
+              className="text-primary hover:text-primary/80 font-semibold transition-colors underline-offset-4 hover:underline"
+            >
+              Daftar Sekarang
+            </a>
+          </p>
+        </div>
+      )}
+
+      {searched && (
+        <div className="mt-8">
+          {loading ? (
+            <p className="text-center">Mencari...</p>
+          ) : searchResults.length > 0 ? (
+            <div>
+              <h3 className="text-2xl font-bold mb-4 text-foreground">Hasil Pencarian</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {searchResults.map((student) => (
+                  <Card key={student.id} className="bg-card cursor-pointer hover:shadow-md transition-shadow" onClick={() => setSelectedStudent(student)}>
+                    <CardHeader>
+                      <CardTitle>{student.nama_lengkap}</CardTitle>
+                      <CardDescription>NIS: {student.nis}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p>Kelas: {student.kelas}</p>
+                      <p>Kejuruan: {student.kejuruan}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <p className="text-center text-muted-foreground">Siswa tidak ditemukan.</p>
+          )}
+        </div>
+      )}
+       
       {/* Registration Prompt */}
       {searchType === "alumni" && (
         <div className="mt-6 text-center">

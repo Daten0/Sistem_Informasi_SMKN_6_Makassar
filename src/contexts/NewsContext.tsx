@@ -1,11 +1,10 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 export interface NewsItem {
   id: number;
   title: string;
   excerpt: string;
   content: string;
-  author: string;
   publishDate: string;
   status: 'published' | 'draft';
   views: number;
@@ -22,7 +21,7 @@ interface NewsContextType {
   getNewsById: (id: number) => NewsItem | undefined;
 }
 
-const NewsContext = createContext<NewsContextType | undefined>(undefined);
+export const NewsContext = createContext<NewsContextType | undefined>(undefined);
 
 // Default news items for demo
 const defaultNewsItems: NewsItem[] = [
@@ -31,7 +30,6 @@ const defaultNewsItems: NewsItem[] = [
     title: "Tips Menggunakan AI dalam Bisnis Modern",
     excerpt: "Pelajari bagaimana AI dapat meningkatkan efisiensi dan produktivitas bisnis Anda...",
     content: "Artificial Intelligence (AI) telah menjadi game-changer dalam dunia bisnis modern. Dengan kemampuan untuk menganalisis data dalam skala besar dan memberikan insights yang berharga, AI membantu perusahaan membuat keputusan yang lebih cerdas dan strategis.",
-    author: "Admin",
     publishDate: "2024-01-15",
     status: "published",
     views: 234,
@@ -44,7 +42,6 @@ const defaultNewsItems: NewsItem[] = [
     title: "Tren Teknologi yang Akan Mengubah Dunia",
     excerpt: "Eksplorasi teknologi terdepan yang akan membentuk masa depan...",
     content: "Teknologi terus berkembang dengan pesat, membawa perubahan fundamental dalam cara kita hidup dan bekerja. Dari blockchain hingga quantum computing, inovasi-inovasi ini akan membentuk masa depan dunia.",
-    author: "Admin",
     publishDate: "2024-01-14",
     status: "draft",
     views: 0,
@@ -57,7 +54,6 @@ const defaultNewsItems: NewsItem[] = [
     title: "Panduan Lengkap Digital Marketing 2024",
     excerpt: "Strategi marketing digital yang efektif untuk meningkatkan brand awareness...",
     content: "Digital marketing telah menjadi tulang punggung strategi pemasaran modern. Dengan berbagai platform dan tools yang tersedia, bisnis dapat menjangkau target audience dengan lebih efektif dan terukur.",
-    author: "Admin",
     publishDate: "2024-01-13",
     status: "published",
     views: 189,
@@ -141,12 +137,4 @@ export function NewsProvider({ children }: { children: React.ReactNode }) {
       {children}
     </NewsContext.Provider>
   );
-}
-
-export function useNews() {
-  const context = useContext(NewsContext);
-  if (context === undefined) {
-    throw new Error('useNews must be used within a NewsProvider');
-  }
-  return context;
 }

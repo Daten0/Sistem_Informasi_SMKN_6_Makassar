@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useNews } from "@/contexts/NewsContext";
+import { useNews } from "@/hooks/useNews";
 import supabase from "@/supabase"
 
 export default function CreateNews() {
@@ -29,7 +29,6 @@ export default function CreateNews() {
     excerpt: "",
     content: "",
     category: "",
-    author: "",
     tags: [] as string[],
     isPublished: false,
     featuredImage: null as File | null,
@@ -85,20 +84,11 @@ export default function CreateNews() {
       });
       return;
     }
-    if (!formData.author) {
-      toast({
-        title: "Error",
-        description: "Penulis wajib dipilih",
-        variant: "destructive",
-      });
-      return;
-    }
 
     const newsDataToInsert = {
       judul_berita: formData.title,
       ringkasan: formData.excerpt || formData.content.substring(0, 150) + "...",
       konten: formData.content,
-      pembuat_berita: formData.author,
       publikasi_berita: formData.isPublished ? "publikasi" : "draft",
       gambar_berita: imagePreview || "/api/placeholder/300/200",
       kategori_berita: formData.category,
@@ -283,24 +273,6 @@ export default function CreateNews() {
                     <SelectItem value="Terkini">Terkini</SelectItem>
                     <SelectItem value="Ekskul">Ekskul</SelectItem>
                     <SelectItem value="Daily">Daily</SelectItem>
-                  </SelectContent>
-                </Select>
-              </CardContent>
-            </Card>
-
-            {/* Author */}
-            <Card className="bg-gradient-to-br from-card to-accent/30 border-border">
-              <CardHeader>
-                <CardTitle className="text-foreground">Penulis</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Select value={formData.author} onValueChange={(value) => setFormData({ ...formData, author: value })}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Pilih penulis" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Admin">Admin</SelectItem>
-                    <SelectItem value="Guru">Guru</SelectItem>
                   </SelectContent>
                 </Select>
               </CardContent>

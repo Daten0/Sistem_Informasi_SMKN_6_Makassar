@@ -14,7 +14,6 @@ import { CalendarIcon, Upload, Save } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
 import supabase from "@/supabase";
 
 const studentSchema = z.object({
@@ -34,13 +33,14 @@ const studentSchema = z.object({
 
 type StudentFormData = z.infer<typeof studentSchema>;
 
-interface StudentFormProps {
+export interface StudentFormProps {
   initialData?: any;
   onSavePartial?: (data: any) => void;
   studentId?: string;
+  isEditMode?: boolean;
 }
 
-const StudentForm = ({ initialData, onSavePartial, studentId }: StudentFormProps) => {
+const StudentForm = ({ initialData, onSavePartial, studentId, isEditMode = false }: StudentFormProps) => {
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
@@ -105,7 +105,8 @@ const StudentForm = ({ initialData, onSavePartial, studentId }: StudentFormProps
       agama: data.agama,
       nomor_telepon: data.noTelepon,
       alamat_lengkap: data.alamat,
-      foto_siswa: photoPreview
+      foto_siswa: photoPreview,
+      terdaftar: true,
     };
 
     if (onSavePartial) {
@@ -155,7 +156,7 @@ const StudentForm = ({ initialData, onSavePartial, studentId }: StudentFormProps
               <Label htmlFor="nisn" className="text-sm font-medium">
                 NIS *
               </Label>
-              <Input id="nis" placeholder="1234567890" {...form.register("nis")} className="transition-smooth focus:ring-2 focus:ring-primary/20" />
+              <Input id="nis" placeholder="1234567890" {...form.register("nis")} className="transition-smooth focus:ring-2 focus:ring-primary/20" readOnly={isEditMode} />
               {form.formState.errors.nis && <p className="text-sm text-destructive">{form.formState.errors.nis.message}</p>}
             </div>
 
