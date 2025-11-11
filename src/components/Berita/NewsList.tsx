@@ -14,61 +14,21 @@ import {
   FileText
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
-import supabase from "@/supabase";
+import { useNews } from "@/hooks/useNews";
 import { toast as sonner } from "sonner";
-
-interface NewsItem {
-  id: string;
-  created_at: string;
-  judul_berita: string;
-  ringkasan: string;
-  konten: string;
-  publikasi_berita: "publikasi" | "draft";
-  kategori_berita: "Prestasi" | "Terkini" | "Ekskul" | "Daily";
-  tags: string[];
-  gambar_berita: string;
-}
 
 export default function NewsList() {
   const [searchTerm, setSearchTerm] = useState("");
-  // const { newsItems, deleteNewsItem } = useNews();
-  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    const fetchNews = async () => {
-      const { data, error } = await supabase.from("list_berita").select("*");
-      if (error) {
-        sonner.error("Gagal mengambil data berita", {
-          description: error.message,
-        });
-      } else {
-        setNewsItems(data as NewsItem[]);
-      }
-    };
-    fetchNews();
-  }, []);
+  const { newsItems, deleteNewsItem, loading } = useNews();
 
   const filteredNews = newsItems.filter(item =>
     item.judul_berita.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.ringkasan.toLowerCase().includes(searchTerm.toLowerCase())
+    (item.ringkasan && item.ringkasan.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
   const handleDelete = async (id: string, title: string) => {
     if (window.confirm(`Apakah Anda yakin ingin menghapus berita "${title}"?`)) {
-      const { error } = await supabase.from("list_berita").delete().eq("id", id);
-
-      if (error) {
-        sonner.error("Gagal menghapus berita", {
-          description: error.message,
-        });
-      } else {
-        setNewsItems(newsItems.filter((item) => item.id !== id));
-        sonner.success("Berhasil!", {
-          description: `Berita "${title}" telah dihapus`,
-        });
-      }
+      await deleteNewsItem(id);
     }
   };
 
@@ -82,6 +42,14 @@ export default function NewsList() {
         return <Badge variant="outline">Unknown</Badge>;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p>Loading news...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
