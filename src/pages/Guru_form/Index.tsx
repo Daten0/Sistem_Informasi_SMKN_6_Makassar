@@ -12,7 +12,7 @@ const TeacherFormPage = () => {
     try {
       await addTeacher(data, imageFile);
       // The toast is already handled in the context
-      navigate("/admin/teachers"); // Redirect to teachers list after success
+      navigate("/teachers"); // Redirect to teachers list after success
     } catch (error) {
       console.error("Error adding teacher:", error);
       // The error toast is already handled in the context
