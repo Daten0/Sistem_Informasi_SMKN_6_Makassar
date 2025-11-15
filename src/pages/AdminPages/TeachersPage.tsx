@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { EmployeeTable, type Employee } from '../../components/tambah_guru/EmployeeTable'
 import { SearchBar } from '../../components/tambah_guru/SearchBar'
 import PersonalInfo from '../../components/tambah_guru/PersonalInfo'
 import ProfileSection from '../../components/tambah_guru/ProfileSection'
@@ -7,31 +6,57 @@ import { Card } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../components/ui/sheet'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table'
-import { UsersRound, School, X } from 'lucide-react'
+import { UsersRound } from 'lucide-react';
+import { Pencil, Trash} from "lucide-react";
+import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom'
 
 const AdminTeachersPage = () => {
+
+  interface Employee {
+    id: string;
+    name: string;
+    nip: string;
+    department: string[];
+    subjects: string[];
+  }
+  interface EmployeeTableProps {
+    employees: Employee[];
+    onViewDetail: (employee: Employee) => void;
+  }
   // State management
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTeacher, setSelectedTeacher] = useState<Employee | null>(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
-  // Mock data for demonstration - replace with actual data fetch
-  const teachers: Employee[] = [
+ // Mock data for demonstration - replace with actual data fetch
+  const [teachers, setTeachers] = useState<Employee[]>([
     {
       id: '1',
       name: 'John Doe',
       nip: '123456',
       department: ['dkv'],
-      classes: '10A, 11B'
+      subjects: ['Dasar Kejuruan DKV']
     },
     {
       id: '2',
       name: 'Jane Smith',
       nip: '789012',
       department: ['ak'],
-      classes: '12A'
+      subjects: ['Matematika']
     }
-  ]
+  ])
+
+  const navigate = useNavigate();
+
+  const handleEdit = (teacher: Employee) => {
+    navigate(`/admin/teachers/edit/${teacher.id}`);
+  };
+
+  const handleDelete = (teacherId: string) => {
+    setTeachers(teachers.filter((teacher) => teacher.id !== teacherId));
+    toast.success("Guru berhasil dihapus");
+  };
 
   // Filter teachers based on search
   const filteredTeachers = teachers.filter(teacher => 
@@ -82,7 +107,7 @@ const AdminTeachersPage = () => {
                     <TableRow className="hover:bg-muted/50">
                       <TableHead className="font-semibold text-foreground">Nama</TableHead>
                       <TableHead className="font-semibold text-foreground">NIP</TableHead>
-                      <TableHead className="font-semibold text-foreground">Kelas</TableHead>
+                      <TableHead className="font-semibold text-foreground">Mata Pelajaran</TableHead>
                       <TableHead className="text-right font-semibold text-foreground">Aksi</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -94,54 +119,62 @@ const AdminTeachersPage = () => {
                       >
                         <TableCell className="font-medium text-foreground">{teacher.name}</TableCell>
                         <TableCell className="text-foreground">{teacher.nip}</TableCell>
-                        <TableCell className="text-foreground">{teacher.classes}</TableCell>
+                        <TableCell className="text-foreground">{teacher.subjects}</TableCell>
                         <TableCell className="text-right">
-                          <Sheet 
-                            open={isDetailsOpen && selectedTeacher?.id === teacher.id}
-                            onOpenChange={(open) => {
-                              if (!open) {
-                                setIsDetailsOpen(false)
-                                setSelectedTeacher(null)
-                              }
-                            }}
-                          >
-                            <SheetTrigger asChild>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => {
-                                  setSelectedTeacher(teacher)
-                                  setIsDetailsOpen(true)
-                                }}
-                                className="text-primary hover:text-primary hover:bg-primary/10"
-                              >
-                                Lihat Detail
-                              </Button>
-                            </SheetTrigger>
-                            <SheetContent className="w-full sm:max-w-[680px] lg:max-w-[800px] p-0 overflow-y-auto">
-                              <SheetHeader className="border-b border-border p-6">
-                                <SheetTitle className="text-2xl font-bold text-foreground">Detail Guru</SheetTitle>
-                              </SheetHeader>
-                              <div className="px-6 py-4 space-y-8">
-                                <div className="bg-card rounded-lg p-6 border border-border">
-                                  <h3 className="text-xl font-semibold mb-6 text-foreground border-b border-border pb-3">
-                                    Profil Guru
-                                  </h3>
-                                  <div className="text-foreground">
-                                    <ProfileSection />
+                           <div className="flex items-center justify-end gap-2">
+                            <Sheet 
+                              open={isDetailsOpen && selectedTeacher?.id === teacher.id}
+                              onOpenChange={(open) => {
+                                if (!open) {
+                                  setIsDetailsOpen(false)
+                                  setSelectedTeacher(null)
+                                }
+                              }}
+                            >
+                              <SheetTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedTeacher(teacher)
+                                    setIsDetailsOpen(true)
+                                  }}
+                                  className="text-primary hover:text-primary hover:bg-primary/10"
+                                >
+                                  Lihat Detail
+                                </Button>
+                              </SheetTrigger>
+                              <SheetContent className="w-full sm:max-w-[680px] lg:max-w-[800px] p-0 overflow-y-auto">
+                                <SheetHeader className="border-b border-border p-6">
+                                  <SheetTitle className="text-2xl font-bold text-foreground">Detail Guru</SheetTitle>
+                                </SheetHeader>
+                                <div className="px-6 py-4 space-y-8">
+                                  <div className="bg-card rounded-lg p-6 border border-border">
+                                    <h3 className="text-xl font-semibold mb-6 text-foreground border-b border-border pb-3">
+                                      Profil Guru
+                                    </h3>
+                                    <div className="text-foreground">
+                                      <ProfileSection />
+                                    </div>
+                                  </div>
+                                  <div className="bg-card rounded-lg p-6 border border-border">
+                                    <h3 className="text-xl font-semibold mb-6 text-foreground border-b border-border pb-3">
+                                      Informasi Personal
+                                    </h3>
+                                    <div className="text-foreground">
+                                      <PersonalInfo />
+                                    </div>
                                   </div>
                                 </div>
-                                <div className="bg-card rounded-lg p-6 border border-border">
-                                  <h3 className="text-xl font-semibold mb-6 text-foreground border-b border-border pb-3">
-                                    Informasi Personal
-                                  </h3>
-                                  <div className="text-foreground">
-                                    <PersonalInfo />
-                                  </div>
-                                </div>
-                              </div>
-                            </SheetContent>
-                          </Sheet>
+                              </SheetContent>
+                            </Sheet>
+                            <Button variant="outline" size="sm" onClick={() => handleEdit(teacher)} className="h-8 w-8 p-0" title="Edit guru">
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => handleDelete(teacher.id)} className="h-8 w-8 p-0 text-destructive hover:text-destructive" title="Hapus guru">
+                              <Trash className="h-4 w-4" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}

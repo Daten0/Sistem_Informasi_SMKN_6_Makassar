@@ -24,42 +24,82 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { CalendarIcon, Upload, X } from "lucide-react";
+import { CalendarIcon, Upload, X, ChevronDown} from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Teacher, TeacherForInsert } from "@/contexts/TeachersContext";
 
 const formSchema = z.object({
-  nama: z.string().min(2, { message: "Nama harus diisi minimal 2 karakter" }),
-  nip: z.string().min(5, { message: "NIP harus diisi minimal 5 karakter" }),
+  username: z.string().min(2, { message: "Nama harus diisi minimal 2 karakter" }),
+  nip: z.coerce.number().min(18, { message: "NIP harus diisi minimal 18 digit" }),
   jabatan: z.string().min(2, { message: "Jabatan harus diisi" }),
-  tanggalLahir: z.date({ required_error: "Tanggal lahir harus diisi" }),
+  birth_date: z.date({ required_error: "Tanggal lahir harus diisi" }),
   asal: z.string().min(2, { message: "Asal harus diisi" }),
   alamat: z.string().min(5, { message: "Alamat harus diisi minimal 5 karakter" }),
   agama: z.string({ required_error: "Agama harus dipilih" }),
-  mataPelajaran: z.string({ required_error: "Mata pelajaran harus dipilih" }),
-  kejuruan: z.string({ required_error: "Kejuruan harus dipilih" }),
+  mapel: z.array(z.string()).nonempty({ message: "Mata pelajaran harus dipilih" }),
+  kejuruan: z.array(z.string()).nonempty({ message: "Kejuruan harus dipilih" }),
 });
 
-export function TeacherForm() {
+type TeacherFormValues = z.infer<typeof formSchema>;
+
+type TeacherFormProps = {
+  onSubmit: (values: TeacherForInsert, imageFile: File | null) => void;
+  initialData?: Partial<Teacher>;
+  isSubmitting?: boolean;
+};
+
+export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherFormProps) {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const kejuruanOptions = ["Perhotelan", "Tata Busana", "Tata Boga", "Akuntansi", "Desain Komunikasi Visual"];
+  const mataPelajaranOptions = ["Matematika", "Bahasa Indonesia", "Bahasa Inggris", "Pendidikan Pancasila", "Front Office", "Housekeeping", "Food & Beverage Service"];
+
+  const form = useForm<TeacherFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nama: "",
-      nip: "",
-      jabatan: "",
-      asal: "",
-      alamat: "",
-      agama: "",
-      mataPelajaran: "",
-      kejuruan: "",
+      username: initialData?.username || "",
+      nip: initialData?.nip || undefined,
+      jabatan: initialData?.jabatan || "",
+      asal: initialData?.asal || "",
+      alamat: initialData?.alamat || "",
+      agama: initialData?.agama || "",
+      mapel: initialData?.mapel || [],
+      kejuruan: initialData?.kejuruan || [],
+      birth_date: initialData?.birth_date ? new Date(initialData.birth_date) : undefined,
     },
   });
+
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        username: initialData.username || "",
+        nip: initialData.nip || undefined,
+        jabatan: initialData.jabatan || "",
+        asal: initialData.asal || "",
+        alamat: initialData.alamat || "",
+        agama: initialData.agama || "",
+        mapel: initialData.mapel || [],
+        kejuruan: initialData.kejuruan || [],
+        birth_date: initialData.birth_date ? new Date(initialData.birth_date) : undefined,
+      });
+      if (initialData.picture_url) {
+        setProfileImage(initialData.picture_url);
+      }
+    }
+  }, [initialData, form]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -92,18 +132,24 @@ export function TeacherForm() {
     setImageFile(null);
   };
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log({ ...values, profileImage: imageFile?.name });
-    toast.success("Data berhasil disimpan!", {
-      description: `Data guru ${values.nama} telah tersimpan dengan sukses.`,
-    });
-    form.reset();
-    removeImage();
+  function onFormSubmit(values: TeacherFormValues) {
+    const dataToSubmit: TeacherForInsert = {
+      username: values.username,
+      nip: values.nip,
+      jabatan: values.jabatan,
+      birth_date: values.birth_date.toISOString().split('T')[0],
+      asal: values.asal,
+      alamat: values.alamat,
+      agama: values.agama,
+      mapel: values.mapel,
+      kejuruan: values.kejuruan,
+    };
+    onSubmit(dataToSubmit, imageFile);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={form.handleSubmit(onFormSubmit)} className="space-y-6">
         {/* Profile Image Upload */}
         <div className="flex flex-col items-center space-y-4 pb-6 border-b border-border">
           <div className="relative">
@@ -152,7 +198,7 @@ export function TeacherForm() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <FormField
             control={form.control}
-            name="nama"
+            name="username"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Nama Lengkap</FormLabel>
@@ -194,7 +240,7 @@ export function TeacherForm() {
 
           <FormField
             control={form.control}
-            name="tanggalLahir"
+            name="birth_date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
                 <FormLabel>Tanggal Lahir</FormLabel>
@@ -289,26 +335,43 @@ export function TeacherForm() {
             )}
           />
 
-          <FormField
+           <FormField
             control={form.control}
             name="kejuruan"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Kejuruan</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Pilih kejuruan" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="perhotelan">Perhotelan</SelectItem>
-                    <SelectItem value="tata-busana">Tata Busana</SelectItem>
-                    <SelectItem value="tata-boga">Tata Boga</SelectItem>
-                    <SelectItem value="akuntansi">Akuntansi</SelectItem>
-                    <SelectItem value="desain-komunikasi-visual">Desain Komunikasi Visual</SelectItem>
-                  </SelectContent>
-                </Select>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="w-full justify-between">
+                      {field.value?.length > 0
+                        ? field.value.join(", ")
+                        : "Pilih kejuruan"}
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full">
+                    <DropdownMenuLabel>Kejuruan</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {kejuruanOptions.map((option) => (
+                      <DropdownMenuCheckboxItem
+                        key={option}
+                        checked={field.value?.includes(option)}
+                        onCheckedChange={(checked) => {
+                          return checked
+                            ? field.onChange([...(field.value || []), option])
+                            : field.onChange(
+                                field.value?.filter(
+                                  (value) => value !== option
+                                )
+                              );
+                        }}
+                      >
+                        {option}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <FormMessage />
               </FormItem>
             )}
@@ -316,21 +379,49 @@ export function TeacherForm() {
 
           <FormField
             control={form.control}
-            name="mataPelajaran"
+            name="mapel"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Mata Pelajaran</FormLabel>
-                <FormControl>
-                  <Input placeholder="Masukkan mata pelajaran" {...field} />
-                </FormControl>
+                 <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="w-full justify-between">
+                      {field.value?.length > 0
+                        ? field.value.join(", ")
+                        : "Pilih mata pelajaran"}
+                      <ChevronDown className="h-4 w-4 opacity-50" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-full">
+                    <DropdownMenuLabel>Mata Pelajaran</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {mataPelajaranOptions.map((option) => (
+                      <DropdownMenuCheckboxItem
+                        key={option}
+                        checked={field.value?.includes(option)}
+                        onCheckedChange={(checked) => {
+                          return checked
+                            ? field.onChange([...(field.value || []), option])
+                            : field.onChange(
+                                field.value?.filter(
+                                  (value) => value !== option
+                                )
+                              );
+                        }}
+                      >
+                        {option}
+                      </DropdownMenuCheckboxItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        <Button type="submit" className="w-full md:w-auto">
-          Simpan Data
+        <Button type="submit" className="w-full md:w-auto" disabled={isSubmitting}>
+          {isSubmitting ? "Menyimpan..." : (initialData ? "Update Data" : "Simpan Data")}
         </Button>
       </form>
     </Form>

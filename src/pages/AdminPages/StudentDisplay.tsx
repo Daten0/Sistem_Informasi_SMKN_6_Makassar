@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { Pencil, Trash, UserPlus } from "lucide-react";
+import { Pencil, Trash} from "lucide-react";
 import supabase from "@/supabase";
 
 interface StudentData {
