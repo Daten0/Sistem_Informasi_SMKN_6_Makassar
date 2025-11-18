@@ -14,10 +14,13 @@ export interface NewsItem {
   kategori_berita: 'Prestasi' | 'Terkini' | 'Ekskul' | 'Daily';
   tags: string[];
   gambar_berita: string;
+  author_id?: string | null;
 }
 
 // Type for data used when creating a new news item
-export type NewsItemForInsert = Omit<NewsItem, 'id' | 'created_at' | 'updated_at'>;
+export type NewsItemForInsert = Omit<NewsItem, 'id' | 'created_at' | 'updated_at'> & {
+  author_id?: string;
+};
 
 interface NewsContextType {
   newsItems: NewsItem[];

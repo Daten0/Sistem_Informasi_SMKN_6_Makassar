@@ -11,10 +11,11 @@ import { toast } from "sonner";
 const HeroCarousel = () => {
   const { newsItems, loading } = useNews();
   const [currentSlide, setCurrentSlide] = useState(0);
-  const carouselItems = newsItems.slice(0, 5);
   const publishedNews = newsItems.filter(
     (item) => item.publikasi_berita === "publikasi"
   );
+
+  const carouselItems = publishedNews.slice(0, 5);
 
   useEffect(() => {
     if (carouselItems.length > 1) {

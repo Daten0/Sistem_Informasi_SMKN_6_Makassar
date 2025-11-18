@@ -93,6 +93,24 @@ const StudentForm = ({ initialData, onSavePartial, studentId, isEditMode = false
   };
   
   const onSubmit = async (data: StudentFormData) => {
+    let photoUrl = photoPreview;
+
+    if (photo) {
+      const filePath = `students/${studentId || data.nis}/${photo.name}`;
+      const { error: uploadError } = await supabase.storage.from("student_pictures").upload(filePath, photo, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+
+      if (uploadError) {
+        toast.error(`Gagal mengupload foto: ${uploadError.message}`);
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage.from("student_pictures").getPublicUrl(filePath);
+      photoUrl = publicUrlData.publicUrl;
+    }
+
     const studentDataForSupabase = {
       id: studentId,
       nis: data.nis,
@@ -105,7 +123,7 @@ const StudentForm = ({ initialData, onSavePartial, studentId, isEditMode = false
       agama: data.agama,
       nomor_telepon: data.noTelepon,
       alamat_lengkap: data.alamat,
-      foto_siswa: photoPreview,
+      foto_siswa: photoUrl,
       terdaftar: true,
     };
 
@@ -123,7 +141,7 @@ const StudentForm = ({ initialData, onSavePartial, studentId, isEditMode = false
           phoneNumber: data.noTelepon,
           kelas: data.kelas.toUpperCase(),
           kejuruan: data.kejuruan,
-          photo: photoPreview,
+          photo: photoUrl,
         },
         supabaseData: studentDataForSupabase,
       });

@@ -18,12 +18,14 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useNews } from "@/hooks/useNews";
-import supabase from "@/supabase"
+import supabase from "@/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function CreateNews() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { addNewsItem } = useNews();
+  const { currentUser } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
@@ -85,14 +87,38 @@ export default function CreateNews() {
       return;
     }
 
+    let imageUrl = imagePreview || "/api/placeholder/300/200";
+
+    if (formData.featuredImage) {
+      const file = formData.featuredImage;
+      const filePath = `news/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabase.storage.from("news_pictures").upload(filePath, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+      if (uploadError) {
+        toast({
+          title: "Gagal mengupload gambar",
+          description: uploadError.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage.from("news_pictures").getPublicUrl(filePath);
+      imageUrl = publicUrlData.publicUrl;
+    }
+
     const newsDataToInsert = {
       judul_berita: formData.title,
       ringkasan: formData.excerpt || formData.content.substring(0, 150) + "...",
       konten: formData.content,
       publikasi_berita: formData.isPublished ? "publikasi" : "draft",
-      gambar_berita: imagePreview || "/api/placeholder/300/200",
+      gambar_berita: imageUrl,
       kategori_berita: formData.category,
       tags: formData.tags,
+      author_id: currentUser?.id,
     };
 
     const { error } = await supabase.from("list_berita").insert([newsDataToInsert]);

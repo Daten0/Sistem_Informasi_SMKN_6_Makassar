@@ -11,6 +11,7 @@ import { ArrowLeft, Save, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import supabase from "@/supabase";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Define the type for the news item based on your database schema
 interface NewsItem {
@@ -19,15 +20,17 @@ interface NewsItem {
   ringkasan: string;
   konten: string;
   kategori_berita: string;
-  publikasi_berita: "published" | "draft";
+  publikasi_berita: "publikasi" | "draft";
   tags: string[];
   gambar_berita?: string;
+  author_id?: string | null;
 }
 
 
 export default function EditNews() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
   const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
   const [title, setTitle] = useState("");
@@ -38,6 +41,7 @@ export default function EditNews() {
   const [tags, setTags] = useState("");
   const [image, setImage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
   
   useEffect(() => {
     const fetchNewsItem = async () => {
@@ -54,20 +58,27 @@ export default function EditNews() {
         toast.error("Gagal memuat berita.");
         setNewsItem(null);
       } else {
-        setNewsItem(data);
-        setTitle(data.judul_berita);
-        setExcerpt(data.ringkasan || "");
-        setContent(data.konten || "");
-        setCategory(data.kategori_berita);
-        setStatus(data.publikasi_berita);
-        setTags(data.tags ? data.tags.join(", ") : "");
-        setImage(data.gambar_berita || "");
+        if (data.author_id === currentUser?.id) {
+          setIsAuthorized(true);
+          setNewsItem(data);
+          setTitle(data.judul_berita);
+          setExcerpt(data.ringkasan || "");
+          setContent(data.konten || "");
+          setCategory(data.kategori_berita);
+          setStatus(data.publikasi_berita);
+          setTags(data.tags ? data.tags.join(", ") : "");
+          setImage(data.gambar_berita || "");
+        } else {
+          setIsAuthorized(false);
+          toast.error("Anda tidak memiliki izin untuk mengedit berita ini.");
+        }
       }
       setLoading(false);
     };
-
-    fetchNewsItem();
-  }, [id]);
+    if (currentUser) {
+      fetchNewsItem();
+    }
+  }, [id, currentUser]);
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -113,6 +124,21 @@ export default function EditNews() {
 
   if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (!isAuthorized) {
+    return (
+      <div className="text-center py-12">
+        <h2 className="text-2xl font-bold text-destructive mb-4">Tidak Diizinkan</h2>
+        <p className="text-muted-foreground mb-6">Anda tidak memiliki izin untuk mengakses halaman ini.</p>
+        <Link to="/admin/berita">
+          <Button>
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Kembali ke Daftar Berita
+          </Button>
+        </Link>
+      </div>
+    );
   }
 
   if (!newsItem) {
