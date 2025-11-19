@@ -7,7 +7,7 @@ export interface Teacher {
   id: string;
   created_at: string;
   updated_at?: string | null;
-  nip: number;
+  nip: string;
   username: string;
   jabatan?: string | null;
   birth_date?: string | null;
@@ -17,9 +17,10 @@ export interface Teacher {
   mapel?: string[] | null;
   kejuruan?: string[] | null;
   picture_url?: string | null;
+  terdaftar: boolean;
 }
 
-export type TeacherForInsert = Omit<Teacher, "id" | "created_at" | "updated_at" | "picture_url"> & { picture_url?: string };
+export type TeacherForInsert = Omit<Teacher, "id" | "created_at" | "updated_at" | "picture_url" | "terdaftar"> & { picture_url?: string };
 export type TeacherForUpdate = Partial<TeacherForInsert>;
 
 interface TeachersContextType {
@@ -40,15 +41,23 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const fetchTeachers = async () => {
       setLoading(true);
-      const { data, error } = await supabase
-        .from("guru")
-        .select("*")
-        .order("created_at", { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from("guru")
+          .select("*")
+          .order("created_at", { ascending: false });
 
-      if (error) {
-        toast.error("Gagal memuat data guru", { description: error.message });
-      } else {
-        setTeachers(data || []);
+        if (error) {
+          console.error("Error fetching teachers:", error);
+          toast.error("Gagal memuat data guru", { description: error.message });
+          setTeachers([]);
+        } else {
+          setTeachers(data || []);
+        }
+      } catch (error) {
+        console.error("Unexpected error fetching teachers:", error);
+        toast.error("Terjadi kesalahan saat memuat data guru");
+        setTeachers([]);
       }
       setLoading(false);
     };
@@ -75,7 +84,7 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
       picture_url = urlData.publicUrl;
     }
 
-    const { data, error } = await supabase.from("guru").insert([{ ...teacherData, picture_url }]).select().single();
+    const { data, error } = await supabase.from("guru").insert([{ ...teacherData, picture_url, terdaftar: true }]).select().single();
 
     if (error) {
       toast.error("Gagal menambah data guru", { description: error.message });
@@ -150,9 +159,17 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
 }
 
 export function useTeachers() {
-    const context = useContext(TeachersContext);
-    if (context === undefined) {
-        throw new Error("useTeachers must be used within a TeachersProvider");
-    }
-    return context;
+  const context = useContext(TeachersContext);
+  if (context === undefined) {
+    console.warn("useTeachers called outside of TeachersProvider - returning safe fallback");
+    return {
+      teachers: [],
+      addTeacher: async () => {},
+      updateTeacher: async () => {},
+      deleteTeacher: async () => {},
+      getTeacherById: () => undefined,
+      loading: false,
+    };
+  }
+  return context;
 }

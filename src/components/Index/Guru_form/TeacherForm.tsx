@@ -33,7 +33,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
-import { CalendarIcon, Upload, X, ChevronDown} from "lucide-react";
+import { CalendarIcon, Upload, X, ChevronDown, Plus, Tag } from "lucide-react";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { cn } from "@/lib/utils";
@@ -42,14 +42,14 @@ import { Teacher, TeacherForInsert } from "@/contexts/TeachersContext";
 
 const formSchema = z.object({
   username: z.string().min(2, { message: "Nama harus diisi minimal 2 karakter" }),
-  nip: z.coerce.number().min(18, { message: "NIP harus diisi minimal 18 digit" }),
+  nip: z.string().length(18, { message: "NIP harus 18 digit" }),
   jabatan: z.string().min(2, { message: "Jabatan harus diisi" }),
   birth_date: z.date({ required_error: "Tanggal lahir harus diisi" }),
   asal: z.string().min(2, { message: "Asal harus diisi" }),
   alamat: z.string().min(5, { message: "Alamat harus diisi minimal 5 karakter" }),
   agama: z.string({ required_error: "Agama harus dipilih" }),
-  mapel: z.array(z.string()).nonempty({ message: "Mata pelajaran harus dipilih" }),
-  kejuruan: z.array(z.string()).nonempty({ message: "Kejuruan harus dipilih" }),
+  mapel: z.array(z.string()).min(1, { message: "Mata pelajaran harus dipilih" }),
+  kejuruan: z.array(z.string()).min(1, { message: "Kejuruan harus dipilih" }),
 });
 
 type TeacherFormValues = z.infer<typeof formSchema>;
@@ -63,15 +63,16 @@ type TeacherFormProps = {
 export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherFormProps) {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [mapelInput, setMapelInput] = useState("");
 
   const kejuruanOptions = ["Perhotelan", "Tata Busana", "Tata Boga", "Akuntansi", "Desain Komunikasi Visual"];
-  const mataPelajaranOptions = ["Matematika", "Bahasa Indonesia", "Bahasa Inggris", "Pendidikan Pancasila", "Front Office", "Housekeeping", "Food & Beverage Service"];
+
 
   const form = useForm<TeacherFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: initialData?.username || "",
-      nip: initialData?.nip || undefined,
+      nip: initialData?.nip ? String(initialData.nip) : "",
       jabatan: initialData?.jabatan || "",
       asal: initialData?.asal || "",
       alamat: initialData?.alamat || "",
@@ -86,7 +87,7 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
     if (initialData) {
       form.reset({
         username: initialData.username || "",
-        nip: initialData.nip || undefined,
+        nip: initialData.nip ? String(initialData.nip) : "",
         jabatan: initialData.jabatan || "",
         asal: initialData.asal || "",
         alamat: initialData.alamat || "",
@@ -125,6 +126,23 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleAddMapel = () => {
+      const currentMapel = form.getValues("mapel") || [];
+      if (mapelInput && !currentMapel.includes(mapelInput)) {
+        form.setValue("mapel", [...currentMapel, mapelInput], { shouldValidate: true });
+        setMapelInput("");
+      }
+  };
+
+  const handleRemoveMapel = (mapelToRemove: string) => {
+    const currentMapel = form.getValues("mapel") || [];
+    form.setValue(
+      "mapel",
+      currentMapel.filter((mapel) => mapel !== mapelToRemove),
+      { shouldValidate: true }
+    );
   };
 
   const removeImage = () => {
@@ -383,37 +401,42 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Mata Pelajaran</FormLabel>
-                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="w-full justify-between">
-                      {field.value?.length > 0
-                        ? field.value.join(", ")
-                        : "Pilih mata pelajaran"}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
+                <div className="flex flex-col space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      placeholder="e.g., Matematika"
+                      value={mapelInput}
+                      onChange={(e) => setMapelInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          handleAddMapel();
+                        }
+                      }}
+                    />
+                    <Button type="button" onClick={handleAddMapel} size="icon" variant="outline">
+                      <Plus className="h-4 w-4" />
                     </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-full">
-                    <DropdownMenuLabel>Mata Pelajaran</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    {mataPelajaranOptions.map((option) => (
-                      <DropdownMenuCheckboxItem
-                        key={option}
-                        checked={field.value?.includes(option)}
-                        onCheckedChange={(checked) => {
-                          return checked
-                            ? field.onChange([...(field.value || []), option])
-                            : field.onChange(
-                                field.value?.filter(
-                                  (value) => value !== option
-                                )
-                              );
-                        }}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {field.value?.map((mapel) => (
+                      <div
+                        key={mapel}
+                        className="flex items-center gap-1.5 bg-secondary text-secondary-foreground rounded-full px-3 py-1 text-sm"
                       >
-                        {option}
-                      </DropdownMenuCheckboxItem>
+                        <Tag className="h-3.5 w-3.5" />
+                        <span>{mapel}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveMapel(mapel)}
+                          className="ml-1 text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
                     ))}
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                  </div>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

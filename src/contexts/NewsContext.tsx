@@ -38,21 +38,29 @@ export function NewsProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // In the fetchNews function, replace the existing error handling:
     const fetchNews = async () => {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('list_berita')
-        .select('*')
-        .order('created_at', { ascending: false });
+      try {
+        const { data, error } = await supabase
+          .from('list_berita')
+          .select('*')
+          .order('created_at', { ascending: false });
 
-      if (error) {
-        toast.error('Gagal memuat berita', { description: error.message });
-      } else {
-        setNewsItems(data || []);
+        if (error) {
+          console.error('Supabase error:', error);
+          // Don't throw error, just use empty array
+          setNewsItems([]);
+        } else {
+          setNewsItems(data || []);
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+        setNewsItems([]);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-
     fetchNews();
   }, []);
 

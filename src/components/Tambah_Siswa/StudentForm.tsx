@@ -17,7 +17,7 @@ import { toast } from "sonner";
 import supabase from "@/supabase";
 
 const studentSchema = z.object({
-  nis: z.string().min(10, "NIS harus 10 digit").max(10, "NIS harus 10 digit"),
+  nis: z.string().min(9, "NIS harus 9 digit").max(9, "NIS harus 9 digit"),
   nama: z.string().min(2, "Nama harus diisi minimal 2 karakter"),
   kejuruan: z.string().min(1, "Kejuruan harus dipilih"),
   kelas: z.string().min(1, "Kelas harus dipilih"),

@@ -1,6 +1,26 @@
 import { Card } from "@/components/ui/card";
+import { Teacher } from "@/contexts/TeachersContext";
 
-const TeachersProfile = () => {
+interface TeachersProfileProps {
+  teacher: Teacher;
+}
+
+const TeachersProfile = ({ teacher }: TeachersProfileProps) => {
+  const formatDate = (dateString: string | null | undefined) => {
+    if (!dateString) return "-";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
+  const formatArray = (array: string[] | null | undefined) => {
+    if (!array || array.length === 0) return "-";
+    return array.join(", ");
+  };
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Profile Photo */}
@@ -8,15 +28,19 @@ const TeachersProfile = () => {
         <div className="bg-card p-6 rounded-lg shadow-lg">
           <div className="w-64 h-80 bg-muted rounded-sm overflow-hidden">
             <img 
-              src="/placeholder.svg" 
-              alt="Student Profile"
+              src={teacher.picture_url || "/placeholder.svg"} 
+              alt={`${teacher.username} Profile`}
               className="w-full h-full object-cover"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "/placeholder.svg";
+              }}
             />
           </div>
         </div>
       </div>
 
-      {/* Detail Siswa Card */}
+      {/* Detail Guru Card */}
       <Card className="bg-card shadow-lg">
         <div className="p-8 md:p-12">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-foreground">
@@ -28,50 +52,50 @@ const TeachersProfile = () => {
             <div className="space-y-8">
               <div>
                 <p className="text-lg text-muted-foreground mb-1">NIP</p>
-                <p className="text-2xl font-bold text-foreground">0057473221</p>
+                <p className="text-2xl font-bold text-foreground">{teacher.nip}</p>
               </div>
 
               <div>
                 <p className="text-lg text-muted-foreground mb-1">Jabatan</p>
-                <p className="text-2xl font-bold text-foreground">Kepala Bengkel IT</p>
+                <p className="text-2xl font-bold text-foreground">{teacher.jabatan || "-"}</p>
               </div>
 
               <div>
                 <p className="text-lg text-muted-foreground mb-1">Tempat Lahir</p>
-                <p className="text-2xl font-bold text-foreground">Makassar</p>
+                <p className="text-2xl font-bold text-foreground">{teacher.asal || "-"}</p>
               </div>
 
               <div>
                 <p className="text-lg text-muted-foreground mb-1">Agama</p>
-                <p className="text-2xl font-bold text-foreground">Islam</p>
+                <p className="text-2xl font-bold text-foreground">{teacher.agama || "-"}</p>
               </div>
             </div>
 
             {/* Right Column */}
             <div className="space-y-8">
               <div>
-                <p className="text-lg text-muted-foreground mb-1">Nama Siswa</p>
-                <p className="text-2xl font-bold text-foreground">Muh Agung M</p>
-              </div>
-
-              <div>
-                <p className="text-lg text-muted-foreground mb-1">Kelas Mengajar</p>
-                <p className="text-2xl font-bold text-foreground">Kelas X</p>
-              </div>
-
-              <div>
-                <p className="text-lg text-muted-foreground mb-1">Tanggal Lahir</p>
-                <p className="text-2xl font-bold text-foreground">16 Agustus 2006</p>
-              </div>
-
-              <div>
-                <p className="text-lg text-muted-foreground mb-1">Alamat</p>
-                <p className="text-2xl font-bold text-foreground">Bumi Tamarunang indah Blok A.6</p>
+                <p className="text-lg text-muted-foreground mb-1">Nama Guru</p>
+                <p className="text-2xl font-bold text-foreground">{teacher.username}</p>
               </div>
 
               <div>
                 <p className="text-lg text-muted-foreground mb-1">Mata Pelajaran</p>
-                <p className="text-2xl font-bold text-foreground">Desain Komunikasi Visual</p>
+                <p className="text-2xl font-bold text-foreground">{formatArray(teacher.mapel)}</p>
+              </div>
+
+              <div>
+                <p className="text-lg text-muted-foreground mb-1">Tanggal Lahir</p>
+                <p className="text-2xl font-bold text-foreground">{formatDate(teacher.birth_date)}</p>
+              </div>
+
+              <div>
+                <p className="text-lg text-muted-foreground mb-1">Alamat</p>
+                <p className="text-2xl font-bold text-foreground">{teacher.alamat || "-"}</p>
+              </div>
+
+              <div>
+                <p className="text-lg text-muted-foreground mb-1">Kejuruan</p>
+                <p className="text-2xl font-bold text-foreground">{formatArray(teacher.kejuruan)}</p>
               </div>
             </div>
           </div>

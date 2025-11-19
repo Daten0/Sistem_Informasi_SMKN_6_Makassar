@@ -5,11 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger
- } from "@/components/ui/dropdown-menu";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
@@ -40,15 +35,15 @@ const Profile = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <Label htmlFor="name">Nama</Label>
-            <Input id="name" name="name" value={currentUser?.user_metadata?.full_name || ''} disabled />
+            <Input id="name" name="name" value={currentUser?.user_metadata?.full_name} disabled />
           </div>
           <div>
             <Label htmlFor="email">Email</Label>
-            <Input id="email" name="email" value={currentUser?.email || ''} disabled />
+            <Input id="email" name="email" value={currentUser?.email} disabled />
           </div>
           <div>
             <Label htmlFor="role">Jabatan</Label>
-            <Input id="role" name="role" value={currentUser?.role || ''} disabled />
+            <Input id="role" name="role" value={currentUser?.role} disabled />
           </div>
         </div>
         <div className="mt-6 flex justify-end space-x-4">
