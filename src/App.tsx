@@ -44,6 +44,14 @@ import SemesterDetail5 from "./components/Akademik/SemesterDetail5";
 import SemesterDetail6 from "./components/Akademik/SemesterDetail6";
 import GuruFormPage from "./pages/Guru_form/Index";
 import SiswaFormPage from "./pages/Siswa_form/Index";
+// Jurusan
+import DKVProfile from "./components/Profil_Jurusan/Dkv";
+import Jurusan from "./components/Profil_Jurusan/Jurusan";
+import PHProfile from "./components/Profil_Jurusan/Perhotelan";
+import KCProfile from "./components/Profil_Jurusan/Kecantikan";
+import AKProfile from "./components/Profil_Jurusan/Akutansi";
+import BGProfile from "./components/Profil_Jurusan/Kuliner";
+import BSProfile from "./components/Profil_Jurusan/Busana";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +72,15 @@ const App = () => (
               <Route path="/teachers" element={<Teachers />} />
               <Route path="/subjects" element={<Subjects />} />
               <Route path="/login" element={<LoginPages />} />
+              {/* rute jurusan */}
+              <Route path="/jurusan" element={<Jurusan />} />
+              <Route path="/dkv" element={<DKVProfile />} />
+              <Route path="/perhotelan" element={<PHProfile />} />
+              <Route path="/kecantikan" element={<KCProfile />} />
+              <Route path="/akutansi" element={<AKProfile />} />
+              <Route path="/kuliner" element={<BGProfile />} />
+              <Route path="/busana" element={<BSProfile />} />
+
               {/* <Route path="/register" element={<RegisterPages />} /> */}
               <Route path="/students/SiswaForm" element={<SiswaFormPage />} />
               <Route path="/teachers/GuruForm" element={<GuruFormPage />} />
