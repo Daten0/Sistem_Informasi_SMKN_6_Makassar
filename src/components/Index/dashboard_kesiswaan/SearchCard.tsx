@@ -19,12 +19,8 @@ import {
 } from "@/components/ui/dialog";
 import * as QRCode from "qrcode.react";
 import supabase from "@/supabase";
-import {
-  Card,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
-import StudentProfile from "@/components/dashboard_kesiswaan/StudentProfile";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import StudentProfile from "@/components/Index/dashboard_kesiswaan/StudentProfile";
 import { Badge } from "@/components/ui/badge";
 
 export interface Kejuruan {
@@ -78,7 +74,6 @@ const SearchCard = () => {
   const handleSearch = async (
     department: string | null = selectedDepartment
   ) => {
-
     // if (!searchQuery.trim() && !department) {
     //   setSearchResults([]);
     //   setSearched(false);

@@ -41,55 +41,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getSession = async () => {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
         setSession(session);
-        if (session) {
-          const { data: user, error } = await supabase
+        if (session?.user) {
+          const { data: profile, error } = await supabase
             .from('admins')
-            .select('*')
+            .select('role')
             .eq('id', session.user.id)
             .single();
 
           if (error) {
             console.error('Error fetching user profile:', error);
-          } else {
-            setCurrentUser(user as User);
-          }
-        }
-      } catch (error) {
-        console.error('Error in getSession:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getSession();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        try {
-          setSession(session);
-          if (session) {
-            const { data: user, error } = await supabase
-              .from('admins')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
-            
-            if (error) {
-              console.error('Error fetching user profile on auth state change:', error);
-              setCurrentUser(null);
-            } else {
-              setCurrentUser(user as User);
-            }
-          } else {
             setCurrentUser(null);
+          } else if (profile) {
+            const userWithRole = { ...session.user, role: profile.role };
+            setCurrentUser(userWithRole as User);
           }
-        } catch (error) {
-          console.error('Error in onAuthStateChange handler:', error);
+        } else {
+          setCurrentUser(null);
         }
+        setLoading(false);
       }
     );
 
@@ -110,7 +82,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   return (
     <AuthContext.Provider value={{ currentUser, session, login, logout, loading }}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 }

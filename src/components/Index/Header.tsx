@@ -67,7 +67,7 @@ const Header = () => {
               </Link>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Link to="/login">
+          <Link to="/login" className="hidden">
             <Button className="bg-gradient-primary hover:opacity-90 transition-opacity">
               <User className="w-4 h-4 mr-2" />
               Login Admin
@@ -122,7 +122,7 @@ const Header = () => {
                     </Link>
                   </DropdownMenuContent>
                 </DropdownMenu>
-                <Link to="/login">
+                <Link to="/login" className="hidden">
                   <Button className="bg-gradient-primary hover:opacity-90 transition-opacity w-full">
                     <User className="w-4 h-4 mr-2" />
                     Login

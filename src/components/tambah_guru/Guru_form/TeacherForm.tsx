@@ -40,19 +40,16 @@ import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { Teacher, TeacherForInsert } from "@/contexts/TeachersContext";
 
+
 const formSchema = z.object({
   username: z.string().min(2, { message: "Nama harus diisi minimal 2 karakter" }),
   nip: z.string().length(18, { message: "NIP harus 18 digit" }),
   jabatan: z.string().min(2, { message: "Jabatan harus diisi" }),
-  birth_date: z.date({ required_error: "Tanggal lahir harus diisi" }),
-  asal: z.string().min(2, { message: "Asal harus diisi" }),
-  alamat: z.string().min(5, { message: "Alamat harus diisi minimal 5 karakter" }),
-  agama: z.string({ required_error: "Agama harus dipilih" }),
   mapel: z.array(z.string()).min(1, { message: "Mata pelajaran harus dipilih" }),
   kejuruan: z.array(z.string()).min(1, { message: "Kejuruan harus dipilih" }),
 });
 
-type TeacherFormValues = z.infer<typeof formSchema>;
+export type TeacherFormValues = z.infer<typeof formSchema>;
 
 type TeacherFormProps = {
   onSubmit: (values: TeacherForInsert, imageFile: File | null) => void;
@@ -74,12 +71,8 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
       username: initialData?.username || "",
       nip: initialData?.nip ? String(initialData.nip) : "",
       jabatan: initialData?.jabatan || "",
-      asal: initialData?.asal || "",
-      alamat: initialData?.alamat || "",
-      agama: initialData?.agama || "",
       mapel: initialData?.mapel || [],
       kejuruan: initialData?.kejuruan || [],
-      birth_date: initialData?.birth_date ? new Date(initialData.birth_date) : undefined,
     },
   });
 
@@ -89,12 +82,8 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
         username: initialData.username || "",
         nip: initialData.nip ? String(initialData.nip) : "",
         jabatan: initialData.jabatan || "",
-        asal: initialData.asal || "",
-        alamat: initialData.alamat || "",
-        agama: initialData.agama || "",
         mapel: initialData.mapel || [],
-        kejuruan: initialData.kejuruan || [],
-        birth_date: initialData.birth_date ? new Date(initialData.birth_date) : undefined,
+        kejuruan: initialData.kejuruan || []
       });
       if (initialData.picture_url) {
         setProfileImage(initialData.picture_url);
@@ -155,10 +144,6 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
       username: values.username,
       nip: values.nip,
       jabatan: values.jabatan,
-      birth_date: values.birth_date.toISOString().split('T')[0],
-      asal: values.asal,
-      alamat: values.alamat,
-      agama: values.agama,
       mapel: values.mapel,
       kejuruan: values.kejuruan,
     };
@@ -251,103 +236,6 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
                 <FormControl>
                   <Input placeholder="Masukkan jabatan" {...field} />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="birth_date"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Tanggal Lahir</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant="outline"
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP", { locale: id })
-                        ) : (
-                          <span>Pilih tanggal</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) =>
-                        date > new Date() || date < new Date("1900-01-01")
-                      }
-                      initialFocus
-                      locale={id}
-                    />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="asal"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Asal</FormLabel>
-                <FormControl>
-                  <Input placeholder="Masukkan asal daerah" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="alamat"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Alamat</FormLabel>
-                <FormControl>
-                  <Input placeholder="Masukkan alamat lengkap" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="agama"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Agama</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Pilih agama" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="islam">Islam</SelectItem>
-                    <SelectItem value="kristen">Kristen</SelectItem>
-                    <SelectItem value="katolik">Katolik</SelectItem>
-                    <SelectItem value="hindu">Hindu</SelectItem>
-                    <SelectItem value="buddha">Buddha</SelectItem>
-                    <SelectItem value="konghucu">Konghucu</SelectItem>
-                  </SelectContent>
-                </Select>
                 <FormMessage />
               </FormItem>
             )}

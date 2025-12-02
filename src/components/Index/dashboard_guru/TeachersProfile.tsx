@@ -59,16 +59,6 @@ const TeachersProfile = ({ teacher }: TeachersProfileProps) => {
                 <p className="text-lg text-muted-foreground mb-1">Jabatan</p>
                 <p className="text-2xl font-bold text-foreground">{teacher.jabatan || "-"}</p>
               </div>
-
-              <div>
-                <p className="text-lg text-muted-foreground mb-1">Tempat Lahir</p>
-                <p className="text-2xl font-bold text-foreground">{teacher.asal || "-"}</p>
-              </div>
-
-              <div>
-                <p className="text-lg text-muted-foreground mb-1">Agama</p>
-                <p className="text-2xl font-bold text-foreground">{teacher.agama || "-"}</p>
-              </div>
             </div>
 
             {/* Right Column */}
@@ -81,16 +71,6 @@ const TeachersProfile = ({ teacher }: TeachersProfileProps) => {
               <div>
                 <p className="text-lg text-muted-foreground mb-1">Mata Pelajaran</p>
                 <p className="text-2xl font-bold text-foreground">{formatArray(teacher.mapel)}</p>
-              </div>
-
-              <div>
-                <p className="text-lg text-muted-foreground mb-1">Tanggal Lahir</p>
-                <p className="text-2xl font-bold text-foreground">{formatDate(teacher.birth_date)}</p>
-              </div>
-
-              <div>
-                <p className="text-lg text-muted-foreground mb-1">Alamat</p>
-                <p className="text-2xl font-bold text-foreground">{teacher.alamat || "-"}</p>
               </div>
 
               <div>

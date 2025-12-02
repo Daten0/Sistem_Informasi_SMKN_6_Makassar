@@ -38,44 +38,64 @@ export function NewsProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // In the fetchNews function, replace the existing error handling:
     const fetchNews = async () => {
       setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from('list_berita')
-          .select('*')
-          .order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from("list_berita")
+        .select("*")
+        .order("created_at", { ascending: false });
 
-        if (error) {
-          console.error('Supabase error:', error);
-          // Don't throw error, just use empty array
-          setNewsItems([]);
-        } else {
-          setNewsItems(data || []);
-        }
-      } catch (error) {
-        console.error('Network error:', error);
-        setNewsItems([]);
-      } finally {
-        setLoading(false);
+      if (error) {
+        console.error("Supabase error:", error);
+        toast.error("Gagal memuat berita", { description: error.message });
+      } else {
+        setNewsItems(data || []);
       }
+      setLoading(false);
     };
+
     fetchNews();
+
+    const channel = supabase
+      .channel("list_berita_changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "list_berita" },
+        (payload) => {
+          console.log("Change received!", payload);
+          if (payload.eventType === "INSERT") {
+            setNewsItems((prev) => [payload.new as NewsItem, ...prev]);
+          } else if (payload.eventType === "UPDATE") {
+            setNewsItems((prev) =>
+              prev.map((item) =>
+                item.id === payload.new.id ? (payload.new as NewsItem) : item
+              )
+            );
+          } else if (payload.eventType === "DELETE") {
+            setNewsItems((prev) =>
+              prev.filter((item) => item.id !== (payload.old as any).id)
+            );
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const addNewsItem = async (newsData: NewsItemForInsert) => {
     const { data, error } = await supabase
       .from('list_berita')
       .insert([newsData])
-      .select()
-      .single();
+      .select();
 
     if (error) {
       toast.error('Gagal menambah berita', { description: error.message });
       console.error(error);
-    } else if (data) {
-      setNewsItems(prev => [data, ...prev]);
+    } else if (data && data.length > 0) {
+      // setNewsItems(prev => [data[0], ...prev]);
       toast.success('Berita berhasil ditambahkan');
     }
   };
@@ -85,15 +105,15 @@ export function NewsProvider({ children }: { children: ReactNode }) {
       .from('list_berita')
       .update({ ...newsData, updated_at: new Date().toISOString() })
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) {
       toast.error('Gagal memperbarui berita', { description: error.message });
-    } else if (data) {
-      setNewsItems(prev =>
-        prev.map(item => (item.id === id ? data : item))
-      );
+    } else if (data && data.length > 0) {
+      // const updatedItem = data[0];
+      // setNewsItems(prev =>
+      //   prev.map(item => (item.id === id ? updatedItem : item))
+      // );
       toast.success('Berita berhasil diperbarui');
     }
   };
@@ -107,7 +127,7 @@ export function NewsProvider({ children }: { children: ReactNode }) {
     if (error) {
       toast.error('Gagal menghapus berita', { description: error.message });
     } else {
-      setNewsItems(prev => prev.filter(item => item.id !== id));
+      // setNewsItems(prev => prev.filter(item => item.id !== id));
       toast.success('Berita berhasil dihapus');
     }
   };

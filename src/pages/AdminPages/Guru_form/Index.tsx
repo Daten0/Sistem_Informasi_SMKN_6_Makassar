@@ -1,4 +1,4 @@
-import { TeacherForm } from "@/components/Index/Guru_form/TeacherForm";
+import { TeacherForm } from "@/components/tambah_guru/Guru_form/TeacherForm";
 import { TeachersProvider, useTeachers, TeacherForInsert } from "@/contexts/TeachersContext";
 import { GraduationCap } from "lucide-react";
 import { useNavigate } from "react-router-dom";

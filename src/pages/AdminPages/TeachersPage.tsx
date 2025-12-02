@@ -6,61 +6,65 @@ import { Card } from '../../components/ui/card'
 import { Button } from '../../components/ui/button'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../components/ui/sheet'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/table'
-import { UsersRound } from 'lucide-react';
+import { UsersRound, Plus } from 'lucide-react';
 import { Pencil, Trash} from "lucide-react";
 import { toast } from 'sonner';
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom';
+import { useTeachers } from '@/contexts/TeachersContext';
+import { Teacher } from '@/contexts/TeachersContext';
+import TeachersProfile from '@/components/Index/dashboard_guru/TeachersProfile';
 
 const AdminTeachersPage = () => {
 
-  interface Employee {
-    id: string;
-    name: string;
-    nip: string;
-    department: string[];
-    subjects: string[];
-  }
-  interface EmployeeTableProps {
-    employees: Employee[];
-    onViewDetail: (employee: Employee) => void;
-  }
+  // interface Employee {
+  //   id: string;
+  //   name: string;
+  //   nip: string;
+  //   department: string[];
+  //   subjects: string[];
+  // }
+  // interface EmployeeTableProps {
+  //   employees: Employee[];
+  //   onViewDetail: (employee: Employee) => void;
+  // }
   // State management
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedTeacher, setSelectedTeacher] = useState<Employee | null>(null)
+  const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
 
- // Mock data for demonstration - replace with actual data fetch
-  const [teachers, setTeachers] = useState<Employee[]>([
-    {
-      id: '1',
-      name: 'John Doe',
-      nip: '123456',
-      department: ['dkv'],
-      subjects: ['Dasar Kejuruan DKV']
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      nip: '789012',
-      department: ['ak'],
-      subjects: ['Matematika']
-    }
-  ])
-
+  const { teachers, deleteTeacher, loading } = useTeachers();
   const navigate = useNavigate();
 
-  const handleEdit = (teacher: Employee) => {
+//  // Mock data for demonstration - replace with actual data fetch
+//   const [teachers, setTeachers] = useState<Employee[]>([
+//     {
+//       id: '1',
+//       name: 'John Doe',
+//       nip: '123456',
+//       department: ['dkv'],
+//       subjects: ['Dasar Kejuruan DKV']
+//     },
+//     {
+//       id: '2',
+//       name: 'Jane Smith',
+//       nip: '789012',
+//       department: ['ak'],
+//       subjects: ['Matematika']
+//     }
+//   ])
+
+
+  const handleEdit = (teacher: Teacher) => {
     navigate(`/admin/teachers/edit/${teacher.id}`);
   };
 
   const handleDelete = (teacherId: string) => {
-    setTeachers(teachers.filter((teacher) => teacher.id !== teacherId));
-    toast.success("Guru berhasil dihapus");
+    deleteTeacher(teacherId);
   };
 
   // Filter teachers based on search
   const filteredTeachers = teachers.filter(teacher => 
-    teacher.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    teacher.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
     teacher.nip.includes(searchQuery)
   )
 
@@ -90,6 +94,10 @@ const AdminTeachersPage = () => {
                   placeholder="Cari nama atau NIP..."
                 />
               </div>
+              <Button onClick={() => navigate("/admin/teachers/add-teacher")}>
+                <Plus className="mr-2 h-4 w-4" />
+                Tambah Guru
+              </Button>
             </div>
           </Card>
 
@@ -107,7 +115,7 @@ const AdminTeachersPage = () => {
                     <TableRow className="hover:bg-muted/50">
                       <TableHead className="font-semibold text-foreground">Nama</TableHead>
                       <TableHead className="font-semibold text-foreground">NIP</TableHead>
-                      <TableHead className="font-semibold text-foreground">Mata Pelajaran</TableHead>
+                      <TableHead className="font-semibold text-foreground">Jabatan</TableHead>
                       <TableHead className="text-right font-semibold text-foreground">Aksi</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -117,9 +125,9 @@ const AdminTeachersPage = () => {
                         key={teacher.id}
                         className="hover:bg-muted/50 transition-colors"
                       >
-                        <TableCell className="font-medium text-foreground">{teacher.name}</TableCell>
+                        <TableCell className="font-medium text-foreground">{teacher.username}</TableCell>
                         <TableCell className="text-foreground">{teacher.nip}</TableCell>
-                        <TableCell className="text-foreground">{teacher.subjects}</TableCell>
+                        <TableCell className="text-foreground">{teacher.jabatan}</TableCell>
                         <TableCell className="text-right">
                            <div className="flex items-center justify-end gap-2">
                             <Sheet 
@@ -148,24 +156,9 @@ const AdminTeachersPage = () => {
                                 <SheetHeader className="border-b border-border p-6">
                                   <SheetTitle className="text-2xl font-bold text-foreground">Detail Guru</SheetTitle>
                                 </SheetHeader>
-                                <div className="px-6 py-4 space-y-8">
-                                  <div className="bg-card rounded-lg p-6 border border-border">
-                                    <h3 className="text-xl font-semibold mb-6 text-foreground border-b border-border pb-3">
-                                      Profil Guru
-                                    </h3>
-                                    <div className="text-foreground">
-                                      <ProfileSection />
-                                    </div>
-                                  </div>
-                                  <div className="bg-card rounded-lg p-6 border border-border">
-                                    <h3 className="text-xl font-semibold mb-6 text-foreground border-b border-border pb-3">
-                                      Informasi Personal
-                                    </h3>
-                                    <div className="text-foreground">
-                                      <PersonalInfo />
-                                    </div>
-                                  </div>
-                                </div>
+                                {selectedTeacher && (
+                                  <TeachersProfile teacher={selectedTeacher} />
+                                )}
                               </SheetContent>
                             </Sheet>
                             <Button variant="outline" size="sm" onClick={() => handleEdit(teacher)} className="h-8 w-8 p-0" title="Edit guru">
@@ -195,7 +188,7 @@ const AdminTeachersPage = () => {
             <div className="space-y-4 mt-6">
               <div className="text-left p-4 bg-muted/50 rounded-lg">
                 <p className="text-sm text-muted-foreground mb-1">Total Guru Aktif</p>
-                <p className="text-2xl font-bold text-foreground">{filteredTeachers.length}</p>
+                <p className="text-2xl font-bold text-foreground">{teachers.length}</p>
               </div>
               <div className="text-left p-4 bg-muted/50 rounded-lg">
                 <p className="text-sm text-muted-foreground mb-1">Jurusan</p>

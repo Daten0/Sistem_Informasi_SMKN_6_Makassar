@@ -10,10 +10,6 @@ export interface Teacher {
   nip: string;
   username: string;
   jabatan?: string | null;
-  birth_date?: string | null;
-  asal?: string | null;
-  alamat?: string | null;
-  agama?: string | null;
   mapel?: string[] | null;
   kejuruan?: string[] | null;
   picture_url?: string | null;
@@ -21,12 +17,12 @@ export interface Teacher {
 }
 
 export type TeacherForInsert = Omit<Teacher, "id" | "created_at" | "updated_at" | "picture_url" | "terdaftar"> & { picture_url?: string };
-export type TeacherForUpdate = Partial<TeacherForInsert>;
+export type TeacherForUpdate = Partial<Omit<Teacher, "id" | "created_at" | "updated_at">>;
 
 interface TeachersContextType {
   teachers: Teacher[];
   addTeacher: (teacherData: TeacherForInsert, imageFile: File | null) => Promise<void>;
-  updateTeacher: (id: string, teacherData: TeacherForUpdate, imageFile: File | null) => Promise<void>;
+  updateTeacher: (id: string, teacherData: TeacherForUpdate, imageFile: File | null) => Promise<boolean>;
   deleteTeacher: (id: string) => Promise<void>;
   getTeacherById: (id: string) => Teacher | undefined;
   loading: boolean;
@@ -39,6 +35,8 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isCancelled = false;
+
     const fetchTeachers = async () => {
       setLoading(true);
       try {
@@ -47,22 +45,57 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
           .select("*")
           .order("created_at", { ascending: false });
 
-        if (error) {
-          console.error("Error fetching teachers:", error);
-          toast.error("Gagal memuat data guru", { description: error.message });
-          setTeachers([]);
-        } else {
-          setTeachers(data || []);
+        if (!isCancelled) {
+          if (error) {
+            console.error("Error fetching teachers:", error);
+            toast.error("Gagal memuat data guru", { description: error.message });
+            setTeachers([]);
+          } else {
+            setTeachers(data || []);
+          }
+          setLoading(false);
         }
       } catch (error) {
-        console.error("Unexpected error fetching teachers:", error);
-        toast.error("Terjadi kesalahan saat memuat data guru");
-        setTeachers([]);
+        if (!isCancelled) {
+          console.error("Unexpected error fetching teachers:", error);
+          toast.error("Terjadi kesalahan saat memuat data guru");
+          setTeachers([]);
+          setLoading(false);
+        }
       }
-      setLoading(false);
     };
 
     fetchTeachers();
+
+    const channel = supabase
+      .channel('public:guru')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'guru' },
+        (payload) => {
+          if (payload.eventType === 'INSERT') {
+            setTeachers((currentTeachers) => [payload.new as Teacher, ...currentTeachers]);
+          } else if (payload.eventType === 'UPDATE') {
+            setTeachers((currentTeachers) =>
+              currentTeachers.map((t) =>
+                t.id === (payload.new as Teacher).id ? (payload.new as Teacher) : t
+              )
+            );
+          } else if (payload.eventType === 'DELETE') {
+            setTeachers((currentTeachers) =>
+              currentTeachers.filter(
+                (t) => t.id !== (payload.old as { id: string }).id
+              )
+            );
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      isCancelled = true;
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const addTeacher = async (teacherData: TeacherForInsert, imageFile: File | null) => {
@@ -84,18 +117,18 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
       picture_url = urlData.publicUrl;
     }
 
-    const { data, error } = await supabase.from("guru").insert([{ ...teacherData, picture_url, terdaftar: true }]).select().single();
+    const { data, error } = await supabase.from("guru").insert([{ ...teacherData, picture_url, terdaftar: true }]).select();
 
     if (error) {
       toast.error("Gagal menambah data guru", { description: error.message });
       console.error(error);
-    } else if (data) {
-      setTeachers((prev) => [data, ...prev]);
+    } else if (data && data.length > 0) {
+      // setTeachers((prev) => [data[0], ...prev]);
       toast.success("Data guru berhasil ditambahkan");
     }
   };
 
-  const updateTeacher = async (id: string, teacherData: TeacherForUpdate, imageFile: File | null) => {
+  const updateTeacher = async (id: string, teacherData: TeacherForUpdate, imageFile: File | null): Promise<boolean> => {
     let picture_url = teacherData.picture_url;
 
     if (imageFile) {
@@ -106,7 +139,7 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
 
       if (uploadError) {
         toast.error("Gagal mengunggah gambar baru", { description: uploadError.message });
-        return;
+        return false;
       }
       const { data: urlData } = supabase.storage.from("teacher_pictures").getPublicUrl(uploadData.path);
       picture_url = urlData.publicUrl;
@@ -116,15 +149,21 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
       .from("guru")
       .update({ ...teacherData, picture_url, updated_at: new Date().toISOString() })
       .eq("id", id)
-      .select()
-      .single();
+      .select();
 
     if (error) {
       toast.error("Gagal memperbarui data guru", { description: error.message });
-    } else if (data) {
-      setTeachers((prev) => prev.map((item) => (item.id === id ? data : item)));
-      toast.success("Data guru berhasil diperbarui");
+      return false;
     }
+    
+    // return true;
+
+    if (data && data.length > 0) {
+      toast.success("Data guru berhasil diperbarui");
+      return true;
+    }
+
+    return false;
   };
 
   const deleteTeacher = async (id: string) => {
@@ -133,7 +172,6 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
     if (error) {
       toast.error("Gagal menghapus data guru", { description: error.message });
     } else {
-      setTeachers((prev) => prev.filter((item) => item.id !== id));
       toast.success("Data guru berhasil dihapus");
     }
   };

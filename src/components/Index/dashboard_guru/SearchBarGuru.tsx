@@ -21,7 +21,7 @@ import * as QRCode from "qrcode.react";
 import { TeachersProvider } from "@/contexts/TeachersContext";
 import { useState } from "react";
 import { Teacher } from "@/contexts/TeachersContext";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../../ui/avatar";
 import TeachersProfile from "./TeachersProfile";
 import {
   Select,
