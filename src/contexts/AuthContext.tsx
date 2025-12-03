@@ -24,42 +24,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getInitialSession = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      setSession(session);
-
-      if (session?.user) {
-        try {
-          const { data: adminData, error: adminError } = await supabase
-            .from("admins")
-            .select("role")
-            .eq("id", session.user.id)
-            .single();
-
-          if (adminError) {
-            console.error("Error fetching user profile:", adminError);
-            setUserRole(null);
-            setCurrentUser({ ...session.user, user_role: null });
-          } else {
-            setUserRole(adminData.role);
-            setCurrentUser({ ...session.user, user_role: adminData.role });
-          }
-        } catch (error) {
-          console.error("Error in try-catch fetching user profile:", error);
-          setUserRole(null);
-          setCurrentUser({ ...session.user, user_role: null });
-        }
-      } else {
-        setCurrentUser(null);
-        setUserRole(null);
-      }
-      setLoading(false);
-    };
-
-    getInitialSession();
-
+    setLoading(true);
     const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       if (session?.user) {

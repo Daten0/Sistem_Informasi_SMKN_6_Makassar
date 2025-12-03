@@ -1,4 +1,9 @@
-import React, { createContext, useState, useEffect, ReactNode, useContext } from "react";
+import React, { createContext, 
+  useState, 
+  useEffect, 
+  ReactNode, 
+  useContext,
+  useCallback, } from "react";
 import supabase from "@/supabase";
 import { toast } from "sonner";
 
@@ -98,88 +103,120 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const addTeacher = async (teacherData: TeacherForInsert, imageFile: File | null) => {
-    let picture_url: string | undefined = undefined;
+  const addTeacher = useCallback(
+    async (teacherData: TeacherForInsert, imageFile: File | null) => {
+      let picture_url: string | undefined = undefined;
 
-    if (imageFile) {
-      const fileName = `${Date.now()}_${imageFile.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("teacher_pictures")
-        .upload(fileName, imageFile);
+      if (imageFile) {
+        const fileName = `${Date.now()}_${imageFile.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("teacher_pictures")
+          .upload(fileName, imageFile);
 
-      if (uploadError) {
-        toast.error("Gagal mengunggah gambar", { description: uploadError.message });
-        console.error(uploadError);
-        return;
+        if (uploadError) {
+          toast.error("Gagal mengunggah gambar", {
+            description: uploadError.message,
+          });
+          console.error(uploadError);
+          return;
+        }
+
+        const { data: urlData } = supabase.storage
+          .from("teacher_pictures")
+          .getPublicUrl(uploadData.path);
+        picture_url = urlData.publicUrl;
       }
-      
-      const { data: urlData } = supabase.storage.from("teacher_pictures").getPublicUrl(uploadData.path);
-      picture_url = urlData.publicUrl;
-    }
 
-    const { data, error } = await supabase.from("guru").insert([{ ...teacherData, picture_url, terdaftar: true }]).select();
+      const { data, error } = await supabase
+        .from("guru")
+        .insert([{ ...teacherData, picture_url, terdaftar: true }])
+        .select();
 
-    if (error) {
-      toast.error("Gagal menambah data guru", { description: error.message });
-      console.error(error);
-    } else if (data && data.length > 0) {
-      // setTeachers((prev) => [data[0], ...prev]);
-      toast.success("Data guru berhasil ditambahkan");
-    }
-  };
+      if (error) {
+        toast.error("Gagal menambah data guru", {
+          description: error.message,
+        });
+        console.error(error);
+      } else if (data && data.length > 0) {
+        toast.success("Data guru berhasil ditambahkan");
+      }
+    },
+    []
+  );
 
-  const updateTeacher = async (id: string, teacherData: TeacherForUpdate, imageFile: File | null): Promise<boolean> => {
-    let picture_url = teacherData.picture_url;
+  const updateTeacher = useCallback(
+    async (
+      id: string,
+      teacherData: TeacherForUpdate,
+      imageFile: File | null
+    ): Promise<boolean> => {
+      let picture_url = teacherData.picture_url;
 
-    if (imageFile) {
-      const fileName = `${Date.now()}_${imageFile.name}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from("teacher_pictures")
-        .upload(fileName, imageFile);
+      if (imageFile) {
+        const fileName = `${Date.now()}_${imageFile.name}`;
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("teacher_pictures")
+          .upload(fileName, imageFile);
 
-      if (uploadError) {
-        toast.error("Gagal mengunggah gambar baru", { description: uploadError.message });
+        if (uploadError) {
+          toast.error("Gagal mengunggah gambar baru", {
+            description: uploadError.message,
+          });
+          return false;
+        }
+        const { data: urlData } = supabase.storage
+          .from("teacher_pictures")
+          .getPublicUrl(uploadData.path);
+        picture_url = urlData.publicUrl;
+      }
+
+      const { data, error } = await supabase
+        .from("guru")
+        .update({
+          ...teacherData,
+          picture_url,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", id)
+        .select();
+
+      if (error) {
+        toast.error("Gagal memperbarui data guru", {
+          description: error.message,
+        });
         return false;
       }
-      const { data: urlData } = supabase.storage.from("teacher_pictures").getPublicUrl(uploadData.path);
-      picture_url = urlData.publicUrl;
-    }
-    
-    const { data, error } = await supabase
-      .from("guru")
-      .update({ ...teacherData, picture_url, updated_at: new Date().toISOString() })
-      .eq("id", id)
-      .select();
 
-    if (error) {
-      toast.error("Gagal memperbarui data guru", { description: error.message });
+      if (data && data.length > 0) {
+        toast.success("Data guru berhasil diperbarui");
+        return true;
+      }
+
       return false;
-    }
-    
-    // return true;
+    },
+    []
+  );
 
-    if (data && data.length > 0) {
-      toast.success("Data guru berhasil diperbarui");
-      return true;
-    }
-
-    return false;
-  };
-
-  const deleteTeacher = async (id: string) => {
+  const deleteTeacher = useCallback(async (id: string) => {
     const { error } = await supabase.from("guru").delete().eq("id", id);
 
     if (error) {
-      toast.error("Gagal menghapus data guru", { description: error.message });
+      toast.error("Gagal menghapus data guru", {
+        description: error.message,
+      });
     } else {
       toast.success("Data guru berhasil dihapus");
     }
-  };
+  }, []);
 
-  const getTeacherById = (id: string) => {
-    return teachers.find((item) => item.id === id);
-  };
+  const getTeacherById = useCallback(
+    (id: string) => {
+      return teachers.find((item) => item.id === id);
+    },
+    [teachers]
+  );
 
+  
   return (
     <TeachersContext.Provider
       value={{

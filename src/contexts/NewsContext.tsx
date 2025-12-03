@@ -1,4 +1,9 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, 
+  useState, 
+  useEffect, 
+  ReactNode,
+  useCallback,
+ } from 'react';
 import supabase from '@/supabase';
 import { toast } from 'sonner';
 
@@ -85,56 +90,58 @@ export function NewsProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const addNewsItem = async (newsData: NewsItemForInsert) => {
+  const addNewsItem = useCallback(async (newsData: NewsItemForInsert) => {
     const { data, error } = await supabase
-      .from('list_berita')
+      .from("list_berita")
       .insert([newsData])
       .select();
 
     if (error) {
-      toast.error('Gagal menambah berita', { description: error.message });
+      toast.error("Gagal menambah berita", { description: error.message });
       console.error(error);
     } else if (data && data.length > 0) {
-      // setNewsItems(prev => [data[0], ...prev]);
-      toast.success('Berita berhasil ditambahkan');
+      toast.success("Berita berhasil ditambahkan");
     }
-  };
+  }, []);
 
-  const updateNewsItem = async (id: string, newsData: Partial<NewsItemForInsert>) => {
-    const { data, error } = await supabase
-      .from('list_berita')
-      .update({ ...newsData, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select();
+  const updateNewsItem = useCallback(
+    async (id: string, newsData: Partial<NewsItemForInsert>) => {
+      const { data, error } = await supabase
+        .from("list_berita")
+        .update({ ...newsData, updated_at: new Date().toISOString() })
+        .eq("id", id)
+        .select();
 
-    if (error) {
-      toast.error('Gagal memperbarui berita', { description: error.message });
-    } else if (data && data.length > 0) {
-      // const updatedItem = data[0];
-      // setNewsItems(prev =>
-      //   prev.map(item => (item.id === id ? updatedItem : item))
-      // );
-      toast.success('Berita berhasil diperbarui');
-    }
-  };
+      if (error) {
+        toast.error("Gagal memperbarui berita", {
+          description: error.message,
+        });
+      } else if (data && data.length > 0) {
+        toast.success("Berita berhasil diperbarui");
+      }
+    },
+    []
+  );
 
-  const deleteNewsItem = async (id: string) => {
+  const deleteNewsItem = useCallback(async (id: string) => {
     const { error } = await supabase
-      .from('list_berita')
+      .from("list_berita")
       .delete()
-      .eq('id', id);
+      .eq("id", id);
 
     if (error) {
-      toast.error('Gagal menghapus berita', { description: error.message });
+      toast.error("Gagal menghapus berita", { description: error.message });
     } else {
-      // setNewsItems(prev => prev.filter(item => item.id !== id));
-      toast.success('Berita berhasil dihapus');
+      toast.success("Berita berhasil dihapus");
     }
-  };
+  }, []);
 
-  const getNewsById = (id: string) => {
-    return newsItems.find(item => item.id === id);
-  };
+  const getNewsById = useCallback(
+    (id: string) => {
+      return newsItems.find((item) => item.id === id);
+    },
+    [newsItems]
+  );
 
   return (
     <NewsContext.Provider value={{
