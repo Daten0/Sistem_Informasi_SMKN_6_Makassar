@@ -1,12 +1,24 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Palette, Target, Eye, Monitor, Camera, PenTool } from "lucide-react";
+import { Sparkles, Target, Eye, WandSparkles, ShowerHead, Armchair } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const KCProfile = () => {
   const facilities = [
-    { icon: Monitor, name: "Lab Komputer Desain", desc: "30 unit iMac dengan software profesional" },
-    { icon: Camera, name: "Studio Fotografi", desc: "Peralatan lighting dan backdrop lengkap" },
-    { icon: PenTool, name: "Workshop Cetak", desc: "Mesin cetak digital dan sablon" },
+    {
+      icon: WandSparkles,
+      name: "Make-up/Aesthetic Lab",
+      desc: "Meja rias individu yang dilengkapi dengan lampu bohlam di sekeliling cermin (lampu Hollywood) untuk pencahayaan optimal yang menyerupai kondisi profesional.",
+    },
+    {
+      icon: ShowerHead,
+      name: "Skin & Body Care Lab",
+      desc: "Ruangan yang didesain untuk praktik pijat dan body wrapping, lengkap dengan bathtub atau shower jika memungkinkan.",
+    },
+    {
+      icon: Armchair,
+      name: "Hair Styling & Treatment Lab",
+      desc: "Stasiun kerja individu yang dilengkapi cermin besar dan kursi salon yang dapat diputar dan diatur tingginya.",
+    },
   ];
 
   return (
@@ -14,25 +26,31 @@ const KCProfile = () => {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <Link to="/jurusan" className="text-primary hover:underline text-sm mb-4 inline-block">
+          <Link
+            to="/jurusan"
+            className="text-primary hover:underline text-sm mb-4 inline-block"
+          >
             ← Kembali ke Beranda
           </Link>
           <div className="flex items-center gap-4 mb-6">
             <div className="p-4 bg-primary/10 rounded-2xl">
-              <Palette className="w-12 h-12 text-primary" />
+              <Sparkles className="w-12 h-12 text-primary" />
             </div>
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground">
                 Kecantikan
               </h1>
               <p className="text-muted-foreground text-lg mt-2">
-                Jurusan DKV - SMK Negeri 6 Makassar
+                Jurusan Kecantikan - SMK Negeri 6 Makassar
               </p>
             </div>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-            Program keahlian yang mempersiapkan siswa menjadi desainer kreatif dan profesional 
-            dalam bidang komunikasi visual, branding, dan multimedia.
+            Program keahlian yang mempersiapkan siswa menjadi praktisi dan
+            beautician profesional di bidang estetika. Pembelajaran berfokus
+            pada teknik perawatan kulit dan tubuh, penataan rambut, riasan wajah
+            artistik, serta manajemen salon dan konsultasi kecantikan berstandar
+            industri.
           </p>
         </div>
       </section>
@@ -49,9 +67,7 @@ const KCProfile = () => {
                 <h2 className="text-2xl font-bold text-foreground">Visi</h2>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                Menjadi program keahlian unggulan yang menghasilkan lulusan kompeten, kreatif, 
-                dan berdaya saing tinggi di bidang desain komunikasi visual yang mampu 
-                berkontribusi pada industri kreatif Indonesia.
+                Menjadi program keahlian terdepan yang menghasilkan lulusan praktisi kecantikan profesional yang kompeten, inovatif dalam tren estetika, dan beretika dalam memberikan layanan tata kecantikan kulit dan rambut berdaya saing global.
               </p>
             </CardContent>
           </Card>
@@ -67,19 +83,19 @@ const KCProfile = () => {
               <ul className="text-muted-foreground space-y-2">
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menyelenggarakan pendidikan desain berkualitas tinggi
+                  Melaksanakan kurikulum praktik berstandar salon/klinik kecantikan untuk menguasai teknik tata kecantikan kulit, rambut, dan rias.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Mengembangkan kreativitas dan inovasi siswa
+                  Membentuk profesionalisme siswa dengan fokus pada etika pelayanan prima, higienitas (HSE), dan kemampuan analisis estetika klien.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menjalin kerjasama dengan industri kreatif
+                  Menjalin kemitraan strategis dengan industri salon, spa, dan klinik kecantikan terkemuka untuk menunjang Praktik Kerja Lapangan (PKL) dan penyerapan lulusan.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Membekali siswa dengan keterampilan digital terkini
+                  Mendorong inovasi dan kreativitas siswa dalam mengikuti tren estetika terkini serta manajemen bisnis salon.
                 </li>
               </ul>
             </CardContent>
@@ -95,13 +111,20 @@ const KCProfile = () => {
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {facilities.map((facility, idx) => (
-              <Card key={idx} className="border-0 shadow-md bg-card hover:shadow-lg hover:-translate-y-1 transition-all">
+              <Card
+                key={idx}
+                className="border-0 shadow-md bg-card hover:shadow-lg hover:-translate-y-1 transition-all"
+              >
                 <CardContent className="p-6 text-center">
                   <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
                     <facility.icon className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">{facility.name}</h3>
-                  <p className="text-muted-foreground text-sm">{facility.desc}</p>
+                  <h3 className="text-lg font-bold text-foreground mb-2">
+                    {facility.name}
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    {facility.desc}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -119,7 +142,9 @@ const KCProfile = () => {
             { value: "80%", label: "Terserap Industri" },
           ].map((stat, idx) => (
             <div key={idx} className="text-center p-6">
-              <p className="text-4xl font-bold text-primary mb-2">{stat.value}</p>
+              <p className="text-4xl font-bold text-primary mb-2">
+                {stat.value}
+              </p>
               <p className="text-muted-foreground">{stat.label}</p>
             </div>
           ))}

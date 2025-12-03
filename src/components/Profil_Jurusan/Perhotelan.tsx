@@ -1,12 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Palette, Target, Eye, Monitor, Camera, PenTool } from "lucide-react";
+import { Hotel, Target, Eye, MonitorDot, House, IceCreamBowl } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const PHProfile = () => {
   const facilities = [
-    { icon: Monitor, name: "Fasilitas Kantor Depan (Front Office)", desc: "Front Office yang Sesuai Dengan Hotel Pada Umumnya" },
-    { icon: Camera, name: "Studio Fotografi", desc: "Peralatan lighting dan backdrop lengkap" },
-    { icon: PenTool, name: "Workshop Cetak", desc: "Mesin cetak digital dan sablon" },
+    { icon: MonitorDot, name: "Front Office", desc: "Meja resepsionis yang dilengkapi dengan papan kunci dan rak surat (folio rack)" },
+    { icon: House, name: "Housekeeping", desc: "Satu atau dua unit kamar simulasi yang didesain menyerupai kamar hotel standar (termasuk kamar mandi) untuk latihan membuat tempat tidur (making bed), membersihkan kamar, dan penataan amenitas." },
+    { icon: IceCreamBowl, name: "Food & Beverage - F&B", desc: "Ruangan makan yang ditata seperti restoran sungguhan, lengkap dengan meja, kursi, dan peralatan makan (cutlery, chinaware, glassware) untuk latihan table set-up dan pelayanan (seperti Russian Service atau American Service)." },
   ];
 
   return (
@@ -19,7 +19,7 @@ const PHProfile = () => {
           </Link>
           <div className="flex items-center gap-4 mb-6">
             <div className="p-4 bg-primary/10 rounded-2xl">
-              <Palette className="w-12 h-12 text-primary" />
+              <Hotel className="w-12 h-12 text-primary" />
             </div>
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground">

@@ -1,12 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Palette, Target, Eye, Monitor, Camera, PenTool } from "lucide-react";
+import { Citrus, Target, Eye, ChefHat, Microwave, Utensils } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const BGProfile = () => {
   const facilities = [
-    { icon: Monitor, name: "Lab Komputer Desain", desc: "30 unit iMac dengan software profesional" },
-    { icon: Camera, name: "Studio Fotografi", desc: "Peralatan lighting dan backdrop lengkap" },
-    { icon: PenTool, name: "Workshop Cetak", desc: "Mesin cetak digital dan sablon" },
+    { icon: ChefHat, name: "Kitchen Laboratory", desc: "Dapur utama yang dirancang untuk pembelajaran teknik memasak dasar, pengenalan alat, dan praktik higienitas." },
+    { icon: Microwave, name: "Kitchen: Pastry & Bakery", desc: "Dapur khusus dengan Oven besar (convection oven), Mixer Adonan (heavy duty), Mesin Proofer, chiller, dan meja kerja marmer/kayu untuk pastry." },
+    { icon: Utensils, name: "Restaurant & Service", desc: "Ruangan makan yang ditata secara formal dengan meja, kursi, taplak meja (linen), dan peralatan makan lengkap (chinaware, glassware, cutlery)." },
   ];
 
   return (
@@ -19,20 +19,19 @@ const BGProfile = () => {
           </Link>
           <div className="flex items-center gap-4 mb-6">
             <div className="p-4 bg-primary/10 rounded-2xl">
-              <Palette className="w-12 h-12 text-primary" />
+              <Citrus className="w-12 h-12 text-primary" />
             </div>
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground">
                 Kuliner
               </h1>
               <p className="text-muted-foreground text-lg mt-2">
-                Jurusan DKV - SMK Negeri 6 Makassar
+                Jurusan Tata Boga - SMK Negeri 6 Makassar
               </p>
             </div>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-            Program keahlian yang mempersiapkan siswa menjadi desainer kreatif dan profesional 
-            dalam bidang komunikasi visual, branding, dan multimedia.
+            Program keahlian yang mencetak tenaga profesional kuliner (chef) yang menguasai seni dan teknik pengolahan makanan berstandar industri, serta praktik higienitas dan manajemen dapur komersial.
           </p>
         </div>
       </section>
@@ -49,9 +48,7 @@ const BGProfile = () => {
                 <h2 className="text-2xl font-bold text-foreground">Visi</h2>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                Menjadi program keahlian unggulan yang menghasilkan lulusan kompeten, kreatif, 
-                dan berdaya saing tinggi di bidang desain komunikasi visual yang mampu 
-                berkontribusi pada industri kreatif Indonesia.
+                Menjadi pusat unggulan pendidikan kuliner yang menghasilkan lulusan profesional, inovatif, dan beretika dalam seni pengolahan makanan, serta mampu bersaing di tingkat nasional maupun internasional di industri Food and Beverage (F&B).
               </p>
             </CardContent>
           </Card>
@@ -67,19 +64,15 @@ const BGProfile = () => {
               <ul className="text-muted-foreground space-y-2">
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menyelenggarakan pendidikan desain berkualitas tinggi
+                  Melaksanakan pendidikan kuliner berstandar industri untuk menguasai teknik pengolahan makanan (Nusantara dan Internasional).
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Mengembangkan kreativitas dan inovasi siswa
+                  Membentuk tenaga profesional yang menjunjung tinggi etika kerja, higienitas, dan sanitasi pangan di dapur komersial.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menjalin kerjasama dengan industri kreatif
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  Membekali siswa dengan keterampilan digital terkini
+                  Menjalin kemitraan strategis dengan industri Food & Beverage (F&B) untuk menunjang praktik dan menumbuhkan jiwa wirausaha siswa.
                 </li>
               </ul>
             </CardContent>

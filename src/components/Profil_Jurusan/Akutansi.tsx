@@ -1,12 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Palette, Target, Eye, Monitor, Camera, PenTool } from "lucide-react";
+import { Calculator, Target, Eye, Monitor, Warehouse, LibraryBig } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const AKProfile = () => {
   const facilities = [
-    { icon: Monitor, name: "Lab Komputer Desain", desc: "30 unit iMac dengan software profesional" },
-    { icon: Camera, name: "Studio Fotografi", desc: "Peralatan lighting dan backdrop lengkap" },
-    { icon: PenTool, name: "Workshop Cetak", desc: "Mesin cetak digital dan sablon" },
+    { icon: Monitor, name: "Laboratorium Komputer Akuntansi", desc: "30 unit komputer dengan Instalasi software akuntansi yang umum digunakan di Indonesia." },
+    { icon: Warehouse, name: "Ruang Praktik Administrasi Keuangan", desc: "eja dan kursi kerja yang ditata seperti lingkungan kerja kantor/akuntan." },
+    { icon: LibraryBig, name: "Perpustakaan dan Sumber Belajar", desc: "Buku-buku teks Akuntansi Dasar, Akuntansi Biaya, Akuntansi Perpajakan, dan Akuntansi Perusahaan Jasa/Dagang." },
   ];
 
   return (
@@ -19,20 +19,19 @@ const AKProfile = () => {
           </Link>
           <div className="flex items-center gap-4 mb-6">
             <div className="p-4 bg-primary/10 rounded-2xl">
-              <Palette className="w-12 h-12 text-primary" />
+              <Calculator className="w-12 h-12 text-primary" />
             </div>
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground">
                 Akutansi
               </h1>
               <p className="text-muted-foreground text-lg mt-2">
-                Jurusan DKV - SMK Negeri 6 Makassar
+                Jurusan Akutansi - SMK Negeri 6 Makassar
               </p>
             </div>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-            Program keahlian yang mempersiapkan siswa menjadi desainer kreatif dan profesional 
-            dalam bidang komunikasi visual, branding, dan multimedia.
+            Program keahlian yang mempersiapkan siswa menjadi tenaga administrasi dan pelapor keuangan profesional. Pembelajaran berfokus pada pencatatan transaksi bisnis, penyusunan laporan keuangan, perpajakan, serta penguasaan aplikasi akuntansi digital.
           </p>
         </div>
       </section>
@@ -49,9 +48,7 @@ const AKProfile = () => {
                 <h2 className="text-2xl font-bold text-foreground">Visi</h2>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                Menjadi program keahlian unggulan yang menghasilkan lulusan kompeten, kreatif, 
-                dan berdaya saing tinggi di bidang desain komunikasi visual yang mampu 
-                berkontribusi pada industri kreatif Indonesia.
+                Menjadi program keahlian Akuntansi terdepan yang menghasilkan lulusan berintegritas, kompeten dalam pencatatan dan pelaporan keuangan, serta siap kerja menggunakan aplikasi akuntansi terkini.
               </p>
             </CardContent>
           </Card>
@@ -67,19 +64,19 @@ const AKProfile = () => {
               <ul className="text-muted-foreground space-y-2">
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menyelenggarakan pendidikan desain berkualitas tinggi
+                  Melaksanakan pendidikan berbasis standar akuntansi dan praktik bisnis untuk penguasaan siklus akuntansi secara menyeluruh.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Mengembangkan kreativitas dan inovasi siswa
+                  Membekali siswa dengan kompetensi digital dalam penggunaan aplikasi akuntansi, spreadsheet, dan sistem perpajakan.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menjalin kerjasama dengan industri kreatif
+                  Membentuk lulusan yang beretika, teliti, dan berintegritas tinggi dalam pengelolaan data dan rahasia keuangan perusahaan.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Membekali siswa dengan keterampilan digital terkini
+                  Menjalin kemitraan dengan kantor akuntan publik (KAP), bank, dan industri untuk memastikan relevansi kurikulum dan penyerapan lulusan di dunia kerja.
                 </li>
               </ul>
             </CardContent>
