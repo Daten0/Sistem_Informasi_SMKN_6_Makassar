@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sheet";
 import { Users, BookOpen, GraduationCap } from "lucide-react";
 import schoolLogo from "@/assets/school-logo.png";
-import { useProfile } from "@/pages/AdminPages";
+import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 
@@ -19,7 +19,7 @@ interface HeaderProps {
 
 const Header = ({ toggleSidebar }: HeaderProps) => {
   const [isDarkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
-  const { username, profileImage } = useProfile();
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     if (isDarkMode) {
@@ -56,25 +56,25 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
                     </div>
                     <nav className="mt-6">
                         <ul>
-                          <li>
+                          {/* <li>
                               <Link to="/admin/student-display" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <Users className="w-5 h-5" />
                                 <span className="ml-4">Siswa</span>
                               </Link>
-                          </li>
+                          </li> */}
                           <li>
                               <Link to="/admin/teachers" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
                                 <GraduationCap className="w-5 h-5" />
                                 <span className="ml-4">Guru</span>
                               </Link>
                           </li>
-                          <li>
-                              <Link to="/admin/materials" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
+                          {/* <li>
+                              <Link to="/admin/kejuruan" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
 
                                 <BookOpen className="w-5 h-5" />
                                 <span className="ml-4">Akademik</span>
                               </Link>
-                          </li>
+                          </li> */}
                           <li>
                               <Link to="/admin/berita" className="flex items-center px-6 py-3 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700">
                               <Newspaper className="w-5 h-5" />
@@ -94,10 +94,10 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
           </Button>
           <Link to="/admin/profile" className="flex items-center space-x-2">
             <Avatar className="w-8 h-8">
-              <AvatarImage src={profileImage || undefined} />
-              <AvatarFallback>{username.charAt(0)}</AvatarFallback>
+              <AvatarImage src={undefined} />
+              <AvatarFallback>{currentUser?.user_metadata?.full_name?.charAt(0)}</AvatarFallback>
             </Avatar>
-            <span className="hidden sm:inline">{username}</span>
+            <span className="hidden sm:inline">{currentUser?.user_metadata?.full_name}</span>
           </Link>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -14,32 +14,27 @@ import {
   FileText
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useNews } from "@/contexts/NewsContext";
-import { useToast } from "@/hooks/use-toast";
+import { useNews } from "@/hooks/useNews";
+import { toast as sonner } from "sonner";
 
 export default function NewsList() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { newsItems, deleteNewsItem } = useNews();
-  const { toast } = useToast();
+  const { newsItems, deleteNewsItem, loading } = useNews();
 
   const filteredNews = newsItems.filter(item =>
-    item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    item.excerpt.toLowerCase().includes(searchTerm.toLowerCase())
+    item.judul_berita.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (item.ringkasan && item.ringkasan.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  const handleDelete = (id: number, title: string) => {
+  const handleDelete = async (id: string, title: string) => {
     if (window.confirm(`Apakah Anda yakin ingin menghapus berita "${title}"?`)) {
-      deleteNewsItem(id);
-      toast({
-        title: "Berhasil!",
-        description: `Berita "${title}" telah dihapus`,
-      });
+      await deleteNewsItem(id);
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "published":
+      case "publikasi":
         return <Badge className="bg-success text-success-foreground">Published</Badge>;
       case "draft":
         return <Badge variant="secondary">Draft</Badge>;
@@ -47,6 +42,14 @@ export default function NewsList() {
         return <Badge variant="outline">Unknown</Badge>;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p>Loading news...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">
@@ -85,12 +88,12 @@ export default function NewsList() {
             <CardHeader className="p-0">
               <div className="relative overflow-hidden rounded-t-lg">
                 <img
-                  src={news.image}
-                  alt={news.title}
+                  src={news.gambar_berita}
+                  alt={news.judul_berita}
                   className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute top-4 right-4">
-                  {getStatusBadge(news.status)}
+                  {getStatusBadge(news.publikasi_berita)}
                 </div>
               </div>
             </CardHeader>
@@ -98,28 +101,24 @@ export default function NewsList() {
               <div className="space-y-4">
                 <div>
                   <h3 className="font-semibold text-lg text-foreground line-clamp-2 mb-2">
-                    {news.title}
+                    {news.judul_berita}
                   </h3>
                   <p className="text-muted-foreground text-sm line-clamp-3">
-                    {news.excerpt}
+                    {news.ringkasan}
                   </p>
                 </div>
 
                 <div className="flex items-center justify-between text-xs text-muted-foreground">
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center">
-                      <User className="h-3 w-3 mr-1" />
-                      {news.author}
-                    </div>
-                    <div className="flex items-center">
                       <Calendar className="h-3 w-3 mr-1" />
-                      {news.publishDate}
+                      {new Date(news.created_at).toLocaleDateString()}
                     </div>
                   </div>
-                  <div className="flex items-center">
+                  {/* <div className="flex items-center">
                     <Eye className="h-3 w-3 mr-1" />
                     {news.views}
-                  </div>
+                  </div> */}
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pt-4 border-t border-border">
@@ -134,7 +133,7 @@ export default function NewsList() {
                       variant="outline" 
                       size="sm" 
                       className="text-destructive hover:text-destructive flex-1 sm:flex-none"
-                      onClick={() => handleDelete(news.id, news.title)}
+                      onClick={() => handleDelete(news.id, news.judul_berita)}
                     >
                       <Trash2 className="h-3 w-3" />
                     </Button>
@@ -159,7 +158,7 @@ export default function NewsList() {
           <p className="text-muted-foreground mb-4">
             {searchTerm ? "Coba ubah kata kunci pencarian" : "Mulai dengan membuat berita pertama Anda"}
           </p>
-          <Link to="/admin/news/create">
+          <Link to="/admin/berita/buatBerita">
             <Button>
               <Plus className="h-4 w-4 mr-2" />
               Tambah Berita

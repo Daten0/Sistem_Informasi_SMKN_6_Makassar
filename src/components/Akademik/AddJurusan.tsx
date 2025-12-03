@@ -13,46 +13,40 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toast } from "sonner";
+import supabase from "@/supabase";
 
 const formSchema = z.object({
-  name: z.string().min(1, "Nama jurusan tidak boleh kosong").max(100),
-  label: z.string().min(1, "Label jurusan tidak boleh kosong").max(100),
+  id: z.string().optional(),
+  nama_jurusan: z.string().min(1, "Nama jurusan tidak boleh kosong").max(100),
+  label_jurusan: z.string().min(1, "Label jurusan tidak boleh kosong").max(100),
 });
 
 const AddSubject = () => {
   const navigate = useNavigate();
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      label: "",
+      nama_jurusan: "",
+      label_jurusan: "",
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    // Get existing subjects
-    const existingSubjects = JSON.parse(localStorage.getItem('subjects') || '[]');
-    
-    // Create new subject with 6 semesters
-    const newSubject = {
-      id: Math.random().toString(36).substr(2, 9),
-      abbreviation: values.label,
-      fullName: values.name,
-      semesters: [1, 2, 3, 4, 5, 6]
-    };
-    
-    // Add to existing subjects
-    const updatedSubjects = [...existingSubjects, newSubject];
-    
-    // Save to localStorage
-    localStorage.setItem('subjects', JSON.stringify(updatedSubjects));
-    
-    toast.success("Jurusan berhasil ditambahkan", {
-      description: `${values.label} - ${values.name}`,
-    });
-    
-    navigate("/admin/materials");
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    const { error } = await supabase
+      .from("kejuruan")
+      .insert([{ nama_jurusan: values.nama_jurusan, label_jurusan: values.label_jurusan }]);
+
+    if (error) {
+      toast.error("Gagal menambahkan jurusan", {
+        description: error.message,
+      });
+    } else {
+      toast.success("Jurusan berhasil ditambahkan", {
+        description: `${values.label_jurusan} - ${values.nama_jurusan}`,
+      });
+      navigate("/admin/kejuruan");
+    }
   };
 
   return (
@@ -60,26 +54,29 @@ const AddSubject = () => {
       <div className="container mx-auto px-4 py-8 max-w-7xl">
         {/* Header */}
         <div className="bg-card rounded-2xl shadow-sm p-6 mb-8">
-          <h1 className="text-3xl font-bold text-foreground">
-            TAMBAH JURUSAN
-          </h1>
+          <h1 className="text-3xl font-bold text-foreground">TAMBAH JURUSAN</h1>
         </div>
 
         {/* Form Card */}
         <div className="flex justify-center">
           <div className="bg-card rounded-2xl shadow-lg p-8 w-full max-w-lg">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-8"
+              >
                 <FormField
                   control={form.control}
-                  name="name"
+                  name="nama_jurusan"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg font-bold">NAMA JURUSAN</FormLabel>
+                      <FormLabel className="text-lg font-bold">
+                        NAMA JURUSAN
+                      </FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="" 
-                          {...field} 
+                        <Input
+                          placeholder=""
+                          {...field}
                           className="h-12 bg-muted"
                         />
                       </FormControl>
@@ -90,14 +87,16 @@ const AddSubject = () => {
 
                 <FormField
                   control={form.control}
-                  name="label"
+                  name="label_jurusan"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-lg font-bold">LABEL JURUSAN</FormLabel>
+                      <FormLabel className="text-lg font-bold">
+                        LABEL JURUSAN
+                      </FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder="" 
-                          {...field} 
+                        <Input
+                          placeholder=""
+                          {...field}
                           className="h-12 bg-muted"
                         />
                       </FormControl>
@@ -107,8 +106,8 @@ const AddSubject = () => {
                 />
 
                 <div className="flex justify-center pt-4">
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     size="lg"
                     className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-12"
                   >

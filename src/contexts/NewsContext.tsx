@@ -1,132 +1,138 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import supabase from '@/supabase';
+import { toast } from 'sonner';
 
+// Matches the Supabase 'list_berita' table
 export interface NewsItem {
-  id: number;
-  title: string;
-  excerpt: string;
-  content: string;
-  author: string;
-  publishDate: string;
-  status: 'published' | 'draft';
-  views: number;
-  image: string;
-  category: string;
+  id: string;
+  created_at: string;
+  updated_at?: string | null;
+  judul_berita: string;
+  ringkasan: string;
+  konten: string;
+  publikasi_berita: 'publikasi' | 'draft';
+  kategori_berita: 'Prestasi' | 'Terkini' | 'Ekskul' | 'Daily';
   tags: string[];
+  gambar_berita: string;
+  author_id?: string | null;
 }
+
+// Type for data used when creating a new news item
+export type NewsItemForInsert = Omit<NewsItem, 'id' | 'created_at' | 'updated_at'> & {
+  author_id?: string;
+};
 
 interface NewsContextType {
   newsItems: NewsItem[];
-  addNewsItem: (newsData: Omit<NewsItem, 'id' | 'views' | 'publishDate'>) => void;
-  updateNewsItem: (id: number, newsData: Partial<NewsItem>) => void;
-  deleteNewsItem: (id: number) => void;
-  getNewsById: (id: number) => NewsItem | undefined;
+  addNewsItem: (newsData: NewsItemForInsert) => Promise<void>;
+  updateNewsItem: (id: string, newsData: Partial<NewsItemForInsert>) => Promise<void>;
+  deleteNewsItem: (id: string) => Promise<void>;
+  getNewsById: (id: string) => NewsItem | undefined;
+  loading: boolean;
 }
 
-const NewsContext = createContext<NewsContextType | undefined>(undefined);
+export const NewsContext = createContext<NewsContextType | undefined>(undefined);
 
-// Default news items for demo
-const defaultNewsItems: NewsItem[] = [
-  {
-    id: 1,
-    title: "Tips Menggunakan AI dalam Bisnis Modern",
-    excerpt: "Pelajari bagaimana AI dapat meningkatkan efisiensi dan produktivitas bisnis Anda...",
-    content: "Artificial Intelligence (AI) telah menjadi game-changer dalam dunia bisnis modern. Dengan kemampuan untuk menganalisis data dalam skala besar dan memberikan insights yang berharga, AI membantu perusahaan membuat keputusan yang lebih cerdas dan strategis.",
-    author: "Admin",
-    publishDate: "2024-01-15",
-    status: "published",
-    views: 234,
-    image: "/api/placeholder/300/200",
-    category: "teknologi",
-    tags: ["AI", "Bisnis", "Teknologi"]
-  },
-  {
-    id: 2,
-    title: "Tren Teknologi yang Akan Mengubah Dunia",
-    excerpt: "Eksplorasi teknologi terdepan yang akan membentuk masa depan...",
-    content: "Teknologi terus berkembang dengan pesat, membawa perubahan fundamental dalam cara kita hidup dan bekerja. Dari blockchain hingga quantum computing, inovasi-inovasi ini akan membentuk masa depan dunia.",
-    author: "Admin",
-    publishDate: "2024-01-14",
-    status: "draft",
-    views: 0,
-    image: "/api/placeholder/300/200",
-    category: "teknologi",
-    tags: ["Teknologi", "Inovasi", "Masa Depan"]
-  },
-  {
-    id: 3,
-    title: "Panduan Lengkap Digital Marketing 2024",
-    excerpt: "Strategi marketing digital yang efektif untuk meningkatkan brand awareness...",
-    content: "Digital marketing telah menjadi tulang punggung strategi pemasaran modern. Dengan berbagai platform dan tools yang tersedia, bisnis dapat menjangkau target audience dengan lebih efektif dan terukur.",
-    author: "Admin",
-    publishDate: "2024-01-13",
-    status: "published",
-    views: 189,
-    image: "/placeholder.svg",
-    category: "bisnis",
-    tags: ["Marketing", "Digital", "Strategi"]
-  }
-];
+export function NewsProvider({ children }: { children: ReactNode }) {
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export function NewsProvider({ children }: { children: React.ReactNode }) {
-  const [newsItems, setNewsItems] = useState<NewsItem[]>(() => {
-    const stored = localStorage.getItem('newsItems');
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch (error) {
-        console.error('Error loading news from localStorage:', error);
-        return defaultNewsItems;
-      }
-    }
-    return defaultNewsItems;
-  });
-
-  // Load from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem('newsItems');
-    if (stored) {
-      try {
-        setNewsItems(JSON.parse(stored));
-      } catch (error) {
-        console.error('Error loading news from localStorage:', error);
-        setNewsItems(defaultNewsItems);
+    const fetchNews = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("list_berita")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Supabase error:", error);
+        toast.error("Gagal memuat berita", { description: error.message });
+      } else {
+        setNewsItems(data || []);
       }
-    } else {
-      setNewsItems(defaultNewsItems);
-    }
+      setLoading(false);
+    };
+
+    fetchNews();
+
+    const channel = supabase
+      .channel("list_berita_changes")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "list_berita" },
+        (payload) => {
+          console.log("Change received!", payload);
+          if (payload.eventType === "INSERT") {
+            setNewsItems((prev) => [payload.new as NewsItem, ...prev]);
+          } else if (payload.eventType === "UPDATE") {
+            setNewsItems((prev) =>
+              prev.map((item) =>
+                item.id === payload.new.id ? (payload.new as NewsItem) : item
+              )
+            );
+          } else if (payload.eventType === "DELETE") {
+            setNewsItems((prev) =>
+              prev.filter((item) => item.id !== (payload.old as any).id)
+            );
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  // Save to localStorage whenever newsItems changes
-  useEffect(() => {
-    if (newsItems.length > 0) {
-      localStorage.setItem('newsItems', JSON.stringify(newsItems));
+  const addNewsItem = async (newsData: NewsItemForInsert) => {
+    const { data, error } = await supabase
+      .from('list_berita')
+      .insert([newsData])
+      .select();
+
+    if (error) {
+      toast.error('Gagal menambah berita', { description: error.message });
+      console.error(error);
+    } else if (data && data.length > 0) {
+      // setNewsItems(prev => [data[0], ...prev]);
+      toast.success('Berita berhasil ditambahkan');
     }
-  }, [newsItems]);
-
-  const addNewsItem = (newsData: Omit<NewsItem, 'id' | 'views' | 'publishDate'>) => {
-    const newItem: NewsItem = {
-      ...newsData,
-      id: Date.now(), // Simple ID generation
-      views: 0,
-      publishDate: new Date().toISOString().split('T')[0]
-    };
-    
-    setNewsItems(prev => [newItem, ...prev]);
   };
 
-  const updateNewsItem = (id: number, newsData: Partial<NewsItem>) => {
-    setNewsItems(prev => 
-      prev.map(item => 
-        item.id === id ? { ...item, ...newsData } : item
-      )
-    );
+  const updateNewsItem = async (id: string, newsData: Partial<NewsItemForInsert>) => {
+    const { data, error } = await supabase
+      .from('list_berita')
+      .update({ ...newsData, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select();
+
+    if (error) {
+      toast.error('Gagal memperbarui berita', { description: error.message });
+    } else if (data && data.length > 0) {
+      // const updatedItem = data[0];
+      // setNewsItems(prev =>
+      //   prev.map(item => (item.id === id ? updatedItem : item))
+      // );
+      toast.success('Berita berhasil diperbarui');
+    }
   };
 
-  const deleteNewsItem = (id: number) => {
-    setNewsItems(prev => prev.filter(item => item.id !== id));
+  const deleteNewsItem = async (id: string) => {
+    const { error } = await supabase
+      .from('list_berita')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      toast.error('Gagal menghapus berita', { description: error.message });
+    } else {
+      // setNewsItems(prev => prev.filter(item => item.id !== id));
+      toast.success('Berita berhasil dihapus');
+    }
   };
 
-  const getNewsById = (id: number) => {
+  const getNewsById = (id: string) => {
     return newsItems.find(item => item.id === id);
   };
 
@@ -136,17 +142,10 @@ export function NewsProvider({ children }: { children: React.ReactNode }) {
       addNewsItem,
       updateNewsItem,
       deleteNewsItem,
-      getNewsById
+      getNewsById,
+      loading
     }}>
       {children}
     </NewsContext.Provider>
   );
-}
-
-export function useNews() {
-  const context = useContext(NewsContext);
-  if (context === undefined) {
-    throw new Error('useNews must be used within a NewsProvider');
-  }
-  return context;
 }

@@ -7,11 +7,11 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "sonner";
 
 interface Course {
+  semester: number;
   id: number;
   name: string;
   meetings: number;
   duration: number;
-  semester: number;
   group: string; // 'umum', 'khusus', 'pilihan'
   majorId: string; // 'dkv', 'tb', etc.
 }
@@ -19,15 +19,9 @@ interface Course {
 const SemesterDetails = () => {
   const { majorId } = useParams<{ majorId: string }>();
   const navigate = useNavigate();
-  const semesterNum = 3; // This is SemesterDetail3
+  const semesterNum = 4; // This is SemesterDetail4
 
   const [courses, setCourses] = useState<Course[]>([]);
-
-  useEffect(() => {
-    const allCourses = JSON.parse(localStorage.getItem("courses") || "[]");
-    const filteredCourses = allCourses.filter((course: Course) => course.majorId === majorId && course.semester === semesterNum);
-    setCourses(filteredCourses);
-  }, [majorId, semesterNum]);
 
   const handleDelete = (id: number, name: string) => {
     const allCourses = JSON.parse(localStorage.getItem("courses") || "[]");
@@ -60,22 +54,15 @@ const SemesterDetails = () => {
     <div className="min-h-screen bg-background p-6 md:p-12">
       <div className="mx-auto max-w-7xl space-y-8">
         {/* Back Button */}
-        <Button variant="ghost" onClick={() => navigate("/admin/materials")} className="gap-2 hover:bg-secondary">
+        <Button variant="ghost" onClick={() => navigate("/admin/kejuruan")} className="gap-2 hover:bg-secondary">
           <ArrowLeft className="h-5 w-5" />
           Kembali
         </Button>
 
-        {/* Page Header */}
-        <Card className="bg-card border-none shadow-[var(--shadow-card)]">
-          <div className="p-8">
-            <h1 className="text-3xl md:text-4xl font-bold text-foreground text-center">{majorName} - Semester</h1>
-          </div>
-        </Card>
-
         {/* Courses Table */}
         <Card className="bg-card border-none shadow-[var(--shadow-card)] overflow-hidden">
           <div className="p-6 flex justify-end">
-            <Button onClick={() => navigate(`/admin/materials/${majorId}/add-course`)} className="w-full sm:w-auto">
+            <Button onClick={() => navigate(`/admin/kejuruan/${majorId}/add-course`)} className="w-full sm:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Tambah Mata Pelajaran
             </Button>
@@ -88,7 +75,6 @@ const SemesterDetails = () => {
                   <TableHead className="text-foreground font-bold text-base">Mata Pembelajaran</TableHead>
                   <TableHead className="text-foreground font-bold text-base text-center">Jumlah Pertemuan</TableHead>
                   <TableHead className="text-foreground font-bold text-base text-center">Durasi Waktu</TableHead>
-                  <TableHead className="text-foreground font-bold text-base text-center">Semester</TableHead>
                   <TableHead className="text-foreground font-bold text-base text-center w-32">Action</TableHead>
                 </TableRow>
               </TableHeader>
@@ -108,7 +94,6 @@ const SemesterDetails = () => {
                         <TableCell className="font-medium">{course.name}</TableCell>
                         <TableCell className="text-center">{course.meetings}</TableCell>
                         <TableCell className="text-center">{course.duration}</TableCell>
-                        <TableCell className="text-center">Semester {course.semester}</TableCell>
                         <TableCell className="text-center">
                           <Button variant="ghost" size="sm" onClick={() => handleDelete(course.id, course.name)} className="text-destructive hover:text-destructive hover:bg-destructive/10 font-bold">
                             <Trash2 className="h-4 w-4 mr-1" />

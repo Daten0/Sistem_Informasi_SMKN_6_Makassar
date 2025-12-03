@@ -2,11 +2,11 @@ import { Card } from "@/components/ui/card";
 
 interface SemesterCardProps {
   semesterNumber: number;
-  majorId: string;
+  kejuruanId: string;
   onClick?: () => void;
 }
 
-export const SemesterCard = ({ semesterNumber, majorId, onClick }: SemesterCardProps) => {
+export const SemesterCard = ({ semesterNumber, kejuruanId, onClick }: SemesterCardProps) => {
   return (
     <Card 
       className="bg-secondary border-none shadow-[var(--shadow-card)] transition-all hover:shadow-lg cursor-pointer"

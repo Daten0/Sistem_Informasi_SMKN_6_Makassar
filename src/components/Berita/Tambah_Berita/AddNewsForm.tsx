@@ -17,12 +17,15 @@ import {
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useNews } from "@/contexts/NewsContext";
+import { useNews } from "@/hooks/useNews";
+import supabase from "@/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function CreateNews() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { addNewsItem } = useNews();
+  const { currentUser } = useAuth();
   const [formData, setFormData] = useState({
     title: "",
     excerpt: "",
@@ -64,40 +67,78 @@ export default function CreateNews() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!formData.title || !formData.content) {
       toast({
         title: "Error",
         description: "Judul dan konten wajib diisi",
-        variant: "destructive"
+        variant: "destructive",
+      });
+      return;
+    }
+    if (!formData.category) {
+      toast({
+        title: "Error",
+        description: "Kategori wajib dipilih",
+        variant: "destructive",
       });
       return;
     }
 
-    // Create news item data
-    const newsData = {
-      title: formData.title,
-      excerpt: formData.excerpt || formData.content.substring(0, 150) + "...",
-      content: formData.content,
-      author: "Admin",
-      status: formData.isPublished ? "published" as const : "draft" as const,
-      image: imagePreview || "/api/placeholder/300/200",
-      category: formData.category || "teknologi",
-      tags: formData.tags
+    let imageUrl = imagePreview || "/api/placeholder/300/200";
+
+    if (formData.featuredImage) {
+      const file = formData.featuredImage;
+      const filePath = `news/${Date.now()}_${file.name}`;
+      const { error: uploadError } = await supabase.storage.from("news_pictures").upload(filePath, file, {
+        cacheControl: "3600",
+        upsert: false,
+      });
+
+      if (uploadError) {
+        toast({
+          title: "Gagal mengupload gambar",
+          description: uploadError.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage.from("news_pictures").getPublicUrl(filePath);
+      imageUrl = publicUrlData.publicUrl;
+    }
+
+    const newsDataToInsert = {
+      judul_berita: formData.title,
+      ringkasan: formData.excerpt || formData.content.substring(0, 150) + "...",
+      konten: formData.content,
+      publikasi_berita: formData.isPublished ? "publikasi" : "draft",
+      gambar_berita: imageUrl,
+      kategori_berita: formData.category,
+      tags: formData.tags,
+      author_id: currentUser?.id,
     };
 
-    // Save to context
-    addNewsItem(newsData);
+    const { error } = await supabase.from("list_berita").insert([newsDataToInsert]);
 
-    toast({
-      title: "Berhasil!",
-      description: `Berita "${formData.title}" telah ${formData.isPublished ? 'dipublikasikan' : 'disimpan sebagai draft'}`,
-    });
-
-    // Navigate back to news list
-    navigate('/admin/berita');
+    if (error) {
+      console.error("Error inserting news:", error);
+      toast({
+        title: "Gagal Menyimpan Berita",
+        description: error.message,
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Berhasil!",
+        description: `Berita "${formData.title}" telah ${
+          formData.isPublished ? "dipublikasikan" : "disimpan sebagai draft"
+        }`,
+      });
+      navigate("/admin/berita");
+    }
   };
 
   return (
@@ -251,14 +292,13 @@ export default function CreateNews() {
               <CardContent>
                 <Select value={formData.category} onValueChange={(value) => setFormData({ ...formData, category: value })}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Pilih kategori" />
+                    <SelectValue placeholder="Pilih kategori berita" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="teknologi">Teknologi</SelectItem>
-                    <SelectItem value="bisnis">Bisnis</SelectItem>
-                    <SelectItem value="lifestyle">Lifestyle</SelectItem>
-                    <SelectItem value="pendidikan">Pendidikan</SelectItem>
-                    <SelectItem value="kesehatan">Kesehatan</SelectItem>
+                    <SelectItem value="Prestasi">Prestasi</SelectItem>
+                    <SelectItem value="Terkini">Terkini</SelectItem>
+                    <SelectItem value="Ekskul">Ekskul</SelectItem>
+                    <SelectItem value="Daily">Daily</SelectItem>
                   </SelectContent>
                 </Select>
               </CardContent>
@@ -302,10 +342,6 @@ export default function CreateNews() {
               <Button type="submit" className="w-full bg-gradient-to-r from-primary to-primary-glow text-primary-foreground">
                 <Save className="h-4 w-4 mr-2" />
                 {formData.isPublished ? 'Publikasikan' : 'Simpan Draft'}
-              </Button>
-              <Button type="button" variant="outline" className="w-full">
-                <Eye className="h-4 w-4 mr-2" />
-                Preview
               </Button>
             </div>
           </div>

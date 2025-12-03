@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 
-interface Major {
+interface Kejuruan {
   id: string;
   abbreviation: string;
   fullName: string;
@@ -14,13 +14,12 @@ interface Major {
 
 const AddCourse = () => {
   const navigate = useNavigate();
-  const { majorId } = useParams<{ majorId: string }>();
+  const { kejuruanId } = useParams<{ kejuruanId: string }>();
   const { toast } = useToast();
-  const [majors, setMajors] = useState<Major[]>([]);
+  const [kejuruan, setKejuruan] = useState<Kejuruan[]>([]);
   const [formData, setFormData] = useState({
     // Use a unique ID for each course
     id: Date.now(),
-    semester: "",
     jumlahPertemuan: "",
     durasi: "",
     jenisMapel: "",
@@ -31,7 +30,7 @@ const AddCourse = () => {
     // Load majors from localStorage to populate the dropdown
     const storedMajors = localStorage.getItem("subjects");
     if (storedMajors) {
-      setMajors(JSON.parse(storedMajors));
+      setKejuruan(JSON.parse(storedMajors));
     }
   }, []);
 
@@ -39,7 +38,7 @@ const AddCourse = () => {
     e.preventDefault();
 
     // Basic validation
-    if (!formData.semester || !formData.namaMapel || !formData.jenisMapel || !majorId) {
+    if (!formData.namaMapel || !formData.jenisMapel || !kejuruanId) {
       toast({
         title: "Error",
         description: "Mohon lengkapi semua field yang diperlukan",
@@ -55,9 +54,8 @@ const AddCourse = () => {
       name: formData.namaMapel,
       meetings: parseInt(formData.jumlahPertemuan) || 0,
       duration: parseInt(formData.durasi) || 0,
-      semester: parseInt(formData.semester),
       group: formData.jenisMapel, // 'umum', 'khusus', 'pilihan'
-      majorId: majorId, // 'dkv', 'tb', etc.
+      kejuruanId: kejuruanId, // 'dkv', 'tb', etc.
     };
     localStorage.setItem("courses", JSON.stringify([...existingCourses, newCourse]));
 
@@ -84,24 +82,7 @@ const AddCourse = () => {
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* First Row: Semester, Jumlah Pertemuan, Durasi */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="space-y-3">
-                <Label htmlFor="semester" className="text-base font-semibold text-foreground">
-                  Semester
-                </Label>
-                <Select value={formData.semester} onValueChange={(value) => setFormData({ ...formData, semester: value })}>
-                  <SelectTrigger className="h-12 bg-muted border-0 text-base font-medium">
-                    <SelectValue placeholder="Pilih Semester" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Semester 1</SelectItem>
-                    <SelectItem value="2">Semester 2</SelectItem>
-                    <SelectItem value="3">Semester 3</SelectItem>
-                    <SelectItem value="4">Semester 4</SelectItem>
-                    <SelectItem value="5">Semester 5</SelectItem>
-                    <SelectItem value="6">Semester 6</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+
 
               <div className="space-y-3">
                 <Label htmlFor="jumlahPertemuan" className="text-base font-semibold text-foreground">

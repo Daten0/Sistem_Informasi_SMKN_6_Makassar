@@ -1,16 +1,49 @@
+import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Edit, Calendar, User, Eye } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useNews } from "@/contexts/NewsContext";
+import supabase from "@/supabase";
+import { toast } from "sonner";
+
+interface NewsItem {
+  id: string;
+  created_at: string;
+  judul_berita: string;
+  ringkasan: string;
+  konten: string;
+  publikasi_berita: "publikasi" | "draft";
+  kategori_berita: "Prestasi" | "Terkini" | "Ekskul" | "Daily";
+  tags: string[];
+  gambar_berita: string;
+}
 
 export default function NewsPreview() {
-  const { id } = useParams();
-  const { getNewsById } = useNews();
+  const { id } = useParams<{ id: string }>();
+  const [newsItem, setNewsItem] = useState<NewsItem | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const newsItem = getNewsById(Number(id));
+  useEffect(() => {
+    const fetchNewsItem = async () => {
+      if (!id) return;
+      setLoading(true);
+      const { data, error } = await supabase.from("list_berita").select("*").eq("id", id).single();
+
+      if (error) {
+        toast.error("Gagal mengambil data berita", {
+          description: error.message,
+        });
+        setNewsItem(null);
+      } else {
+        setNewsItem(data);
+      }
+      setLoading(false);
+    };
+
+    fetchNewsItem();
+  }, [id]);
 
   if (!newsItem) {
     return (
@@ -28,7 +61,7 @@ export default function NewsPreview() {
 
   const getStatusBadge = (status: string) => {
     switch (status) {
-      case "published":
+      case "publikasi":
         return <Badge className="bg-success text-success-foreground">Published</Badge>;
       case "draft":
         return <Badge variant="secondary">Draft</Badge>;
@@ -65,13 +98,9 @@ export default function NewsPreview() {
       <Card className="bg-gradient-to-br from-card to-secondary/30 border-border max-w-4xl mx-auto">
         <CardHeader className="p-0">
           <div className="relative overflow-hidden rounded-t-lg">
-            <img
-              src={newsItem.image}
-              alt={newsItem.title}
-              className="w-full h-64 md:h-80 object-cover"
-            />
+            <img src={newsItem.gambar_berita} alt={newsItem.judul_berita} className="w-full h-64 md:h-80 object-cover" />
             <div className="absolute top-4 right-4">
-              {getStatusBadge(newsItem.status)}
+              {getStatusBadge(newsItem.publikasi_berita)}
             </div>
           </div>
         </CardHeader>
@@ -80,41 +109,37 @@ export default function NewsPreview() {
             {/* Header */}
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                {newsItem.title}
+                {newsItem.judul_berita}
               </h1>
               <p className="text-xl text-muted-foreground leading-relaxed">
-                {newsItem.excerpt}
+                {newsItem.ringkasan}
               </p>
             </div>
 
             {/* Meta Information */}
             <div className="flex flex-wrap items-center gap-6 py-4 border-y border-border">
               <div className="flex items-center text-muted-foreground">
-                <User className="h-4 w-4 mr-2" />
-                <span className="font-medium">{newsItem.author}</span>
-              </div>
-              <div className="flex items-center text-muted-foreground">
                 <Calendar className="h-4 w-4 mr-2" />
-                <span>{newsItem.publishDate}</span>
+                <span>{new Date(newsItem.created_at).toLocaleDateString()}</span>
               </div>
-              <div className="flex items-center text-muted-foreground">
+              {/* <div className="flex items-center text-muted-foreground">
                 <Eye className="h-4 w-4 mr-2" />
                 <span>{newsItem.views} views</span>
-              </div>
+              </div> */}
               <Badge variant="outline" className="capitalize">
-                {newsItem.category}
+                {newsItem.kategori_berita}
               </Badge>
             </div>
 
             {/* Content */}
             <div className="prose prose-lg max-w-none">
               <div className="text-foreground leading-relaxed whitespace-pre-wrap">
-                {newsItem.content}
+                {newsItem.konten}
               </div>
             </div>
 
             {/* Tags */}
-            {newsItem.tags.length > 0 && (
+            {newsItem.tags && newsItem.tags.length > 0 && (
               <div className="pt-6 border-t border-border">
                 <h3 className="text-sm font-medium text-muted-foreground mb-3">Tags:</h3>
                 <div className="flex flex-wrap gap-2">

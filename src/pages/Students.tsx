@@ -1,21 +1,19 @@
-import Header from "@/components/Index/Header";
-import Footer from "@/components/Index/Footer";
+// import Header from "@/components/Index/Header";
+// import Footer from "@/components/Index/Footer";
+// // import { Search } from "lucide-react";
+// import SearchCard from "@/components/dashboard_kesiswaan/SearchCard";
+// // import StudentProfile  from "@/components/dashboard_kesiswaan/StudentProfile"
 
-const Students = () => {
-  return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-1 py-16 px-6 md:px-8">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-foreground mb-8">Students</h1>
-          <p className="text-xl text-muted-foreground">
-            Student information and academic resources will be available here.
-          </p>
-        </div>
-      </main>
-      <Footer />
-    </div>
-  );
-};
+// const Students = () => {
+//   return (
+//     <div className="min-h-screen flex flex-col">
+//       <Header />
+//       <main className="flex-1 py-16 px-6 md:px-8">
+//         <SearchCard />
+//       </main>
+//       <Footer />
+//     </div>
+//   );
+// };
 
-export default Students;
+// export default Students;

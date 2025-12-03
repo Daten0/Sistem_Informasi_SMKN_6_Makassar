@@ -56,10 +56,6 @@ const Registers = () => {
           <form>
             <div className="grid w-full items-center gap-6">
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="name">Nama Lengkap</Label>
-                <Input id="name" placeholder="Nama Lengkap Anda" value={name} onChange={(e) => setName(e.target.value)} />
-              </div>
-              <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="username">Username</Label>
                 <Input id="username" placeholder="Username Anda" value={username} onChange={(e) => setUsername(e.target.value)} />
               </div>
@@ -72,8 +68,8 @@ const Registers = () => {
                 <Input id="nip" placeholder="NIP Anda" value={nip} onChange={(e) => setNip(e.target.value)} />
               </div>
               <div className="flex flex-col space-y-1.5">
-                <Label htmlFor="title">Gelar</Label>
-                <Input id="title" placeholder="Gelar Anda" value={title} onChange={(e) => setTitle(e.target.value)} />
+                <Label htmlFor="title">Jabatan</Label>
+                <Input id="title" placeholder="Jabatan Anda" value={title} onChange={(e) => setTitle(e.target.value)} />
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="birthDate">Tanggal Lahir</Label>

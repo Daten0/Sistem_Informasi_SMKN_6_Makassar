@@ -1,82 +1,219 @@
-import TabNavigation from "@/components/Tambah_Siswa/TabNavigation";
+// import TabNavigation from "@/components/Tambah_Siswa/TabNavigation";
 import ParentForm from "@/components/Tambah_Siswa/ParentForm";
 import StudentForm from "@/components/Tambah_Siswa/StudentForm";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Toaster, toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
+import supabase from "@/supabase";
+
+
 
 const AdminStudentsPage = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"student" | "parent">("student");
-  const [partialStudent, setPartialStudent] = useState<any | null>(null);
-  const [parentData, setParentData] = useState<any | null>(null);
+  const location = useLocation();
+  const editingStudent = location.state?.editingStudent || null;
 
-  const saveCombined = () => {
-    if (!partialStudent) {
-      alert("Please fill student data first.");
-      setActiveTab("student");
+  const [studentData, setStudentData] = useState<any>(null);
+  const [parentData, setParentData] = useState<any>(null);
+  const [initialStudentData, setInitialStudentData] = useState<any>(null);
+  const [initialParentData, setInitialParentData] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (editingStudent) {
+      setInitialStudentData(editingStudent);
+
+      if (editingStudent.parentInfo) {
+        const parentInfo = editingStudent.parentInfo;
+        const mappedParentData = {
+          parentInfo: {
+            namaAyah: parentInfo.nama_lengkap_ayah,
+            pekerjaanAyah: parentInfo.pekerjaan_ayah,
+            pendidikanAyah: parentInfo.pendidikan_ayah,
+            penghasilanAyah: parentInfo.penghasilan_ayah,
+            teleponAyah: parentInfo.nomor_telepon_ayah,
+            namaIbu: parentInfo.nama_lengkap_ibu,
+            pekerjaanIbu: parentInfo.pekerjaan_ibu,
+            pendidikanIbu: parentInfo.pendidikan_ibu,
+            penghasilanIbu: parentInfo.penghasilan_ibu,
+            teleponIbu: parentInfo.nomor_telepon_ibu,
+            alamatOrangTua: parentInfo.alamat_orang_tua,
+            namaWali: parentInfo.nama_lengkap_wali,
+            pekerjaanWali: parentInfo.pekerjaan_wali,
+            pendidikanWali: parentInfo.pendidikan_wali,
+            hubunganWali: parentInfo.hubungan_dengan_siswa,
+            teleponWali: parentInfo.nomor_telepon_wali,
+            alamatWali: parentInfo.alamat_wali,
+          },
+        };
+        setInitialParentData(mappedParentData);
+        
+        // Also pre-fill the state for submission
+        handleSaveStudent({ supabaseData: editingStudent, displayData: editingStudent });
+        handleSaveParent({ supabaseData: parentInfo });
+      }
+    }
+  }, [editingStudent]);
+
+  const handleSaveStudent = (data: any) => {
+    setStudentData(data);
+  };
+
+  const handleSaveParent = (data: any) => {
+    setParentData(data);
+  };
+
+  const handleFinalSubmit = async () => {
+    if (!studentData) {
+      toast.error("Data siswa harus diisi lengkap.");
       return;
     }
-    if (!parentData) {
-      alert("Please fill parent data before saving.");
-      setActiveTab("parent");
-      return;
-    }
 
-    const combined = {
-      ...partialStudent,
-      parentInfo: parentData,
-      id: partialStudent.id || Math.random().toString(36).substr(2, 9),
+    setIsSubmitting(true);
+    const toastId = toast.loading("Menyimpan semua data...");
+
+    // Add 'kehadiran: true' only if both forms are submitted
+    const studentPayload = {
+      ...studentData.supabaseData,
+      kehadiran: !!parentData, // Sets to true if parentData exists, false otherwise
     };
 
-    // persist to localStorage
-    const existing = JSON.parse(localStorage.getItem("students") || "[]");
-    existing.push(combined);
-    localStorage.setItem("students", JSON.stringify(existing));
+    if (editingStudent) {
+      // UPDATE LOGIC
+      // 1. Check for NIS change and conflict
+      if (studentPayload.nis && studentPayload.nis !== editingStudent.nis) {
+        const { data: existingStudentWithNewNis, error: checkError } = await supabase.from("add_siswa").select("nis").eq("nis", studentData.supabaseData.nis).single();
 
-    // reset
-    setPartialStudent(null);
-    setParentData(null);
+        if (checkError && checkError.code !== "PGRST116") {
+          toast.error(`Terjadi kesalahan saat memeriksa NIS: ${checkError.message}`, { id: toastId });
+          setIsSubmitting(false);
+          return;
+        }
 
-    // navigate back to student display
-    navigate("/admin/student-display");
+        if (existingStudentWithNewNis) {
+          toast.error(`Siswa dengan NIS ${studentData.supabaseData.nis} sudah terdaftar.`, { id: toastId });
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
+      // 2. Update student data
+      const { error: studentError } = await supabase.from("add_siswa").update(studentPayload).eq("id", editingStudent.id);
+
+      if (studentError) {
+        toast.error(`Gagal memperbarui data siswa: ${studentError.message}`, { id: toastId });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 3. Upsert parent data
+      if (parentData) {
+        const parentId = editingStudent.parentInfo?.id;
+        if (parentId) {
+          // Update parent data
+          const { error: parentError } = await supabase.from("data_ortu").update(parentData.supabaseData).eq("id", parentId);
+
+          if (parentError) {
+            toast.error(`Gagal memperbarui data orang tua: ${parentError.message}. Data siswa berhasil diperbarui.`, { id: toastId });
+          }
+        } else {
+          // Insert parent data
+          const { error: parentError } = await supabase.from("data_ortu").insert(parentData.supabaseData);
+
+          if (parentError) {
+            toast.error(`Gagal menyimpan data orang tua: ${parentError.message}. Data siswa berhasil diperbarui.`, { id: toastId });
+          }
+        }
+      }
+
+      toast.success("Semua data berhasil diperbarui!", { id: toastId });
+      setIsSubmitting(false);
+      setTimeout(() => navigate("/admin/student-display"), 1500);
+    } else {
+      // CREATE LOGIC
+      // 1. Check for existing NIS
+      const { data: existingStudent, error: checkError } = await supabase.from("add_siswa").select("nis").eq("nis", studentPayload.nis).single();
+
+      if (checkError && checkError.code !== "PGRST116") {
+        // PGRST116: "The query returned no rows" - this is expected if NIS doesn't exist
+        toast.error(`Terjadi kesalahan saat memeriksa NIS: ${checkError.message}`, { id: toastId });
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (existingStudent) {
+        toast.error(`Siswa dengan NIS ${studentPayload.nis} sudah terdaftar.`, { id: toastId });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // 2. Insert student data
+      const { id, ...studentInsertData } = studentPayload;
+      const { data: newStudent, error: studentError } = await supabase.from("add_siswa").insert(studentInsertData).select().single();
+
+      if (studentError) {
+        toast.error(`Gagal menyimpan data siswa: ${studentError.message}`, { id: toastId });
+        setIsSubmitting(false);
+        return;
+      }
+      
+
+      // 3. Insert parent data if it exists
+      if (parentData) {
+        const { error: parentError } = await supabase.from("data_ortu").insert({ ...parentData.supabaseData, student_id: newStudent.id });
+
+        if (parentError) {
+          toast.error(`Gagal menyimpan data orang tua: ${parentError.message}. Data siswa berhasil disimpan.`, { id: toastId });
+          setIsSubmitting(false);
+          // Navigate away since student was created
+          setTimeout(() => navigate("/admin/student-display"), 2000);
+          return;
+        }
+      }
+
+      toast.success("Semua data berhasil disimpan!", { id: toastId });
+      setIsSubmitting(false);
+      setTimeout(() => navigate("/admin/student-display"), 1500);
+    }
   };
 
-  const handleCancel = () => {
-    // navigate back to the student display page
-    navigate("/admin/student-display");
-  };
+
+  
 
   return (
     <>
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Siswa</h1>
-
-      {/* Main Content */}
-      <div className="container mx-auto px-4 lg:px-6 py-12">
-        <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
-
-        <div className="mb-8">
-          {activeTab === "student" ? (
-            <StudentForm
-              initialData={partialStudent}
-              onSavePartial={(data: any) => {
-                // store partial student and switch to parent tab
-                const withId = { id: partialStudent?.id || Math.random().toString(36).substr(2, 9), ...data };
-                setPartialStudent(withId);
-                setActiveTab("parent");
-              }}
-            />
-          ) : (
-            <ParentForm initialData={parentData} onSave={(data: any) => setParentData(data)} />
-          )}
+      <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+        <Toaster richColors />
+        <div className="flex items-center mb-6">
+          <Button variant="outline" size="icon" className="mr-4" onClick={() => navigate(-1)}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">
+            {editingStudent ? "Edit Data Siswa" : "Tambah Siswa Baru"}
+          </h1>
         </div>
 
-        <div className="flex justify-end gap-4">
-          <button onClick={handleCancel} className="px-4 py-2 border rounded">
-            Back
-          </button>
-          <button onClick={saveCombined} className="px-4 py-2 bg-primary text-white rounded">
-            Save Student + Parent
-          </button>
+        <div className="space-y-8">
+          <StudentForm 
+            initialData={initialStudentData} 
+            onSavePartial={handleSaveStudent} 
+          />
+          <ParentForm 
+            initialData={initialParentData} 
+            onSave={handleSaveParent} 
+          />
+        </div>
+
+        <div className="mt-8 flex justify-end">
+          <Button 
+            onClick={handleFinalSubmit} 
+            disabled={isSubmitting || !studentData}
+            className="px-8 py-3 text-lg bg-green-600 hover:bg-green-700 text-white"
+          >
+            {isSubmitting ? "Menyimpan..." : "Simpan Semua Data"}
+          </Button>
         </div>
       </div>
     </>
