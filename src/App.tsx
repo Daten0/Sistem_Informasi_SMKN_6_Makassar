@@ -30,6 +30,7 @@ import PreviewBerita from "./pages/AdminPages/previewBerita/preview";
 import AddBerita from "./pages/AdminPages/AddBerita/AddBerita";
 import EditBerita from "./pages/AdminPages/EditBerita/EditBerita";
 import BeritaPreview from "./pages/PreviewNews";
+<<<<<<< HEAD
 // import AddSubject from "./components/Akademik/AddJurusan";
 // import AddCourse from "./components/Akademik/AddCourse";
 // import CourseDetailDKV from "./components/dashboard_akademik/CourseDetailDKV";
@@ -46,12 +47,39 @@ import BeritaPreview from "./pages/PreviewNews";
 // import SemesterDetail6 from "./components/Akademik/SemesterDetail6";
 // import GuruFormPage from "./pages/Guru_form/Index";
 // import SiswaFormPage from "./pages/Siswa_form/Index";
+=======
+import AddSubject from "./components/Akademik/AddJurusan";
+import AddCourse from "./components/Akademik/AddCourse";
+import CourseDetailDKV from "./components/dashboard_akademik/CourseDetailDKV";
+import CourseDetailPH from "./components/dashboard_akademik/CourseDetailPH";
+import CourseDetailAK from "./components/dashboard_akademik/CourseDetailAK";
+import CourseDetailBG from "./components/dashboard_akademik/CourseDetailBG";
+import CourseDetailBS from "./components/dashboard_akademik/CourseDetailBS";
+import CourseDetailTKC from "./components/dashboard_akademik/CourseDetailTKC";
+import SemesterDetail1 from "./components/Akademik/SemesterDetail1";
+import SemesterDetail2 from "./components/Akademik/SemesterDetail2";
+import SemesterDetail3 from "./components/Akademik/SemesterDetail3";
+import SemesterDetail4 from "./components/Akademik/SemesterDetail4";
+import SemesterDetail5 from "./components/Akademik/SemesterDetail5";
+import SemesterDetail6 from "./components/Akademik/SemesterDetail6";
+import GuruFormPage from "./pages/Guru_form/Index";
+import SiswaFormPage from "./pages/Siswa_form/Index";
+// Jurusan
+import DKVProfile from "./components/Profil_Jurusan/Dkv";
+import Jurusan from "./components/Profil_Jurusan/Jurusan";
+import PHProfile from "./components/Profil_Jurusan/Perhotelan";
+import KCProfile from "./components/Profil_Jurusan/Kecantikan";
+import AKProfile from "./components/Profil_Jurusan/Akutansi";
+import BGProfile from "./components/Profil_Jurusan/Kuliner";
+import BSProfile from "./components/Profil_Jurusan/Busana";
+>>>>>>> origin/Profil_Jurusan
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+<<<<<<< HEAD
       <Toaster />
       <Sonner />
       <Routes>
@@ -97,6 +125,63 @@ const App = () => (
             path="kejuruan/:kejuruanId/add-course"
             element={<AddCourse />}
           />
+=======
+      <AuthProvider>
+        <NewsProvider>
+          <TeachersProvider>
+            <Toaster />
+            <Sonner />
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/preview/:id" element={<BeritaPreview />} />
+              <Route path="/About" element={<About />} />
+              <Route path="/VisiMisi" element={<VisiMisi />} />
+              <Route path="/students" element={<Students />} />
+              <Route path="/teachers" element={<Teachers />} />
+              <Route path="/subjects" element={<Subjects />} />
+              <Route path="/login" element={<LoginPages />} />
+              {/* rute jurusan */}
+              <Route path="/jurusan" element={<Jurusan />} />
+              <Route path="/dkv" element={<DKVProfile />} />
+              <Route path="/perhotelan" element={<PHProfile />} />
+              <Route path="/kecantikan" element={<KCProfile />} />
+              <Route path="/akutansi" element={<AKProfile />} />
+              <Route path="/kuliner" element={<BGProfile />} />
+              <Route path="/busana" element={<BSProfile />} />
+
+              {/* <Route path="/register" element={<RegisterPages />} /> */}
+              <Route path="/students/SiswaForm" element={<SiswaFormPage />} />
+              <Route path="/teachers/GuruForm" element={<GuruFormPage />} />
+              <Route path="/subjects/dkv" element={<CourseDetailDKV />} />
+              <Route path="/subjects/ph" element={<CourseDetailPH />} />
+              <Route path="/subjects/ak" element={<CourseDetailAK />} />
+              <Route path="/subjects/bg" element={<CourseDetailBG />} />
+              <Route path="/subjects/bs" element={<CourseDetailBS />} />
+              <Route path="/subjects/tkc" element={<CourseDetailTKC />} />
+              <Route
+                path="/admin"
+                element={
+                  <ProtectedRoute>
+                    <AdminPage />
+                  </ProtectedRoute>
+                }
+              >
+                <Route index element={<AdminDashboardPage />} />
+                <Route path="profile" element={<AdminProfilePage />} />
+                <Route path="student-display" element={<AdminStudentDisplay />} />
+                <Route
+                  path="student-display/Edit_student/:id"
+                  element={<EditStudentPage />}
+                />
+                <Route path="teachers" element={<AdminTeachersPage />} />
+                <Route path="kejuruan" element={<AdminMaterialsPage />} />
+                <Route path="kejuruan/add-kejuruan" element={<AddSubject />} />
+                {/* Keep old route for fallback, but new dynamic route is preferred */}
+                <Route
+                  path="kejuruan/:kejuruanId/add-course"
+                  element={<AddCourse />}
+                />
+>>>>>>> origin/Profil_Jurusan
 
           {/* Dynamic Routes for All Majors */}
           {/* <Route
