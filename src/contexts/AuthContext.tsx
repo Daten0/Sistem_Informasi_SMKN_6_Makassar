@@ -44,25 +44,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
         setSession(session);
-        if (session?.user) {
-          const { data: profile, error } = await supabase
-            .from('admins')
-            .select('role')
-            .eq('id', session.user.id)
-            .single();
+        try {
+          if (session?.user) {
+            const { data: profile, error } = await supabase
+              .from("admins")
+              .select("role")
+              .eq("id", session.user.id)
+              .single();
 
-          if (error) {
-            console.error('Error fetching user profile:', error);
+            if (error) {
+              console.error("Error fetching user profile:", error);
+              setCurrentUser(null);
+            } else if (profile) {
+              const userWithRole = { ...session.user, role: profile.role };
+              setCurrentUser(userWithRole as User);
+            } else {
+              setCurrentUser(null);
+            }
+          } else {
             setCurrentUser(null);
-          } else if (profile) {
-            const userWithRole = { ...session.user, role: profile.role };
-            setCurrentUser(userWithRole as User);
           }
-        } else {
+        } catch (error) {
+          console.error("Auth state change error:", error);
           setCurrentUser(null);
+        } finally {
+          setLoading(false);
         }
-        setLoading(false);
-      }
+      },
     );
 
     return () => {
