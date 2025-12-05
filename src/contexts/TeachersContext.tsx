@@ -3,7 +3,9 @@ import React, { createContext,
   useEffect, 
   ReactNode, 
   useContext,
-  useCallback, } from "react";
+  useCallback,
+  useMemo
+ } from "react";
 import supabase from "@/supabase";
 import { toast } from "sonner";
 
@@ -216,21 +218,19 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
     [teachers]
   );
 
-  
-  return (
-    <TeachersContext.Provider
-      value={{
-        teachers,
-        addTeacher,
-        updateTeacher,
-        deleteTeacher,
-        getTeacherById,
-        loading,
-      }}
-    >
-      {children}
-    </TeachersContext.Provider>
+  const value = useMemo(
+    () => ({
+      teachers,
+      addTeacher,
+      updateTeacher,
+      deleteTeacher,
+      getTeacherById,
+      loading,
+    }),
+    [teachers, addTeacher, updateTeacher, deleteTeacher, getTeacherById, loading],
   );
+
+  return <TeachersContext.Provider value={value}>{children}</TeachersContext.Provider>;
 }
 
 export function useTeachers() {

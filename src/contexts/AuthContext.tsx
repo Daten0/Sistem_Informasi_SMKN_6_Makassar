@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect, ReactNode, useContext } from "react";
+import React, { createContext, useState, useEffect, ReactNode, useContext, useCallback, } from "react";
 import supabase from "../supabase";
 import { Session, User as SupabaseUser } from "@supabase/supabase-js";
+import { useLocation } from "react-router-dom";
 
 export type User = SupabaseUser & {
   user_role: "admin" | null;
@@ -22,10 +23,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [userRole, setUserRole] = useState<"admin" | null>(null);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
 
   useEffect(() => {
     setLoading(true);
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const {
+      data: { subscription: authListener },
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session);
       if (session?.user) {
         try {
@@ -36,17 +40,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             .single();
 
           if (adminError) {
-            console.error("Error fetching user profile on auth change:", adminError);
-            setUserRole(null);
+            console.error("Error fetching user profile:", adminError.message);
             setCurrentUser({ ...session.user, user_role: null });
+            setUserRole(null);
           } else {
-            setUserRole(adminData.role);
             setCurrentUser({ ...session.user, user_role: adminData.role });
+            setUserRole(adminData.role);
           }
         } catch (error) {
-          console.error("Error in try-catch fetching user profile on auth change:", error);
+          console.error("Error in auth state change:", error);
+          setCurrentUser(null);
           setUserRole(null);
-          setCurrentUser({ ...session.user, user_role: null });
         }
       } else {
         setCurrentUser(null);
@@ -56,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     return () => {
-      authListener.subscription.unsubscribe();
+      authListener.unsubscribe();
     };
   }, []);
 
@@ -65,12 +69,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (error) throw error;
   };
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-  };
+  }, []);
 
-  return <AuthContext.Provider value={{ currentUser, session, login, logout, loading, userRole }}>{children}</AuthContext.Provider>;
+  useEffect(() => {
+    if (currentUser && !location.pathname.startsWith("/admin")) {
+      logout();
+    }
+  }, [currentUser, location.pathname, logout]);
+
+  const value = { currentUser, session, login, logout, loading, userRole };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export const useAuth = () => {

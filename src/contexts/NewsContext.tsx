@@ -3,6 +3,8 @@ import React, { createContext,
   useEffect, 
   ReactNode,
   useCallback,
+  useContext,
+  useMemo,
  } from 'react';
 import supabase from '@/supabase';
 import { toast } from 'sonner';
@@ -140,19 +142,28 @@ export function NewsProvider({ children }: { children: ReactNode }) {
     (id: string) => {
       return newsItems.find((item) => item.id === id);
     },
-    [newsItems]
+    [newsItems],
   );
 
-  return (
-    <NewsContext.Provider value={{
+  const value = useMemo(
+    () => ({
       newsItems,
       addNewsItem,
       updateNewsItem,
       deleteNewsItem,
       getNewsById,
-      loading
-    }}>
-      {children}
-    </NewsContext.Provider>
+      loading,
+    }),
+    [newsItems, addNewsItem, updateNewsItem, deleteNewsItem, getNewsById, loading],
   );
+
+  return <NewsContext.Provider value={value}>{children}</NewsContext.Provider>;
+}
+
+export function useNews() {
+  const context = useContext(NewsContext);
+  if (context === undefined) {
+    throw new Error("useNews must be used within a NewsProvider");
+  }
+  return context;
 }
