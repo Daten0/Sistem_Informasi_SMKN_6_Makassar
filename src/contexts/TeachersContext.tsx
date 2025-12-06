@@ -1,4 +1,5 @@
-import React, { createContext, 
+import React, { 
+  createContext, 
   useState, 
   useEffect, 
   ReactNode, 
@@ -23,13 +24,13 @@ export interface Teacher {
   terdaftar: boolean;
 }
 
-export type TeacherForInsert = Omit<Teacher, "id" | "created_at" | "updated_at" | "picture_url" | "terdaftar"> & { picture_url?: string };
+export type TeacherForInsert = Omit<Teacher, "id" | "created_at" | "updated_at" | "terdaftar">;
 export type TeacherForUpdate = Partial<Omit<Teacher, "id" | "created_at" | "updated_at">>;
 
 interface TeachersContextType {
   teachers: Teacher[];
-  addTeacher: (teacherData: TeacherForInsert, imageFile: File | null) => Promise<void>;
-  updateTeacher: (id: string, teacherData: TeacherForUpdate, imageFile: File | null) => Promise<boolean>;
+  addTeacher: (teacherData: TeacherForInsert) => Promise<void>;
+  updateTeacher: (id: string, teacherData: TeacherForUpdate) => Promise<boolean>;
   deleteTeacher: (id: string) => Promise<void>;
   getTeacherById: (id: string) => Teacher | undefined;
   loading: boolean;
@@ -41,97 +42,45 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let isCancelled = false;
+  const fetchTeachers = useCallback(async () => {
+    try {
+      const { data, error } = await supabase.from("guru").select("*").order("created_at", { ascending: false });
 
-    const fetchTeachers = async () => {
-      setLoading(true);
-      try {
-        const { data, error } = await supabase
-          .from("guru")
-          .select("*")
-          .order("created_at", { ascending: false });
-
-        if (!isCancelled) {
-          if (error) {
-            console.error("Error fetching teachers:", error);
-            toast.error("Gagal memuat data guru", { description: error.message });
-            setTeachers([]);
-          } else {
-            setTeachers(data || []);
-          }
-          setLoading(false);
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          console.error("Unexpected error fetching teachers:", error);
-          toast.error("Terjadi kesalahan saat memuat data guru");
-          setTeachers([]);
-          setLoading(false);
-        }
+      if (error) {
+        console.error("Error fetching teachers:", error);
+        toast.error("Gagal memuat data guru", { description: error.message });
+      } else {
+        setTeachers(data || []);
       }
-    };
+    } catch (error) {
+      console.error("Unexpected error fetching teachers:", error);
+      toast.error("Terjadi kesalahan saat memuat data guru");
+    }
+  }, []);
 
-    fetchTeachers();
+  useEffect(() => {
+    setLoading(true);
+    fetchTeachers().finally(() => setLoading(false));
 
     const channel = supabase
-      .channel('public:guru')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'guru' },
-        (payload) => {
-          if (payload.eventType === 'INSERT') {
-            setTeachers((currentTeachers) => [payload.new as Teacher, ...currentTeachers]);
-          } else if (payload.eventType === 'UPDATE') {
-            setTeachers((currentTeachers) =>
-              currentTeachers.map((t) =>
-                t.id === (payload.new as Teacher).id ? (payload.new as Teacher) : t
-              )
-            );
-          } else if (payload.eventType === 'DELETE') {
-            setTeachers((currentTeachers) =>
-              currentTeachers.filter(
-                (t) => t.id !== (payload.old as { id: string }).id
-              )
-            );
-          }
-        }
-      )
+      .channel("public:guru")
+      .on("postgres_changes", { event: "*", schema: "public", table: "guru" }, () => {
+        fetchTeachers();
+      })
       .subscribe();
 
     return () => {
-      isCancelled = true;
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [fetchTeachers]);
+
+
 
   const addTeacher = useCallback(
-    async (teacherData: TeacherForInsert, imageFile: File | null) => {
-      let picture_url: string | undefined = undefined;
-
-      if (imageFile) {
-        const fileName = `${Date.now()}_${imageFile.name}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("teacher_pictures")
-          .upload(fileName, imageFile);
-
-        if (uploadError) {
-          toast.error("Gagal mengunggah gambar", {
-            description: uploadError.message,
-          });
-          console.error(uploadError);
-          return;
-        }
-
-        const { data: urlData } = supabase.storage
-          .from("teacher_pictures")
-          .getPublicUrl(uploadData.path);
-        picture_url = urlData.publicUrl;
-      }
-
+    async (teacherData: TeacherForInsert) => {
       const { data, error } = await supabase
         .from("guru")
-        .insert([{ ...teacherData, picture_url, terdaftar: true }])
+        .insert([{ ...teacherData, terdaftar: true }])
         .select();
 
       if (error) {
@@ -149,34 +98,12 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
   const updateTeacher = useCallback(
     async (
       id: string,
-      teacherData: TeacherForUpdate,
-      imageFile: File | null
+      teacherData: TeacherForUpdate
     ): Promise<boolean> => {
-      let picture_url = teacherData.picture_url;
-
-      if (imageFile) {
-        const fileName = `${Date.now()}_${imageFile.name}`;
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("teacher_pictures")
-          .upload(fileName, imageFile);
-
-        if (uploadError) {
-          toast.error("Gagal mengunggah gambar baru", {
-            description: uploadError.message,
-          });
-          return false;
-        }
-        const { data: urlData } = supabase.storage
-          .from("teacher_pictures")
-          .getPublicUrl(uploadData.path);
-        picture_url = urlData.publicUrl;
-      }
-
       const { data, error } = await supabase
         .from("guru")
         .update({
           ...teacherData,
-          picture_url,
           updated_at: new Date().toISOString(),
         })
         .eq("id", id)

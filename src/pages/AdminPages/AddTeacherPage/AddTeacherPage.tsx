@@ -9,13 +9,11 @@ const AddTeacherPage = () => {
   const navigate = useNavigate();
   const { addTeacher } = useTeachers();
 
-  const handleAddTeacher = async (
-    data: TeacherFormValues,
-    imageFile: File | null,
-  ) => {
-    await addTeacher(data as TeacherForInsert, imageFile);
+  const handleAddTeacher = async (data: TeacherForInsert) => {
+    await addTeacher(data);
     navigate("/admin/teachers");
   };
+
 
 
   return (

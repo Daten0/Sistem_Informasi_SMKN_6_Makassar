@@ -11,29 +11,29 @@ import { Users, BookOpen, GraduationCap } from "lucide-react";
 import schoolLogo from "@/assets/school-logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { useTheme } from "@/components/theme-provider";
 
 interface HeaderProps {
   toggleSidebar: () => void;
 }
 
 const Header = ({ toggleSidebar }: HeaderProps) => {
-  const [isDarkMode, setDarkMode] = useState(localStorage.getItem("theme") === "dark");
+  const { setTheme, theme } = useTheme();
   const { currentUser } = useAuth();
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
+  // useEffect(() => {
+  //   if (isDarkMode) {
+  //     document.documentElement.classList.add('dark');
+  //     safeLocalStorageSet("theme", "dark");
+  //   } else {
+  //     document.documentElement.classList.remove('dark');
+  //     safeLocalStorageSet("theme", "light");
+  //   }
+  // }, [isDarkMode]);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!isDarkMode);
-  };
+  // const toggleDarkMode = () => {
+  //   setDarkMode(!isDarkMode);
+  // };
 
   return (
     <header className="bg-white dark:bg-gray-800 shadow-md">
@@ -89,8 +89,8 @@ const Header = ({ toggleSidebar }: HeaderProps) => {
         </div>
         <div className="flex-1"></div>
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" onClick={toggleDarkMode}>
-            {isDarkMode ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
+          <Button variant="ghost" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+            {theme === 'dark' ? <Sun className="w-6 h-6" /> : <Moon className="w-6 h-6" />}
           </Button>
           <Link to="/admin/profile" className="flex items-center space-x-2">
             <Avatar className="w-8 h-8">

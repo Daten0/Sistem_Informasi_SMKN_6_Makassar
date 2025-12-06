@@ -1,4 +1,5 @@
-import React, { createContext, 
+import React, { 
+  createContext, 
   useState, 
   useEffect, 
   ReactNode,
@@ -44,53 +45,37 @@ export function NewsProvider({ children }: { children: ReactNode }) {
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchNews = useCallback(async () => {
+    setLoading(true);
+    const { data, error } = await supabase
+      .from("list_berita")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Supabase error:", error);
+      toast.error("Gagal memuat berita", { description: error.message });
+    } else {
+      setNewsItems(data || []);
+    }
+    // setLoading(false);
+  }, []);
+
   useEffect(() => {
-    const fetchNews = async () => {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from("list_berita")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Supabase error:", error);
-        toast.error("Gagal memuat berita", { description: error.message });
-      } else {
-        setNewsItems(data || []);
-      }
-      setLoading(false);
-    };
-
-    fetchNews();
+    setLoading(true);
+    fetchNews().finally(() => setLoading(false));
 
     const channel = supabase
       .channel("list_berita_changes")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "list_berita" },
-        (payload) => {
-          console.log("Change received!", payload);
-          if (payload.eventType === "INSERT") {
-            setNewsItems((prev) => [payload.new as NewsItem, ...prev]);
-          } else if (payload.eventType === "UPDATE") {
-            setNewsItems((prev) =>
-              prev.map((item) =>
-                item.id === payload.new.id ? (payload.new as NewsItem) : item
-              )
-            );
-          } else if (payload.eventType === "DELETE") {
-            setNewsItems((prev) =>
-              prev.filter((item) => item.id !== (payload.old as any).id)
-            );
-          }
-        }
-      )
+      .on("postgres_changes", { event: "*", schema: "public", table: "list_berita" }, () => {
+        fetchNews();
+      })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [fetchNews]);
 
   const addNewsItem = useCallback(async (newsData: NewsItemForInsert) => {
     const { data, error } = await supabase

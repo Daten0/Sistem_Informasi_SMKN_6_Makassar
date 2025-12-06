@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -18,15 +18,36 @@ const Auths = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const { login } = useAuth();
+  const { login, userRole, currentUser } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentUser && userRole === 'admin') {
+      navigate("/admin");
+    }
+  }, [currentUser, userRole, navigate]);
+
+  const sanitizeInput = (input: string) => {
+    const map: { [key: string]: string } = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#x27;",
+      "/": "&#x2F;",
+    };
+    const reg = /[&<>"'/]/gi;
+    return input.replace(reg, (match) => map[match]);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
     try {
-      await login(email, password);
-      navigate("/admin/profile");
+      const sanitizedEmail = sanitizeInput(email);
+      const sanitizedPassword = sanitizeInput(password);
+      await login(sanitizedEmail, sanitizedPassword);
+      // navigate("/admin");
     } catch (error) {
       setError("Gagal melakukan login. Periksa kembali email dan password Anda.");
       console.error("Login failed:", error);

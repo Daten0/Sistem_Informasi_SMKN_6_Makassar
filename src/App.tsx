@@ -54,6 +54,7 @@ import KCProfile from "./components/Profil_Jurusan/Kecantikan";
 import AKProfile from "./components/Profil_Jurusan/Akutansi";
 import BGProfile from "./components/Profil_Jurusan/Kuliner";
 import BSProfile from "./components/Profil_Jurusan/Busana";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
@@ -62,93 +63,95 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <Routes>
-        <Route path="/" element={<Index />} />
-        <Route path="/preview/:id" element={<BeritaPreview />} />
-        <Route path="/About" element={<About />} />
-        <Route path="/VisiMisi" element={<VisiMisi />} />
-        {/* <Route path="/students" element={<Students />} />
-        <Route path="/teachers" element={<Teachers />} />
-        <Route path="/subjects" element={<Subjects />} /> */}
-        <Route path="/login" element={<LoginPages />} />
-        {/* rute jurusan */}
-        <Route path="/jurusan" element={<Jurusan />} />
-        <Route path="/dkv" element={<DKVProfile />} />
-        <Route path="/perhotelan" element={<PHProfile />} />
-        <Route path="/kecantikan" element={<KCProfile />} />
-        <Route path="/akutansi" element={<AKProfile />} />
-        <Route path="/kuliner" element={<BGProfile />} />
-        <Route path="/busana" element={<BSProfile />} />
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/" element={<Index />} />
+          <Route path="/preview/:id" element={<BeritaPreview />} />
+          <Route path="/About" element={<About />} />
+          <Route path="/VisiMisi" element={<VisiMisi />} />
+          {/* <Route path="/students" element={<Students />} />
+          <Route path="/teachers" element={<Teachers />} />
+          <Route path="/subjects" element={<Subjects />} /> */}
+          <Route path="/login" element={<LoginPages />} />
+          {/* rute jurusan */}
+          <Route path="/jurusan" element={<Jurusan />} />
+          <Route path="/dkv" element={<DKVProfile />} />
+          <Route path="/perhotelan" element={<PHProfile />} />
+          <Route path="/kecantikan" element={<KCProfile />} />
+          <Route path="/akutansi" element={<AKProfile />} />
+          <Route path="/kuliner" element={<BGProfile />} />
+          <Route path="/busana" element={<BSProfile />} />
 
-        {/* <Route path="/register" element={<RegisterPages />} /> */}
-        {/* <Route path="/students/SiswaForm" element={<SiswaFormPage />} />
-        <Route path="/teachers/GuruForm" element={<GuruFormPage />} /> */}
-        {/* <Route path="/subjects/dkv" element={<CourseDetailDKV />} />
-        <Route path="/subjects/ph" element={<CourseDetailPH />} />
-        <Route path="/subjects/ak" element={<CourseDetailAK />} />
-        <Route path="/subjects/bg" element={<CourseDetailBG />} />
-        <Route path="/subjects/bs" element={<CourseDetailBS />} />
-        <Route path="/subjects/tkc" element={<CourseDetailTKC />} /> */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute>
-              <AdminPage />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<AdminDashboardPage />} />
-          <Route path="profile" element={<AdminProfilePage />} />
-          {/* <Route path="student-display" element={<AdminStudentDisplay />} /> */}
-          {/* <Route
-            path="student-display/Edit_student/:id"
-            element={<EditStudentPage />}
-          /> */}
-          <Route path="teachers" element={<AdminTeachersPage />} />
-          <Route path="teachers/add-teacher" element={<AddTeacherPage />} />
-          <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
-          {/* <Route path="kejuruan" element={<AdminMaterialsPage />} />
-          <Route path="kejuruan/add-kejuruan" element={<AddSubject />} /> */}
-          {/* Keep old route for fallback, but new dynamic route is preferred */}
-          {/* <Route
-            path="kejuruan/:kejuruanId/add-course"
-            element={<AddCourse />}
-          />
+          {/* <Route path="/register" element={<RegisterPages />} /> */}
+          {/* <Route path="/students/SiswaForm" element={<SiswaFormPage />} />
+          <Route path="/teachers/GuruForm" element={<GuruFormPage />} /> */}
+          {/* <Route path="/subjects/dkv" element={<CourseDetailDKV />} />
+          <Route path="/subjects/ph" element={<CourseDetailPH />} />
+          <Route path="/subjects/ak" element={<CourseDetailAK />} />
+          <Route path="/subjects/bg" element={<CourseDetailBG />} />
+          <Route path="/subjects/bs" element={<CourseDetailBS />} />
+          <Route path="/subjects/tkc" element={<CourseDetailTKC />} /> */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <AdminPage />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<AdminDashboardPage />} />
+            <Route path="profile" element={<AdminProfilePage />} />
+            {/* <Route path="student-display" element={<AdminStudentDisplay />} /> */}
+            {/* <Route
+              path="student-display/Edit_student/:id"
+              element={<EditStudentPage />}
+            /> */}
+            <Route path="teachers" element={<AdminTeachersPage />} />
+            <Route path="teachers/add-teacher" element={<AddTeacherPage />} />
+            <Route path="teachers/edit/:id" element={<EditTeacherPage />} />
+            {/* <Route path="kejuruan" element={<AdminMaterialsPage />} />
+            <Route path="kejuruan/add-kejuruan" element={<AddSubject />} /> */}
+            {/* Keep old route for fallback, but new dynamic route is preferred */}
+            {/* <Route
+              path="kejuruan/:kejuruanId/add-course"
+              element={<AddCourse />}
+            />
 
-          {/* Dynamic Routes for All Majors */}
-          {/* <Route
-            path="kejuruan/:kejuruanId/semester/1"
-            element={<SemesterDetail1 />}
-          /> */}
-          {/* <Route
-            path="kejuruan/:kejuruanId/semester/2"
-            element={<SemesterDetail2 />}
-          /> */}
-          {/* <Route
-            path="kejuruan/:kejuruanId/semester/3"
-            element={<SemesterDetail3 />}
-          /> */}
-          {/* <Route
-            path="kejuruan/:kejuruanId/semester/4"
-            element={<SemesterDetail4 />}
-          /> */}
-          {/* <Route
-            path="kejuruan/:kejuruanId/semester/5"
-            element={<SemesterDetail5 />}
-          /> */}
-          {/* <Route
-            path="kejuruan/:kejuruanId/semester/6"
-            element={<SemesterDetail6 />}
-          />  */}
+            {/* Dynamic Routes for All Majors */}
+            {/* <Route
+              path="kejuruan/:kejuruanId/semester/1"
+              element={<SemesterDetail1 />}
+            /> */}
+            {/* <Route
+              path="kejuruan/:kejuruanId/semester/2"
+              element={<SemesterDetail2 />}
+            /> */}
+            {/* <Route
+              path="kejuruan/:kejuruanId/semester/3"
+              element={<SemesterDetail3 />}
+            /> */}
+            {/* <Route
+              path="kejuruan/:kejuruanId/semester/4"
+              element={<SemesterDetail4 />}
+            /> */}
+            {/* <Route
+              path="kejuruan/:kejuruanId/semester/5"
+              element={<SemesterDetail5 />}
+            /> */}
+            {/* <Route
+              path="kejuruan/:kejuruanId/semester/6"
+              element={<SemesterDetail6 />}
+            />  */}
 
-          <Route path="berita" element={<AdminBerita />} />
-          <Route path="berita/buatBerita" element={<AddBerita />} />
-          <Route path="berita/editBerita/:id" element={<EditBerita />} />
-          <Route path="berita/preview/:id" element={<PreviewBerita />} />
-        </Route>
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
+            <Route path="berita" element={<AdminBerita />} />
+            <Route path="berita/buatBerita" element={<AddBerita />} />
+            <Route path="berita/editBerita/:id" element={<EditBerita />} />
+            <Route path="berita/preview/:id" element={<PreviewBerita />} />
+          </Route>
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </ErrorBoundary>
     </TooltipProvider>
   </QueryClientProvider>
 );

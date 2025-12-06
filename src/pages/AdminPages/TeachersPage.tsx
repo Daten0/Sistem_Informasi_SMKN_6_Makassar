@@ -31,6 +31,8 @@ const AdminTeachersPage = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedTeacher, setSelectedTeacher] = useState<Teacher | null>(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
   const { teachers, deleteTeacher, loading } = useTeachers();
   const navigate = useNavigate();
@@ -66,7 +68,25 @@ const AdminTeachersPage = () => {
   const filteredTeachers = teachers.filter(teacher => 
     teacher.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
     teacher.nip.includes(searchQuery)
-  )
+  );
+
+  const totalPages = Math.ceil(filteredTeachers.length / itemsPerPage);
+  const paginatedTeachers = filteredTeachers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -120,7 +140,7 @@ const AdminTeachersPage = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {filteredTeachers.map((teacher) => (
+                    {paginatedTeachers.map((teacher) => (
                       <TableRow 
                         key={teacher.id}
                         className="hover:bg-muted/50 transition-colors"
@@ -173,6 +193,29 @@ const AdminTeachersPage = () => {
                     ))}
                   </TableBody>
                 </Table>
+                <div className="flex items-center justify-between mt-4">
+                  <span className="text-sm text-muted-foreground">
+                    Halaman {currentPage} dari {totalPages}
+                  </span>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handlePreviousPage}
+                      disabled={currentPage === 1}
+                    >
+                      Sebelumnya
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleNextPage}
+                      disabled={currentPage === totalPages}
+                    >
+                      Selanjutnya
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </Card>

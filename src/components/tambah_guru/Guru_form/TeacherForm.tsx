@@ -38,8 +38,10 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
-import { Teacher, TeacherForInsert } from "@/contexts/TeachersContext";
-
+import { Teacher, TeacherForInsert, TeacherForUpdate } from "@/contexts/TeachersContext";
+import DOMPurify from "dompurify";
+import supabase from "@/supabase";
+import { useAuth } from "@/contexts/AuthContext";
 
 const formSchema = z.object({
   username: z.string().min(2, { message: "Nama harus diisi minimal 2 karakter" }),
@@ -52,7 +54,7 @@ const formSchema = z.object({
 export type TeacherFormValues = z.infer<typeof formSchema>;
 
 type TeacherFormProps = {
-  onSubmit: (values: TeacherForInsert, imageFile: File | null) => void;
+  onSubmit: (values: TeacherForInsert | TeacherForUpdate) => void;
   initialData?: Partial<Teacher>;
   isSubmitting?: boolean;
 };
@@ -61,7 +63,7 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [mapelInput, setMapelInput] = useState("");
-
+  const { currentUser } = useAuth();
   const kejuruanOptions = ["Perhotelan", "Tata Busana", "Tata Boga", "Akuntansi", "Desain Komunikasi Visual"];
 
 
@@ -139,15 +141,44 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
     setImageFile(null);
   };
 
-  function onFormSubmit(values: TeacherFormValues) {
-    const dataToSubmit: TeacherForInsert = {
-      username: values.username,
-      nip: values.nip,
-      jabatan: values.jabatan,
-      mapel: values.mapel,
-      kejuruan: values.kejuruan,
+  async function onFormSubmit(values: TeacherFormValues) {
+    let picture_url: string | undefined | null = initialData?.picture_url;
+
+    if (imageFile) {
+      if (initialData?.picture_url) {
+        const oldImageName = initialData.picture_url.split("/").pop();
+        if (oldImageName) {
+          await supabase.storage.from("teacher_pictures").remove([oldImageName]);
+        }
+      }
+      
+      const fileName = `${currentUser!.id}/${Date.now()}_${imageFile.name}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("teacher_pictures")
+        .upload(fileName, imageFile);
+
+      if (uploadError) {
+        toast.error("Gagal mengunggah gambar", {
+          description: uploadError.message,
+        });
+        return;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from("teacher_pictures")
+        .getPublicUrl(uploadData.path);
+      picture_url = urlData.publicUrl;
+    }
+
+    const dataToSubmit = {
+      ...values,
+      username: DOMPurify.sanitize(values.username),
+      jabatan: DOMPurify.sanitize(values.jabatan),
+      mapel: values.mapel.map((mapel) => DOMPurify.sanitize(mapel)),
+      picture_url: picture_url,
     };
-    onSubmit(dataToSubmit, imageFile);
+    
+    onSubmit(dataToSubmit);
   }
 
   return (
@@ -220,7 +251,7 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
               <FormItem>
                 <FormLabel>NIP</FormLabel>
                 <FormControl>
-                  <Input placeholder="Masukkan NIP" {...field} />
+                  <Input placeholder="Masukkan NIP" {...field} type="text" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -241,21 +272,23 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
             )}
           />
 
-           <FormField
+          <FormField
             control={form.control}
             name="kejuruan"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Kejuruan</FormLabel>
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="w-full justify-between">
-                      {field.value?.length > 0
-                        ? field.value.join(", ")
-                        : "Pilih kejuruan"}
-                      <ChevronDown className="h-4 w-4 opacity-50" />
-                    </Button>
-                  </DropdownMenuTrigger>
+                  <FormControl>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full justify-between">
+                        {field.value?.length > 0
+                          ? field.value.join(", ")
+                          : "Pilih kejuruan"}
+                        <ChevronDown className="h-4 w-4 opacity-50" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                  </FormControl>
                   <DropdownMenuContent className="w-full">
                     <DropdownMenuLabel>Kejuruan</DropdownMenuLabel>
                     <DropdownMenuSeparator />

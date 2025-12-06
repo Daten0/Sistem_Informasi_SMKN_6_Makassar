@@ -3,9 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Toaster, toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-import { TeacherForm } from "@/components/tambah_guru/Guru_form/TeacherForm";
-import { useTeachers } from "@/contexts/TeachersContext";
-import { Teacher, TeacherForUpdate, TeacherForInsert } from "@/contexts/TeachersContext";
+import { TeacherForm, TeacherFormValues } from "@/components/tambah_guru/Guru_form/TeacherForm";
+import { Teacher, useTeachers, TeacherForUpdate } from "@/contexts/TeachersContext";
+// import { Teacher, TeacherForUpdate } from "@/contexts/TeachersContext";
 import supabase from "@/supabase";
 
 const EditTeacherPage = () => {
@@ -13,77 +13,27 @@ const EditTeacherPage = () => {
   const navigate = useNavigate();
   const { getTeacherById, updateTeacher } = useTeachers();
   const [teacher, setTeacher] = useState<Teacher | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const fetchTeacher = async () => {
-      if (!id) {
-        toast.error("ID Guru tidak ditemukan");
-        navigate("/admin/teachers");
-        return;
-      }
-
-      // Coba dapatkan dari context dulu
-      const contextTeacher = getTeacherById(id);
-      if (contextTeacher) {
-        setTeacher(contextTeacher);
-        return;
-      }
-
-      // Jika tidak ada di context, fetch dari Supabase
-      try {
-        const { data, error } = await supabase
-          .from("guru")
-          .select("*")
-          .eq("id", id)
-          .single();
-
-        if (error) {
-          throw error;
-        }
-        if (data) {
-          setTeacher(data);
-        } else {
-          toast.error("Guru tidak ditemukan");
-          navigate("/admin/teachers");
-        }
-      } catch (error: any) {
-        console.error("Error fetching teacher:", error);
-        toast.error("Gagal memuat data guru.", {
-          description: error.message,
-        });
+    if (id) {
+      const foundTeacher = getTeacherById(id);
+      if (foundTeacher) {
+        setTeacher(foundTeacher);
+      } else {
+        toast.error("Guru tidak ditemukan");
         navigate("/admin/teachers");
       }
-    };
+    }
+  }, [id, getTeacherById, navigate]);
 
-    fetchTeacher();
-  }, [id, navigate, getTeacherById]);
-
-  const handleUpdateTeacher = async (
-    data: TeacherForInsert,
-    imageFile: File | null
-  ) => {
-    if (!id || !teacher) return;
-
-    setIsSubmitting(true);
-    try {
-      const updatedData: TeacherForUpdate = {
-        ...data,
-      };
-
-      const success = await updateTeacher(id, updatedData, imageFile);
-
-      if (success) {
-        toast.success("Data guru berhasil diperbarui!");
-        navigate("/admin/teachers");
-      }
-    } catch (error) {
-      console.error("Unexpected error during update:", error);
-      toast.error("Terjadi kesalahan yang tidak terduga saat memperbarui data.");
-    } finally {
-      setIsSubmitting(false);
+  const handleUpdateTeacher = async (updatedData: TeacherForUpdate) => {
+    if (!id) return;
+    const success = await updateTeacher(id, updatedData);
+    if (success) {
+      navigate("/admin/teachers");
     }
   };
+
 
   if (!teacher) {
     return <div>Loading...</div>;
@@ -102,7 +52,6 @@ const EditTeacherPage = () => {
       <TeacherForm
         initialData={teacher}
         onSubmit={handleUpdateTeacher}
-        isSubmitting={isSubmitting}
       />
     </div>
   );

@@ -103,25 +103,6 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="left">
               <div className="flex flex-col gap-6 p-6">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="flex items-center gap-2">
-                      <GraduationCap className="w-4 h-4" />
-                      Jurusan
-                      <ChevronDown className="w-4 h-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent>
-                    <DropdownMenuItem>
-                      Desain Komunikasi Visual
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>Tata Boga</DropdownMenuItem>
-                    <DropdownMenuItem>Perhotelan</DropdownMenuItem>
-                    <DropdownMenuItem>Akutansi</DropdownMenuItem>
-                    <DropdownMenuItem>Tata Kecantikan</DropdownMenuItem>
-                    <DropdownMenuItem>Tata Busana</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -138,7 +119,11 @@ const Header = () => {
                     <Link to="/VisiMisi">
                       <DropdownMenuItem>Visi & Misi</DropdownMenuItem>
                     </Link>
+                    <Link to="/jurusan">
+                      <DropdownMenuItem>Jurusan</DropdownMenuItem>
+                    </Link>
                   </DropdownMenuContent>
+                  
                 </DropdownMenu>
                 <Link to="/login" className="hidden">
                   <Button className="bg-gradient-primary hover:opacity-90 transition-opacity w-full">
