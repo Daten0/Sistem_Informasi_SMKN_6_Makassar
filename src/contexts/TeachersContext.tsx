@@ -4,13 +4,12 @@ import React, {
   useEffect, 
   ReactNode, 
   useContext,
-  useCallback,
-  useMemo
+  useMemo,
+  useRef
  } from "react";
 import supabase from "@/supabase";
 import { toast } from "sonner";
 
-// Based on f:\TUGAS_SIDIQ\Projects\vocational-compass-main\Context\Supabase\Db_Schema(guru).md
 export interface Teacher {
   id: string;
   created_at: string;
@@ -34,6 +33,7 @@ interface TeachersContextType {
   deleteTeacher: (id: string) => Promise<void>;
   getTeacherById: (id: string) => Teacher | undefined;
   loading: boolean;
+  refreshTeachers: () => Promise<void>;
 }
 
 export const TeachersContext = createContext<TeachersContextType | undefined>(undefined);
@@ -41,65 +41,183 @@ export const TeachersContext = createContext<TeachersContextType | undefined>(un
 export function TeachersProvider({ children }: { children: ReactNode }) {
   const [teachers, setTeachers] = useState<Teacher[]>([]);
   const [loading, setLoading] = useState(true);
+  const isMountedRef = useRef(true);
+  const channelRef = useRef<any>(null);
+  const isPageVisibleRef = useRef(true);
 
-  const fetchTeachers = useCallback(async () => {
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+      }
+    };
+  }, []);
+
+  // Handle page visibility - Re-establish connection when returning to tab
+  useEffect(() => {
+    const handleVisibilityChange = async () => {
+      if (document.visibilityState === 'visible') {
+        isPageVisibleRef.current = true;
+        // Re-fetch and re-subscribe when page becomes visible
+        if (isMountedRef.current) {
+          await fetchTeachers();
+          await setupRealtimeListener();
+        }
+      } else {
+        isPageVisibleRef.current = false;
+        // Clean up subscription when page is hidden
+        if (channelRef.current) {
+          supabase.removeChannel(channelRef.current);
+          channelRef.current = null;
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
+
+  const setupRealtimeListener = async () => {
+    if (!isMountedRef.current) return;
+
+    // Clean up old channel if exists
+    if (channelRef.current) {
+      supabase.removeChannel(channelRef.current);
+    }
+
+    // Create new subscription
+    channelRef.current = supabase
+      .channel("public:guru")
+      .on("postgres_changes", { event: "*", schema: "public", table: "guru" }, () => {
+        if (isMountedRef.current && isPageVisibleRef.current) {
+          fetchTeachers();
+        }
+      })
+      .subscribe();
+  };
+
+  const isSessionExpiredError = (error: any): boolean => {
+    // Check for various session expiration indicators
+    return (
+      error?.code === 'PGRST301' || // Unauthorized error code
+      error?.code === 'INVALID_JWT' ||
+      error?.message?.includes('401') ||
+      error?.message?.includes('unauthorized') ||
+      error?.message?.includes('expired')
+    );
+  };
+
+  const fetchTeachers = async () => {
+    if (!isMountedRef.current) return;
+
     try {
-      const { data, error } = await supabase.from("guru").select("*").order("created_at", { ascending: false });
+      if (isMountedRef.current) {
+        setLoading(true);
+      }
+
+      const { data, error } = await supabase
+        .from("guru")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (!isMountedRef.current) return;
 
       if (error) {
         console.error("Error fetching teachers:", error);
-        toast.error("Gagal memuat data guru", { description: error.message });
+        
+        // Check for authentication errors
+        if (isSessionExpiredError(error)) {
+          console.warn("Session expired - attempting refresh");
+          
+          // Try to refresh session
+          const { error: refreshError } = await supabase.auth.refreshSession();
+          
+          if (refreshError || !isMountedRef.current) {
+            toast.error("Sesi Anda telah berakhir. Silakan login kembali.");
+            // Don't redirect here - let AuthContext handle it
+            return;
+          }
+          
+          // Retry fetch after refresh
+          const { data: retryData, error: retryError } = await supabase
+            .from("guru")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+          if (!isMountedRef.current) return;
+
+          if (retryError) {
+            toast.error("Gagal memuat data guru", { description: retryError.message });
+          } else {
+            setTeachers(retryData || []);
+          }
+        } else {
+          toast.error("Gagal memuat data guru", { description: error.message });
+        }
       } else {
         setTeachers(data || []);
       }
     } catch (error) {
+      if (!isMountedRef.current) return;
       console.error("Unexpected error fetching teachers:", error);
       toast.error("Terjadi kesalahan saat memuat data guru");
+    } finally {
+      if (isMountedRef.current) {
+        setLoading(false);
+      }
     }
-  }, []);
+  };
 
+  // Initial fetch and setup
   useEffect(() => {
-    setLoading(true);
-    fetchTeachers().finally(() => setLoading(false));
+    if (!isMountedRef.current) return;
 
-    const channel = supabase
-      .channel("public:guru")
-      .on("postgres_changes", { event: "*", schema: "public", table: "guru" }, () => {
-        fetchTeachers();
-      })
-      .subscribe();
+    fetchTeachers();
+    setupRealtimeListener();
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+      }
     };
-  }, [fetchTeachers]);
+  }, []);
 
+  const addTeacher = async (teacherData: TeacherForInsert) => {
+    if (!isMountedRef.current) return;
 
-
-  const addTeacher = useCallback(
-    async (teacherData: TeacherForInsert) => {
+    try {
       const { data, error } = await supabase
         .from("guru")
         .insert([{ ...teacherData, terdaftar: true }])
         .select();
 
+      if (!isMountedRef.current) return;
+
       if (error) {
-        toast.error("Gagal menambah data guru", {
-          description: error.message,
-        });
+        if (isSessionExpiredError(error)) {
+          toast.error("Sesi Anda telah berakhir. Silakan login kembali.");
+        } else {
+          toast.error("Gagal menambah data guru", { description: error.message });
+        }
         console.error(error);
       } else if (data && data.length > 0) {
         toast.success("Data guru berhasil ditambahkan");
       }
-    },
-    []
-  );
+    } catch (err) {
+      if (!isMountedRef.current) return;
+      console.error("Error adding teacher:", err);
+      toast.error("Terjadi kesalahan saat menambah data guru");
+    }
+  };
 
-  const updateTeacher = useCallback(
-    async (
-      id: string,
-      teacherData: TeacherForUpdate
-    ): Promise<boolean> => {
+  const updateTeacher = async (
+    id: string,
+    teacherData: TeacherForUpdate
+  ): Promise<boolean> => {
+    if (!isMountedRef.current) return false;
+
+    try {
       const { data, error } = await supabase
         .from("guru")
         .update({
@@ -109,10 +227,14 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
         .eq("id", id)
         .select();
 
+      if (!isMountedRef.current) return false;
+
       if (error) {
-        toast.error("Gagal memperbarui data guru", {
-          description: error.message,
-        });
+        if (isSessionExpiredError(error)) {
+          toast.error("Sesi Anda telah berakhir. Silakan login kembali.");
+        } else {
+          toast.error("Gagal memperbarui data guru", { description: error.message });
+        }
         return false;
       }
 
@@ -122,28 +244,41 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
       }
 
       return false;
-    },
-    []
-  );
-
-  const deleteTeacher = useCallback(async (id: string) => {
-    const { error } = await supabase.from("guru").delete().eq("id", id);
-
-    if (error) {
-      toast.error("Gagal menghapus data guru", {
-        description: error.message,
-      });
-    } else {
-      toast.success("Data guru berhasil dihapus");
+    } catch (err) {
+      if (!isMountedRef.current) return false;
+      console.error("Error updating teacher:", err);
+      toast.error("Terjadi kesalahan saat memperbarui data guru");
+      return false;
     }
-  }, []);
+  };
 
-  const getTeacherById = useCallback(
-    (id: string) => {
-      return teachers.find((item) => item.id === id);
-    },
-    [teachers]
-  );
+  const deleteTeacher = async (id: string) => {
+    if (!isMountedRef.current) return;
+
+    try {
+      const { error } = await supabase.from("guru").delete().eq("id", id);
+
+      if (!isMountedRef.current) return;
+
+      if (error) {
+        if (isSessionExpiredError(error)) {
+          toast.error("Sesi Anda telah berakhir. Silakan login kembali.");
+        } else {
+          toast.error("Gagal menghapus data guru", { description: error.message });
+        }
+      } else {
+        toast.success("Data guru berhasil dihapus");
+      }
+    } catch (err) {
+      if (!isMountedRef.current) return;
+      console.error("Error deleting teacher:", err);
+      toast.error("Terjadi kesalahan saat menghapus data guru");
+    }
+  };
+
+  const getTeacherById = (id: string) => {
+    return teachers.find((item) => item.id === id);
+  };
 
   const value = useMemo(
     () => ({
@@ -153,8 +288,9 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
       deleteTeacher,
       getTeacherById,
       loading,
+      refreshTeachers: fetchTeachers,
     }),
-    [teachers, addTeacher, updateTeacher, deleteTeacher, getTeacherById, loading],
+    [teachers, loading],
   );
 
   return <TeachersContext.Provider value={value}>{children}</TeachersContext.Provider>;
@@ -171,6 +307,7 @@ export function useTeachers() {
       deleteTeacher: async () => {},
       getTeacherById: () => undefined,
       loading: false,
+      refreshTeachers: async () => {},
     };
   }
   return context;

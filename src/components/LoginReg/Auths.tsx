@@ -43,14 +43,36 @@ const Auths = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    
+    // Don't allow multiple simultaneous login attempts
+    if (error) return;
+    
     try {
-      const sanitizedEmail = sanitizeInput(email);
+      // Validate input
+      if (!email || !password) {
+        setError("Email dan password harus diisi.");
+        return;
+      }
+
+      const sanitizedEmail = sanitizeInput(email.trim());
       const sanitizedPassword = sanitizeInput(password);
+      
+      console.log("Attempting login with:", sanitizedEmail);
       await login(sanitizedEmail, sanitizedPassword);
-      // navigate("/admin");
-    } catch (error) {
-      setError("Gagal melakukan login. Periksa kembali email dan password Anda.");
+      
+      // Don't navigate here - let Auths.tsx useEffect handle it based on currentUser/userRole
+      console.log("Login submitted, waiting for auth state change...");
+    } catch (error: any) {
       console.error("Login failed:", error);
+      
+      // Provide specific error messages
+      if (error?.message?.includes("Invalid")) {
+        setError("Email atau password salah.");
+      } else if (error?.message?.includes("locked")) {
+        setError("Akun Anda terkunci. Coba lagi nanti.");
+      } else {
+        setError("Gagal melakukan login. Silakan coba lagi.");
+      }
     }
   };
 
