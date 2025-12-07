@@ -1,5 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Scissors, Target, Eye, ScissorsLineDashed, Camera, MonitorCheck, PencilRuler } from "lucide-react";
+import {
+  Scissors,
+  Target,
+  Eye,
+  ScissorsLineDashed,
+  Camera,
+  MonitorCheck,
+  PencilRuler,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const BSProfile = () => {
@@ -46,7 +54,10 @@ const BSProfile = () => {
             </div>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-            Program keahlian yang mempersiapkan siswa menjadi desainer fashion dan technician busana profesional. Pembelajaran berfokus pada perancangan busana, pembuatan pola (pattern making), teknik menjahit dan konstruksi garmen, serta manajemen bisnis fashion dan butik.
+            Program keahlian yang mempersiapkan siswa menjadi desainer fashion
+            dan technician busana profesional. Pembelajaran berfokus pada
+            perancangan busana, pembuatan pola (pattern making), teknik menjahit
+            dan konstruksi garmen, serta manajemen bisnis fashion dan butik.
           </p>
         </div>
       </section>
@@ -63,7 +74,11 @@ const BSProfile = () => {
                 <h2 className="text-2xl font-bold text-foreground">Visi</h2>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                MMenjadi program keahlian fashion unggulan yang menghasilkan lulusan desainer dan teknisi garmen profesional yang kompeten, kreatif, dan berdaya saing tinggi dalam merancang dan memproduksi busana serta mampu berkontribusi pada kemajuan industri mode Indonesia.
+                MMenjadi program keahlian fashion unggulan yang menghasilkan
+                lulusan desainer dan teknisi garmen profesional yang kompeten,
+                kreatif, dan berdaya saing tinggi dalam merancang dan
+                memproduksi busana serta mampu berkontribusi pada kemajuan
+                industri mode Indonesia.
               </p>
             </CardContent>
           </Card>
@@ -79,19 +94,26 @@ const BSProfile = () => {
               <ul className="text-muted-foreground space-y-2">
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Melaksanakan kurikulum berbasis praktik untuk menguasai teknik pembuatan pola, menjahit, dan konstruksi garmen sesuai standar industri mode.
+                  Melaksanakan kurikulum berbasis praktik untuk menguasai teknik
+                  pembuatan pola, menjahit, dan konstruksi garmen sesuai standar
+                  industri mode.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Mengembangkan kreativitas dan inovasi siswa dalam perancangan busana yang mengikuti tren fashion lokal dan global.
+                  Mengembangkan kreativitas dan inovasi siswa dalam perancangan
+                  busana yang mengikuti tren fashion lokal dan global.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Membekali siswa dengan keterampilan digital dalam fashion illustration dan perangkat lunak desain pola (pattern software) untuk efisiensi produksi.
+                  Membekali siswa dengan keterampilan digital dalam fashion
+                  illustration dan perangkat lunak desain pola (pattern
+                  software) untuk efisiensi produksi.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menjalin kemitraan strategis dengan industri garmen, butik, dan desainer terkemuka untuk menunjang Praktik Kerja Lapangan (PKL) dan kewirausahaan.
+                  Menjalin kemitraan strategis dengan industri garmen, butik,
+                  dan desainer terkemuka untuk menunjang Praktik Kerja Lapangan
+                  (PKL) dan kewirausahaan.
                 </li>
               </ul>
             </CardContent>
@@ -125,25 +147,6 @@ const BSProfile = () => {
               </Card>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { value: "150+", label: "Siswa Aktif" },
-            { value: "12", label: "Guru Ahli" },
-            { value: "95%", label: "Tingkat Kelulusan" },
-            { value: "80%", label: "Terserap Industri" },
-          ].map((stat, idx) => (
-            <div key={idx} className="text-center p-6">
-              <p className="text-4xl font-bold text-primary mb-2">
-                {stat.value}
-              </p>
-              <p className="text-muted-foreground">{stat.label}</p>
-            </div>
-          ))}
         </div>
       </section>
     </div>

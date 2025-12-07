@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { TeacherCard } from "./TeacherCard";
-import { Teacher } from "@/contexts/TeachersContext"
+import { Teacher } from "@/contexts/TeachersContext";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -10,7 +10,10 @@ interface TeacherCarouselProps {
   autoplayDelay?: number;
 }
 
-export const TeacherCarousel = ({ teachers, autoplayDelay = 4000 }: TeacherCarouselProps) => {
+export const TeacherCarousel = ({
+  teachers,
+  autoplayDelay = 4000,
+}: TeacherCarouselProps) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" });
   const [selectedIndex, setSelectedIndex] = useState(0);
 
@@ -44,7 +47,9 @@ export const TeacherCarousel = ({ teachers, autoplayDelay = 4000 }: TeacherCarou
 
   return (
     <div className="py-12">
-      <h2 className="text-3xl font-bold text-center text-card-foreground mb-8">Guru</h2>
+      <h2 className="text-3xl font-bold text-center text-card-foreground mb-8">
+        Guru
+      </h2>
       <div className="relative w-full max-w-6xl mx-auto">
         <div className="overflow-hidden" ref={emblaRef}>
           <div className="flex gap-6">
@@ -59,26 +64,6 @@ export const TeacherCarousel = ({ teachers, autoplayDelay = 4000 }: TeacherCarou
           </div>
         </div>
       </div>
-
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-card/90 backdrop-blur-sm shadow-soft hover:bg-card hover:scale-110 transition-smooth z-10"
-        onClick={scrollPrev}
-        aria-label="Previous teacher"
-      >
-        <ChevronLeft className="h-5 w-5" />
-      </Button>
-
-      <Button
-        variant="outline"
-        size="icon"
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-card/90 backdrop-blur-sm shadow-soft hover:bg-card hover:scale-110 transition-smooth z-10"
-        onClick={scrollNext}
-        aria-label="Next teacher"
-      >
-        <ChevronRight className="h-5 w-5" />
-      </Button>
 
       <div className="flex justify-center gap-2 mt-6">
         {teachers.map((_, index) => (

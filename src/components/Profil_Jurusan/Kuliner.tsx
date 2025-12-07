@@ -1,12 +1,31 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Citrus, Target, Eye, ChefHat, Microwave, Utensils } from "lucide-react";
+import {
+  Citrus,
+  Target,
+  Eye,
+  ChefHat,
+  Microwave,
+  Utensils,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const BGProfile = () => {
   const facilities = [
-    { icon: ChefHat, name: "Kitchen Laboratory", desc: "Dapur utama yang dirancang untuk pembelajaran teknik memasak dasar, pengenalan alat, dan praktik higienitas." },
-    { icon: Microwave, name: "Kitchen: Pastry & Bakery", desc: "Dapur khusus dengan Oven besar (convection oven), Mixer Adonan (heavy duty), Mesin Proofer, chiller, dan meja kerja marmer/kayu untuk pastry." },
-    { icon: Utensils, name: "Restaurant & Service", desc: "Ruangan makan yang ditata secara formal dengan meja, kursi, taplak meja (linen), dan peralatan makan lengkap (chinaware, glassware, cutlery)." },
+    {
+      icon: ChefHat,
+      name: "Kitchen Laboratory",
+      desc: "Dapur utama yang dirancang untuk pembelajaran teknik memasak dasar, pengenalan alat, dan praktik higienitas.",
+    },
+    {
+      icon: Microwave,
+      name: "Kitchen: Pastry & Bakery",
+      desc: "Dapur khusus dengan Oven besar (convection oven), Mixer Adonan (heavy duty), Mesin Proofer, chiller, dan meja kerja marmer/kayu untuk pastry.",
+    },
+    {
+      icon: Utensils,
+      name: "Restaurant & Service",
+      desc: "Ruangan makan yang ditata secara formal dengan meja, kursi, taplak meja (linen), dan peralatan makan lengkap (chinaware, glassware, cutlery).",
+    },
   ];
 
   return (
@@ -14,7 +33,10 @@ const BGProfile = () => {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <Link to="/jurusan" className="text-primary hover:underline text-sm mb-4 inline-block">
+          <Link
+            to="/jurusan"
+            className="text-primary hover:underline text-sm mb-4 inline-block"
+          >
             ← Kembali ke Beranda
           </Link>
           <div className="flex items-center gap-4 mb-6">
@@ -31,7 +53,9 @@ const BGProfile = () => {
             </div>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-            Program keahlian yang mencetak tenaga profesional kuliner (chef) yang menguasai seni dan teknik pengolahan makanan berstandar industri, serta praktik higienitas dan manajemen dapur komersial.
+            Program keahlian yang mencetak tenaga profesional kuliner (chef)
+            yang menguasai seni dan teknik pengolahan makanan berstandar
+            industri, serta praktik higienitas dan manajemen dapur komersial.
           </p>
         </div>
       </section>
@@ -48,7 +72,10 @@ const BGProfile = () => {
                 <h2 className="text-2xl font-bold text-foreground">Visi</h2>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                Menjadi pusat unggulan pendidikan kuliner yang menghasilkan lulusan profesional, inovatif, dan beretika dalam seni pengolahan makanan, serta mampu bersaing di tingkat nasional maupun internasional di industri Food and Beverage (F&B).
+                Menjadi pusat unggulan pendidikan kuliner yang menghasilkan
+                lulusan profesional, inovatif, dan beretika dalam seni
+                pengolahan makanan, serta mampu bersaing di tingkat nasional
+                maupun internasional di industri Food and Beverage (F&B).
               </p>
             </CardContent>
           </Card>
@@ -64,15 +91,20 @@ const BGProfile = () => {
               <ul className="text-muted-foreground space-y-2">
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Melaksanakan pendidikan kuliner berstandar industri untuk menguasai teknik pengolahan makanan (Nusantara dan Internasional).
+                  Melaksanakan pendidikan kuliner berstandar industri untuk
+                  menguasai teknik pengolahan makanan (Nusantara dan
+                  Internasional).
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Membentuk tenaga profesional yang menjunjung tinggi etika kerja, higienitas, dan sanitasi pangan di dapur komersial.
+                  Membentuk tenaga profesional yang menjunjung tinggi etika
+                  kerja, higienitas, dan sanitasi pangan di dapur komersial.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menjalin kemitraan strategis dengan industri Food & Beverage (F&B) untuk menunjang praktik dan menumbuhkan jiwa wirausaha siswa.
+                  Menjalin kemitraan strategis dengan industri Food & Beverage
+                  (F&B) untuk menunjang praktik dan menumbuhkan jiwa wirausaha
+                  siswa.
                 </li>
               </ul>
             </CardContent>
@@ -88,34 +120,24 @@ const BGProfile = () => {
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {facilities.map((facility, idx) => (
-              <Card key={idx} className="border-0 shadow-md bg-card hover:shadow-lg hover:-translate-y-1 transition-all">
+              <Card
+                key={idx}
+                className="border-0 shadow-md bg-card hover:shadow-lg hover:-translate-y-1 transition-all"
+              >
                 <CardContent className="p-6 text-center">
                   <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
                     <facility.icon className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">{facility.name}</h3>
-                  <p className="text-muted-foreground text-sm">{facility.desc}</p>
+                  <h3 className="text-lg font-bold text-foreground mb-2">
+                    {facility.name}
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    {facility.desc}
+                  </p>
                 </CardContent>
               </Card>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { value: "150+", label: "Siswa Aktif" },
-            { value: "12", label: "Guru Ahli" },
-            { value: "95%", label: "Tingkat Kelulusan" },
-            { value: "80%", label: "Terserap Industri" },
-          ].map((stat, idx) => (
-            <div key={idx} className="text-center p-6">
-              <p className="text-4xl font-bold text-primary mb-2">{stat.value}</p>
-              <p className="text-muted-foreground">{stat.label}</p>
-            </div>
-          ))}
         </div>
       </section>
     </div>

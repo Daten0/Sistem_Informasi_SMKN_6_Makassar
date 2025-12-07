@@ -4,9 +4,21 @@ import { Link } from "react-router-dom";
 
 const DKVProfile = () => {
   const facilities = [
-    { icon: Monitor, name: "Lab Komputer Desain", desc: "30 unit iMac dengan software profesional" },
-    { icon: Camera, name: "Studio Fotografi", desc: "Peralatan lighting dan backdrop lengkap" },
-    { icon: PenTool, name: "Workshop Cetak", desc: "Mesin cetak digital dan sablon" },
+    {
+      icon: Monitor,
+      name: "Lab Komputer Desain",
+      desc: "30 unit iMac dengan software profesional",
+    },
+    {
+      icon: Camera,
+      name: "Studio Fotografi",
+      desc: "Peralatan lighting dan backdrop lengkap",
+    },
+    {
+      icon: PenTool,
+      name: "Workshop Cetak",
+      desc: "Mesin cetak digital dan sablon",
+    },
   ];
 
   return (
@@ -14,7 +26,10 @@ const DKVProfile = () => {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <Link to="/jurusan" className="text-primary hover:underline text-sm mb-4 inline-block">
+          <Link
+            to="/jurusan"
+            className="text-primary hover:underline text-sm mb-4 inline-block"
+          >
             ← Kembali ke Beranda
           </Link>
           <div className="flex items-center gap-4 mb-6">
@@ -31,8 +46,9 @@ const DKVProfile = () => {
             </div>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-            Program keahlian yang mempersiapkan siswa menjadi desainer kreatif dan profesional 
-            dalam bidang komunikasi visual, branding, dan multimedia.
+            Program keahlian yang mempersiapkan siswa menjadi desainer kreatif
+            dan profesional dalam bidang komunikasi visual, branding, dan
+            multimedia.
           </p>
         </div>
       </section>
@@ -49,9 +65,10 @@ const DKVProfile = () => {
                 <h2 className="text-2xl font-bold text-foreground">Visi</h2>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                Menjadi program keahlian unggulan yang menghasilkan lulusan kompeten, kreatif, 
-                dan berdaya saing tinggi di bidang desain komunikasi visual yang mampu 
-                berkontribusi pada industri kreatif Indonesia.
+                Menjadi program keahlian unggulan yang menghasilkan lulusan
+                kompeten, kreatif, dan berdaya saing tinggi di bidang desain
+                komunikasi visual yang mampu berkontribusi pada industri kreatif
+                Indonesia.
               </p>
             </CardContent>
           </Card>
@@ -95,34 +112,24 @@ const DKVProfile = () => {
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {facilities.map((facility, idx) => (
-              <Card key={idx} className="border-0 shadow-md bg-card hover:shadow-lg hover:-translate-y-1 transition-all">
+              <Card
+                key={idx}
+                className="border-0 shadow-md bg-card hover:shadow-lg hover:-translate-y-1 transition-all"
+              >
                 <CardContent className="p-6 text-center">
                   <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
                     <facility.icon className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">{facility.name}</h3>
-                  <p className="text-muted-foreground text-sm">{facility.desc}</p>
+                  <h3 className="text-lg font-bold text-foreground mb-2">
+                    {facility.name}
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    {facility.desc}
+                  </p>
                 </CardContent>
               </Card>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { value: "150+", label: "Siswa Aktif" },
-            { value: "12", label: "Guru Ahli" },
-            { value: "95%", label: "Tingkat Kelulusan" },
-            { value: "80%", label: "Terserap Industri" },
-          ].map((stat, idx) => (
-            <div key={idx} className="text-center p-6">
-              <p className="text-4xl font-bold text-primary mb-2">{stat.value}</p>
-              <p className="text-muted-foreground">{stat.label}</p>
-            </div>
-          ))}
         </div>
       </section>
     </div>

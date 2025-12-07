@@ -1,5 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles, Target, Eye, WandSparkles, ShowerHead, Armchair } from "lucide-react";
+import {
+  Sparkles,
+  Target,
+  Eye,
+  WandSparkles,
+  ShowerHead,
+  Armchair,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const KCProfile = () => {
@@ -67,7 +74,10 @@ const KCProfile = () => {
                 <h2 className="text-2xl font-bold text-foreground">Visi</h2>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                Menjadi program keahlian terdepan yang menghasilkan lulusan praktisi kecantikan profesional yang kompeten, inovatif dalam tren estetika, dan beretika dalam memberikan layanan tata kecantikan kulit dan rambut berdaya saing global.
+                Menjadi program keahlian terdepan yang menghasilkan lulusan
+                praktisi kecantikan profesional yang kompeten, inovatif dalam
+                tren estetika, dan beretika dalam memberikan layanan tata
+                kecantikan kulit dan rambut berdaya saing global.
               </p>
             </CardContent>
           </Card>
@@ -83,19 +93,26 @@ const KCProfile = () => {
               <ul className="text-muted-foreground space-y-2">
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Melaksanakan kurikulum praktik berstandar salon/klinik kecantikan untuk menguasai teknik tata kecantikan kulit, rambut, dan rias.
+                  Melaksanakan kurikulum praktik berstandar salon/klinik
+                  kecantikan untuk menguasai teknik tata kecantikan kulit,
+                  rambut, dan rias.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Membentuk profesionalisme siswa dengan fokus pada etika pelayanan prima, higienitas (HSE), dan kemampuan analisis estetika klien.
+                  Membentuk profesionalisme siswa dengan fokus pada etika
+                  pelayanan prima, higienitas (HSE), dan kemampuan analisis
+                  estetika klien.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menjalin kemitraan strategis dengan industri salon, spa, dan klinik kecantikan terkemuka untuk menunjang Praktik Kerja Lapangan (PKL) dan penyerapan lulusan.
+                  Menjalin kemitraan strategis dengan industri salon, spa, dan
+                  klinik kecantikan terkemuka untuk menunjang Praktik Kerja
+                  Lapangan (PKL) dan penyerapan lulusan.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Mendorong inovasi dan kreativitas siswa dalam mengikuti tren estetika terkini serta manajemen bisnis salon.
+                  Mendorong inovasi dan kreativitas siswa dalam mengikuti tren
+                  estetika terkini serta manajemen bisnis salon.
                 </li>
               </ul>
             </CardContent>
@@ -129,25 +146,6 @@ const KCProfile = () => {
               </Card>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { value: "150+", label: "Siswa Aktif" },
-            { value: "12", label: "Guru Ahli" },
-            { value: "95%", label: "Tingkat Kelulusan" },
-            { value: "80%", label: "Terserap Industri" },
-          ].map((stat, idx) => (
-            <div key={idx} className="text-center p-6">
-              <p className="text-4xl font-bold text-primary mb-2">
-                {stat.value}
-              </p>
-              <p className="text-muted-foreground">{stat.label}</p>
-            </div>
-          ))}
         </div>
       </section>
     </div>

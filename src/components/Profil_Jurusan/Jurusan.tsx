@@ -1,12 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
-import { 
-  Palette, 
-  UtensilsCrossed, 
-  Hotel, 
-  Calculator, 
-  Sparkles, 
-  Scissors 
+import {
+  Palette,
+  UtensilsCrossed,
+  Hotel,
+  Calculator,
+  Sparkles,
+  Scissors,
 } from "lucide-react";
 
 const departments = [
@@ -15,60 +15,66 @@ const departments = [
     name: "Desain Komunikasi Visual",
     shortName: "DKV",
     icon: Palette,
-    description: "Pelajari seni desain grafis, branding, dan multimedia untuk industri kreatif.",
+    description:
+      "Pelajari seni desain grafis, branding, dan multimedia untuk industri kreatif.",
     color: "from-violet-500 to-purple-600",
     students: 150,
-    link: "/dkv"
+    link: "/dkv",
   },
   {
     id: "culinary",
     name: "Tata Boga",
     shortName: "Kuliner",
     icon: UtensilsCrossed,
-    description: "Kuasai teknik memasak profesional dan manajemen dapur modern.",
+    description:
+      "Kuasai teknik memasak profesional dan manajemen dapur modern.",
     color: "from-orange-500 to-red-500",
     students: 120,
-    link: "/kuliner"
+    link: "/kuliner",
   },
   {
     id: "hospitality",
     name: "Perhotelan",
     shortName: "Hotel",
     icon: Hotel,
-    description: "Siapkan karir di industri hospitality dan manajemen hotel internasional.",
+    description:
+      "Siapkan karir di industri hospitality dan manajemen hotel internasional.",
     color: "from-blue-500 to-cyan-500",
     students: 100,
-    link: "/Perhotelan"
+    link: "/Perhotelan",
   },
   {
     id: "accounting",
     name: "Akuntansi",
     shortName: "Akuntansi",
     icon: Calculator,
-    description: "Pelajari pembukuan, perpajakan, dan manajemen keuangan bisnis.",
+    description:
+      "Pelajari pembukuan, perpajakan, dan manajemen keuangan bisnis.",
     color: "from-emerald-500 to-teal-500",
     students: 130,
-    link: "/akutansi"
+    link: "/akutansi",
   },
   {
     id: "beauty",
     name: "Tata Kecantikan",
     shortName: "Kecantikan",
     icon: Sparkles,
-    description: "Kuasai teknik makeup, perawatan kulit, dan tren kecantikan terkini.",
+    description:
+      "Kuasai teknik makeup, perawatan kulit, dan tren kecantikan terkini.",
     color: "from-pink-500 to-rose-500",
     students: 90,
-    link: "/kecantikan"
+    link: "/kecantikan",
   },
   {
     id: "fashion",
     name: "Tata Busana",
     shortName: "Fashion",
     icon: Scissors,
-    description: "Pelajari desain fashion, pola, dan produksi busana profesional.",
+    description:
+      "Pelajari desain fashion, pola, dan produksi busana profesional.",
     color: "from-amber-500 to-yellow-500",
     students: 85,
-    link: "/busana"
+    link: "/busana",
   },
 ];
 
@@ -80,12 +86,15 @@ const Departments = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/5 to-background" />
         <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl" />
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-        
+
         <div className="max-w-6xl mx-auto relative z-10">
-          <Link to="/" className="text-primary hover:underline text-sm mb-6 inline-block">
+          <Link
+            to="/"
+            className="text-primary hover:underline text-sm mb-6 inline-block"
+          >
             ← Kembali ke Beranda
           </Link>
-          
+
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-4">
               Program <span className="text-primary">Keahlian</span>
@@ -93,21 +102,6 @@ const Departments = () => {
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Silahkan Pilih Jurusan yang Kamu Cari di SMK Negeri 6 Makassar.
             </p>
-          </div>
-
-          {/* Stats Bar */}
-          <div className="flex flex-wrap justify-center gap-8 mb-16">
-            {[
-              { value: "6", label: "Program Keahlian" },
-              { value: "675+", label: "Total Siswa" },
-              { value: "50+", label: "Guru Profesional" },
-              { value: "95%", label: "Tingkat Kelulusan" },
-            ].map((stat, idx) => (
-              <div key={idx} className="text-center">
-                <p className="text-3xl font-bold text-primary">{stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -121,10 +115,12 @@ const Departments = () => {
                 <Card className="group h-full border-0 shadow-lg bg-card hover:shadow-xl transition-all duration-300 hover:-translate-y-2 overflow-hidden">
                   {/* Gradient Header */}
                   <div className={`h-2 bg-gradient-to-r ${dept.color}`} />
-                  
+
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4 mb-4">
-                      <div className={`p-3 rounded-xl bg-gradient-to-br ${dept.color} text-white shadow-lg`}>
+                      <div
+                        className={`p-3 rounded-xl bg-gradient-to-br ${dept.color} text-white shadow-lg`}
+                      >
                         <dept.icon className="w-6 h-6" />
                       </div>
                       <div className="flex-1">
@@ -136,15 +132,12 @@ const Departments = () => {
                         </span>
                       </div>
                     </div>
-                    
+
                     <p className="text-muted-foreground text-sm leading-relaxed mb-4">
                       {dept.description}
                     </p>
-                    
+
                     <div className="flex items-center justify-between pt-4 border-t border-border">
-                      <span className="text-sm text-muted-foreground">
-                        <span className="font-semibold text-foreground">{dept.students}</span> siswa aktif
-                      </span>
                       <span className="text-primary text-sm font-medium group-hover:translate-x-1 transition-transform">
                         Lihat Detail →
                       </span>

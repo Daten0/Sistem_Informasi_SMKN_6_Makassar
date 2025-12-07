@@ -1,12 +1,31 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Hotel, Target, Eye, MonitorDot, House, IceCreamBowl } from "lucide-react";
+import {
+  Hotel,
+  Target,
+  Eye,
+  MonitorDot,
+  House,
+  IceCreamBowl,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 
 const PHProfile = () => {
   const facilities = [
-    { icon: MonitorDot, name: "Front Office", desc: "Meja resepsionis yang dilengkapi dengan papan kunci dan rak surat (folio rack)" },
-    { icon: House, name: "Housekeeping", desc: "Satu atau dua unit kamar simulasi yang didesain menyerupai kamar hotel standar (termasuk kamar mandi) untuk latihan membuat tempat tidur (making bed), membersihkan kamar, dan penataan amenitas." },
-    { icon: IceCreamBowl, name: "Food & Beverage - F&B", desc: "Ruangan makan yang ditata seperti restoran sungguhan, lengkap dengan meja, kursi, dan peralatan makan (cutlery, chinaware, glassware) untuk latihan table set-up dan pelayanan (seperti Russian Service atau American Service)." },
+    {
+      icon: MonitorDot,
+      name: "Front Office",
+      desc: "Meja resepsionis yang dilengkapi dengan papan kunci dan rak surat (folio rack)",
+    },
+    {
+      icon: House,
+      name: "Housekeeping",
+      desc: "Satu atau dua unit kamar simulasi yang didesain menyerupai kamar hotel standar (termasuk kamar mandi) untuk latihan membuat tempat tidur (making bed), membersihkan kamar, dan penataan amenitas.",
+    },
+    {
+      icon: IceCreamBowl,
+      name: "Food & Beverage - F&B",
+      desc: "Ruangan makan yang ditata seperti restoran sungguhan, lengkap dengan meja, kursi, dan peralatan makan (cutlery, chinaware, glassware) untuk latihan table set-up dan pelayanan (seperti Russian Service atau American Service).",
+    },
   ];
 
   return (
@@ -14,7 +33,10 @@ const PHProfile = () => {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background py-20 px-4">
         <div className="max-w-6xl mx-auto">
-          <Link to="/jurusan" className="text-primary hover:underline text-sm mb-4 inline-block">
+          <Link
+            to="/jurusan"
+            className="text-primary hover:underline text-sm mb-4 inline-block"
+          >
             ← Kembali ke Beranda
           </Link>
           <div className="flex items-center gap-4 mb-6">
@@ -31,7 +53,13 @@ const PHProfile = () => {
             </div>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl leading-relaxed">
-            Program keahlian yang mempersiapkan siswa menjadi tenaga profesional di bidang industri hospitality. Pembelajaran berfokus pada layanan prima (service excellence), manajemen tata graha (housekeeping), layanan makanan dan minuman (food & beverage service), serta operasional kantor depan (front office), guna menciptakan lulusan yang kompeten, beretika, dan siap bersaing di dunia perhotelan dan pariwisata.
+            Program keahlian yang mempersiapkan siswa menjadi tenaga profesional
+            di bidang industri hospitality. Pembelajaran berfokus pada layanan
+            prima (service excellence), manajemen tata graha (housekeeping),
+            layanan makanan dan minuman (food & beverage service), serta
+            operasional kantor depan (front office), guna menciptakan lulusan
+            yang kompeten, beretika, dan siap bersaing di dunia perhotelan dan
+            pariwisata.
           </p>
         </div>
       </section>
@@ -48,7 +76,10 @@ const PHProfile = () => {
                 <h2 className="text-2xl font-bold text-foreground">Visi</h2>
               </div>
               <p className="text-muted-foreground leading-relaxed">
-                Menjadi program keahlian unggulan yang menghasilkan lulusan berstandar internasional dan profesional yang kompeten, berintegritas, dan berdaya saing tinggi dalam operasional layanan hotel dan industri pariwisata global.
+                Menjadi program keahlian unggulan yang menghasilkan lulusan
+                berstandar internasional dan profesional yang kompeten,
+                berintegritas, dan berdaya saing tinggi dalam operasional
+                layanan hotel dan industri pariwisata global.
               </p>
             </CardContent>
           </Card>
@@ -64,19 +95,26 @@ const PHProfile = () => {
               <ul className="text-muted-foreground space-y-2">
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menyelenggarakan pendidikan dan pelatihan yang berorientasi pada standar operasional industri perhotelan (SOP).
+                  Menyelenggarakan pendidikan dan pelatihan yang berorientasi
+                  pada standar operasional industri perhotelan (SOP).
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Mengembangkan profesionalisme dan etika layanan prima (service excellence) siswa dalam menghadapi tamu dan situasi operasional.
+                  Mengembangkan profesionalisme dan etika layanan prima (service
+                  excellence) siswa dalam menghadapi tamu dan situasi
+                  operasional.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Menjalin kemitraan strategis dengan hotel berbintang dan industri pariwisata untuk program Praktik Kerja Lapangan (PKL) dan penyaluran lulusan.
+                  Menjalin kemitraan strategis dengan hotel berbintang dan
+                  industri pariwisata untuk program Praktik Kerja Lapangan (PKL)
+                  dan penyaluran lulusan.
                 </li>
                 <li className="flex gap-2">
                   <span className="text-primary">•</span>
-                  Membekali siswa dengan keterampilan teknis operasional hotel (seperti Front Office, Housekeeping, Food & Beverage) dan penguasaan sistem teknologi informasi perhotelan.
+                  Membekali siswa dengan keterampilan teknis operasional hotel
+                  (seperti Front Office, Housekeeping, Food & Beverage) dan
+                  penguasaan sistem teknologi informasi perhotelan.
                 </li>
               </ul>
             </CardContent>
@@ -92,34 +130,24 @@ const PHProfile = () => {
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {facilities.map((facility, idx) => (
-              <Card key={idx} className="border-0 shadow-md bg-card hover:shadow-lg hover:-translate-y-1 transition-all">
+              <Card
+                key={idx}
+                className="border-0 shadow-md bg-card hover:shadow-lg hover:-translate-y-1 transition-all"
+              >
                 <CardContent className="p-6 text-center">
                   <div className="mx-auto w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mb-4">
                     <facility.icon className="w-8 h-8 text-primary" />
                   </div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">{facility.name}</h3>
-                  <p className="text-muted-foreground text-sm">{facility.desc}</p>
+                  <h3 className="text-lg font-bold text-foreground mb-2">
+                    {facility.name}
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    {facility.desc}
+                  </p>
                 </CardContent>
               </Card>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { value: "150+", label: "Siswa Aktif" },
-            { value: "12", label: "Guru Ahli" },
-            { value: "95%", label: "Tingkat Kelulusan" },
-            { value: "80%", label: "Terserap Industri" },
-          ].map((stat, idx) => (
-            <div key={idx} className="text-center p-6">
-              <p className="text-4xl font-bold text-primary mb-2">{stat.value}</p>
-              <p className="text-muted-foreground">{stat.label}</p>
-            </div>
-          ))}
         </div>
       </section>
     </div>
