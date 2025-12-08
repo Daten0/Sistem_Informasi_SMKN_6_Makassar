@@ -21,17 +21,17 @@ const Hero = () => {
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
-            Membangun Generasi Unggul dengan Pendidikan Kejuruan Berkualitas
+            Membangun Generasi Unggul dengan Pendidikan Kejuruan Berkualitas dan Elegan
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
+          {/* <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mt-8">
             <div className="bg-gradient-hero px-6 py-3 rounded-lg text-white font-semibold">
               🏆 Akreditasi A
             </div>
             <div className="bg-gradient-hero px-6 py-3 rounded-lg text-white font-semibold">
               ⭐ ISO 9001:2015
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

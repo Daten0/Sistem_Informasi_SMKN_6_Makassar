@@ -9,7 +9,7 @@ const About = () => {
     <div className="min-h-screen">
       <Header />
       <Hero />
-      <HistorySection/>
+      {/* <HistorySection/> */}
       <ManagementSection />
       <Footer />
     </div>
