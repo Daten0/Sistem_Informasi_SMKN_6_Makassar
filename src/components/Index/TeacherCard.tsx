@@ -8,12 +8,12 @@ interface TeacherCardProps {
 
 export const TeacherCard = ({ teacher }: TeacherCardProps) => {
   return (
-    <Card className="overflow-hidden shadow-card transition-smooth hover:shadow-lg border-border/50 bg-card">
-      <div className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
+    <Card className="overflow-hidden shadow-card transition-smooth hover:shadow-lg border-border/50 bg-card h-full">
+      <div className="relative h-100 w-full overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
         <img
           src={teacher.picture_url}
           alt={`${teacher.username}'s profile`}
-          className="h-full w-full object-cover transition-smooth hover:scale-105"
+          className="overflow h-85 w-full object-cover transition-smooth hover:scale-105"
         />
         {teacher.terdaftar && (
           <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground shadow-soft">
