@@ -1,19 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
-import { supabaseCookieStorage } from '@/lib/utils';
 
 export const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 export const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-export const supabase = createClient(supabaseUrl, supabaseKey, {
-  auth: {
-    storage: supabaseCookieStorage,
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-  },
-});
+if (!supabaseUrl || !supabaseKey) {
+  throw new Error('Supabase environment variables are not set.');
+}
 
-// NOTE: Do NOT add visibility change listener here
-// AuthContext.tsx handles tab visibility changes to avoid conflicts
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default supabase;

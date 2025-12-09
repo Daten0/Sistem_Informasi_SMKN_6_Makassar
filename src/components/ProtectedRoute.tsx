@@ -1,29 +1,22 @@
 import { useAuth } from "@/contexts/AuthContext";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
   const { currentUser, userRole, loading } = useAuth();
-  const [loadingTimeout, setLoadingTimeout] = useState(false);
+  const location = useLocation();
+  const [timedOut, setTimedOut] = useState(false);
 
-  // Simple timeout - if auth takes too long, redirect to login
   useEffect(() => {
     if (!loading) {
-      // Auth finished loading, clear any pending timeouts
-      setLoadingTimeout(false);
+      setTimedOut(false);
       return;
     }
-
-    const timeoutId = setTimeout(() => {
-      console.warn("Auth loading took too long - redirecting to login");
-      setLoadingTimeout(true);
-    }, 8000); // 8 second timeout
-
-    return () => clearTimeout(timeoutId);
+    const id = setTimeout(() => setTimedOut(true), 8000); // 8s fallback
+    return () => clearTimeout(id);
   }, [loading]);
 
-  // Loading state
-  if (loading && !loadingTimeout) {
+  if (loading && !timedOut) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-white dark:bg-gray-900">
         <div className="text-center">
@@ -34,13 +27,12 @@ const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     );
   }
 
-  // If timeout or not authenticated
-  if (!currentUser || loadingTimeout) {
-    return <Navigate to="/login" replace />;
+  // After timeout or if not authenticated, redirect to login
+  if (timedOut || !currentUser) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
-  // If not admin user
-  if (userRole !== 'admin') {
+  if (userRole !== "admin") {
     return <Navigate to="/" replace />;
   }
 
