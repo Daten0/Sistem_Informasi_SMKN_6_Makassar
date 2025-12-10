@@ -75,12 +75,12 @@ const App = () => (
           <Route path="/login" element={<LoginPages />} />
           {/* rute jurusan */}
           <Route path="/jurusan" element={<Jurusan />} />
-          <Route path="/dkv" element={<DKVProfile />} />
-          <Route path="/perhotelan" element={<PHProfile />} />
-          <Route path="/kecantikan" element={<KCProfile />} />
-          <Route path="/akutansi" element={<AKProfile />} />
-          <Route path="/kuliner" element={<BGProfile />} />
-          <Route path="/busana" element={<BSProfile />} />
+          <Route path="/jurusan/dkv" element={<DKVProfile />} />
+          <Route path="/jurusan/perhotelan" element={<PHProfile />} />
+          <Route path="/jurusan/kecantikan" element={<KCProfile />} />
+          <Route path="/jurusan/akutansi" element={<AKProfile />} />
+          <Route path="/jurusan/kuliner" element={<BGProfile />} />
+          <Route path="/jurusan/busana" element={<BSProfile />} />
           <Route
             path="/admin"
             element={

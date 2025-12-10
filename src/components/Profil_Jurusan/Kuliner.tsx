@@ -1,12 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Citrus,
-  Target,
-  Eye,
-  ChefHat,
-  Microwave,
-  Utensils,
-} from "lucide-react";
+import { Citrus, ChefHat, Microwave, Utensils, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const BGProfile = () => {
@@ -34,10 +27,10 @@ const BGProfile = () => {
       <section className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <Link
-            to="/jurusan"
+            to="/"
             className="text-primary hover:underline text-sm mb-4 inline-block"
           >
-            ← Kembali ke Beranda
+            ← Kembali ke Jurusan
           </Link>
           <div className="flex items-center gap-4 mb-6">
             <div className="p-4 bg-primary/10 rounded-2xl">
@@ -60,55 +53,63 @@ const BGProfile = () => {
         </div>
       </section>
 
-      {/* Vision & Mission */}
+      {/* Prospek Kerja */}
       <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
-          <Card className="border-0 shadow-lg bg-card hover:shadow-xl transition-shadow">
-            <CardContent className="p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-primary/10 rounded-xl">
-                  <Eye className="w-6 h-6 text-primary" />
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-foreground text-center mb-12">
+            Prospek Kerja
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="border-0 shadow-lg bg-card hover:shadow-xl transition-shadow">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-primary/10 rounded-xl">
+                    <Briefcase className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-foreground">
+                    Kompetensi Utama yang Didapatkan
+                  </h3>
                 </div>
-                <h2 className="text-2xl font-bold text-foreground">Visi</h2>
-              </div>
-              <p className="text-muted-foreground leading-relaxed">
-                Menjadi pusat unggulan pendidikan kuliner yang menghasilkan
-                lulusan profesional, inovatif, dan beretika dalam seni
-                pengolahan makanan, serta mampu bersaing di tingkat nasional
-                maupun internasional di industri Food and Beverage (F&B).
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-lg bg-card hover:shadow-xl transition-shadow">
-            <CardContent className="p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-accent/20 rounded-xl">
-                  <Target className="w-6 h-6 text-accent-foreground" />
-                </div>
-                <h2 className="text-2xl font-bold text-foreground">Misi</h2>
-              </div>
-              <ul className="text-muted-foreground space-y-2">
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  Melaksanakan pendidikan kuliner berstandar industri untuk
-                  menguasai teknik pengolahan makanan (Nusantara dan
-                  Internasional).
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  Membentuk tenaga profesional yang menjunjung tinggi etika
-                  kerja, higienitas, dan sanitasi pangan di dapur komersial.
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  Menjalin kemitraan strategis dengan industri Food & Beverage
-                  (F&B) untuk menunjang praktik dan menumbuhkan jiwa wirausaha
-                  siswa.
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+                <ul className="text-muted-foreground space-y-2">
+                  {[
+                    "Seni Kuliner (Culinary Arts)",
+                    "Pastry & Bakery",
+                    "Manajemen Dapur (Kitchen Management)",
+                    "Keamanan Pangan (Food Safety)",
+                    "Pengembangan Menu (Menu Development)",
+                  ].map((item, index) => (
+                    <li key={index} className="flex gap-2">
+                      <span className="text-primary">•</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-lg bg-card hover:shadow-xl transition-shadow">
+              <CardContent className="p-8">
+                <h3 className="text-2xl font-bold text-foreground mb-4">
+                  Lingkup Pekerjaan
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Restoran, Hotel, Katering, Kafe, Bakery, Industri Makanan,
+                  Kapal Pesiar, Wirausaha Kuliner
+                </p><br></br>
+                <h3 className="text-2xl font-bold text-foreground mb-4">
+                  Profesi dan Karir
+                </h3> 
+                <p className="text-muted-foreground leading-relaxed">
+                  Chef, Cook, Pastry Chef, Baker, Barista, Food Stylist,
+                  Pengusaha Katering, Manajer Restoran
+                </p>
+              </CardContent>
+            </Card>
+            {/* <Card className="border-0 shadow-lg bg-card hover:shadow-xl transition-shadow">
+              <CardContent className="p-8">
+                
+              </CardContent>
+            </Card> */}
+          </div>
         </div>
       </section>
 

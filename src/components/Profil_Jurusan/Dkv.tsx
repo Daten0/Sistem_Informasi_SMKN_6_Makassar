@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Palette, Target, Eye, Monitor, Camera, PenTool } from "lucide-react";
+import { Palette, Monitor, Camera, PenTool, Briefcase } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const DKVProfile = () => {
@@ -27,10 +27,10 @@ const DKVProfile = () => {
       <section className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <Link
-            to="/jurusan"
+            to="/"
             className="text-primary hover:underline text-sm mb-4 inline-block"
           >
-            ← Kembali ke Beranda
+            ← Kembali ke Jurusan
           </Link>
           <div className="flex items-center gap-4 mb-6">
             <div className="p-4 bg-primary/10 rounded-2xl">
@@ -53,54 +53,63 @@ const DKVProfile = () => {
         </div>
       </section>
 
-      {/* Vision & Mission */}
+      {/* Prospek Kerja */}
       <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-8">
-          <Card className="border-0 shadow-lg bg-card hover:shadow-xl transition-shadow">
-            <CardContent className="p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-primary/10 rounded-xl">
-                  <Eye className="w-6 h-6 text-primary" />
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-foreground text-center mb-12">
+            Prospek Kerja
+          </h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="border-0 shadow-lg bg-card hover:shadow-xl transition-shadow">
+              <CardContent className="p-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-primary/10 rounded-xl">
+                    <Briefcase className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-foreground">
+                    Kompetensi Utama yang Didapatkan
+                  </h3>
                 </div>
-                <h2 className="text-2xl font-bold text-foreground">Visi</h2>
-              </div>
-              <p className="text-muted-foreground leading-relaxed">
-                Menjadi program keahlian unggulan yang menghasilkan lulusan
-                kompeten, kreatif, dan berdaya saing tinggi di bidang desain
-                komunikasi visual yang mampu berkontribusi pada industri kreatif
-                Indonesia.
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-lg bg-card hover:shadow-xl transition-shadow">
-            <CardContent className="p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-3 bg-accent/20 rounded-xl">
-                  <Target className="w-6 h-6 text-accent-foreground" />
-                </div>
-                <h2 className="text-2xl font-bold text-foreground">Misi</h2>
-              </div>
-              <ul className="text-muted-foreground space-y-2">
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  Menyelenggarakan pendidikan desain berkualitas tinggi
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  Mengembangkan kreativitas dan inovasi siswa
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  Menjalin kerjasama dengan industri kreatif
-                </li>
-                <li className="flex gap-2">
-                  <span className="text-primary">•</span>
-                  Membekali siswa dengan keterampilan digital terkini
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
+                <ul className="text-muted-foreground space-y-2">
+                  {[
+                    "Desain Grafis (Graphic Design)",
+                    "Ilustrasi Digital (Digital Illustration)",
+                    "Desain Antarmuka (UI/UX Design)",
+                    "Fotografi & Videografi",
+                    "Animasi 2D/3D",
+                  ].map((item, index) => (
+                    <li key={index} className="flex gap-2">
+                      <span className="text-primary">•</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+            <Card className="border-0 shadow-lg bg-card hover:shadow-xl transition-shadow">
+              <CardContent className="p-8">
+                <h3 className="text-2xl font-bold text-foreground mb-4">
+                  Lingkup Pekerjaan
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Percetakan, Penerbitan, Agensi Periklanan, Studio Desain,
+                  Produksi Film/TV, Media Online
+                </p><br></br>
+                <h3 className="text-2xl font-bold text-foreground mb-4">
+                  Profesi dan Karir
+                </h3>
+                <p className="text-muted-foreground leading-relaxed">
+                  Desainer Grafis, Ilustrator, Animator, Web Designer, Video
+                  Editor, Fotografer, Social Media Specialist
+                </p>
+              </CardContent>
+            </Card>
+            {/* <Card className="border-0 shadow-lg bg-card hover:shadow-xl transition-shadow">
+              <CardContent className="p-8">
+                
+              </CardContent>
+            </Card> */}
+          </div>
         </div>
       </section>
 

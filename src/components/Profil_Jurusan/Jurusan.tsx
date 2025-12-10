@@ -11,15 +11,15 @@ import {
 
 const departments = [
   {
-    id: "dkv",
-    name: "Desain Komunikasi Visual",
-    shortName: "DKV",
-    icon: Palette,
+    id: "hospitality",
+    name: "Perhotelan",
+    shortName: "Hotel",
+    icon: Hotel,
     description:
-      "Pelajari seni desain grafis, branding, dan multimedia untuk industri kreatif.",
-    color: "from-violet-500 to-purple-600",
-    students: 150,
-    link: "/dkv",
+      "Siapkan karir di industri hospitality dan manajemen hotel internasional.",
+    color: "from-blue-500 to-cyan-500",
+    students: 100,
+    link: "/jurusan/Perhotelan",
   },
   {
     id: "culinary",
@@ -30,40 +30,7 @@ const departments = [
       "Kuasai teknik memasak profesional dan manajemen dapur modern.",
     color: "from-orange-500 to-red-500",
     students: 120,
-    link: "/kuliner",
-  },
-  {
-    id: "hospitality",
-    name: "Perhotelan",
-    shortName: "Hotel",
-    icon: Hotel,
-    description:
-      "Siapkan karir di industri hospitality dan manajemen hotel internasional.",
-    color: "from-blue-500 to-cyan-500",
-    students: 100,
-    link: "/Perhotelan",
-  },
-  {
-    id: "accounting",
-    name: "Akuntansi",
-    shortName: "Akuntansi",
-    icon: Calculator,
-    description:
-      "Pelajari pembukuan, perpajakan, dan manajemen keuangan bisnis.",
-    color: "from-emerald-500 to-teal-500",
-    students: 130,
-    link: "/akutansi",
-  },
-  {
-    id: "beauty",
-    name: "Tata Kecantikan",
-    shortName: "Kecantikan",
-    icon: Sparkles,
-    description:
-      "Kuasai teknik makeup, perawatan kulit, dan tren kecantikan terkini.",
-    color: "from-pink-500 to-rose-500",
-    students: 90,
-    link: "/kecantikan",
+    link: "/jurusan/kuliner",
   },
   {
     id: "fashion",
@@ -74,7 +41,40 @@ const departments = [
       "Pelajari desain fashion, pola, dan produksi busana profesional.",
     color: "from-amber-500 to-yellow-500",
     students: 85,
-    link: "/busana",
+    link: "/jurusan/busana",
+  },
+  {
+    id: "beauty",
+    name: "Tata Kecantikan",
+    shortName: "Kecantikan",
+    icon: Sparkles,
+    description:
+      "Kuasai teknik makeup, perawatan kulit, dan tren kecantikan terkini.",
+    color: "from-pink-500 to-rose-500",
+    students: 90,
+    link: "/jurusan/kecantikan",
+  },
+  {
+    id: "accounting",
+    name: "Akuntansi & Lembaga Keuangan",
+    shortName: "Akuntansi",
+    icon: Calculator,
+    description:
+      "Pelajari pembukuan, perpajakan, dan manajemen keuangan bisnis.",
+    color: "from-emerald-500 to-teal-500",
+    students: 130,
+    link: "/jurusan/akutansi",
+  },
+  {
+    id: "dkv",
+    name: "Desain Komunikasi Visual",
+    shortName: "DKV",
+    icon: Palette,
+    description:
+      "Pelajari seni desain grafis, branding, dan multimedia untuk industri kreatif.",
+    color: "from-violet-500 to-purple-600",
+    students: 150,
+    link: "/jurusan/dkv",
   },
 ];
 
