@@ -33,10 +33,10 @@ const AKProfile = () => {
       <section className="relative bg-gradient-to-br from-primary/10 via-accent/5 to-background py-20 px-4">
         <div className="max-w-6xl mx-auto">
           <Link
-            to="/"
+            to="/jurusan"
             className="text-primary hover:underline text-sm mb-4 inline-block"
           >
-            ← Kembali ke Jurusan
+            ← Kembali ke Pilihan Program Keahlian
           </Link>
           <div className="flex items-center gap-4 mb-6">
             <div className="p-4 bg-primary/10 rounded-2xl">
@@ -47,7 +47,7 @@ const AKProfile = () => {
                 Akutansi
               </h1>
               <p className="text-muted-foreground text-lg mt-2">
-                Jurusan Akutansi - SMK Negeri 6 Makassar
+                Program Keahlian Akutansi - SMK Negeri 6 Makassar
               </p>
             </div>
           </div>

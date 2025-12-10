@@ -69,7 +69,7 @@ const Header = () => {
                 <DropdownMenuItem>Visi & Misi</DropdownMenuItem>
               </Link>
               <Link to="/jurusan">
-                <DropdownMenuItem>Jurusan</DropdownMenuItem>
+                <DropdownMenuItem>Program Keahlian</DropdownMenuItem>
               </Link>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -120,7 +120,7 @@ const Header = () => {
                       <DropdownMenuItem>Visi & Misi</DropdownMenuItem>
                     </Link>
                     <Link to="/jurusan">
-                      <DropdownMenuItem>Jurusan</DropdownMenuItem>
+                      <DropdownMenuItem>Program Keahlian</DropdownMenuItem>
                     </Link>
                   </DropdownMenuContent>
                   

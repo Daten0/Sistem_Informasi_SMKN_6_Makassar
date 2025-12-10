@@ -277,7 +277,7 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
             name="kejuruan"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Kejuruan</FormLabel>
+                <FormLabel>Program Keahlian</FormLabel>
                 <DropdownMenu>
                   <FormControl>
                     <DropdownMenuTrigger asChild>

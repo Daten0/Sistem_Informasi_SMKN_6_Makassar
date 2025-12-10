@@ -48,7 +48,7 @@ export const TeacherCard = ({ teacher }: TeacherCardProps) => {
           <div className="flex items-start space-x-3 p-3 rounded-lg bg-muted/50 transition-smooth hover:bg-muted">
             <div className="w-2 h-2 rounded-full bg-primary mt-1.5"></div>
             <div className="flex-1">
-              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Kejuruan</p>
+              <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Program Keahlian</p>
               <p className="text-sm font-medium text-card-foreground">{teacher.kejuruan.join(", ")}</p>
             </div>
           </div>

@@ -100,7 +100,7 @@ const Departments = () => {
               Program <span className="text-primary">Keahlian</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Silahkan Pilih Jurusan yang Kamu Cari di SMK Negeri 6 Makassar.
+              Silahkan Pilih Program Keahlian yang Kamu Cari di SMK Negeri 6 Makassar.
             </p>
           </div>
         </div>
