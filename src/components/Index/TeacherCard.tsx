@@ -8,12 +8,12 @@ interface TeacherCardProps {
 
 export const TeacherCard = ({ teacher }: TeacherCardProps) => {
   return (
-    <Card className="overflow-hidden shadow-card transition-smooth hover:shadow-lg border-border/50 bg-card h-full">
-      <div className="relative h-100 w-full overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
+    <Card className="overflow-hidden shadow-card transition-shadow duration-300 hover:shadow-lg border-border/50 bg-card h-full">
+      <div className="relative w-full h-80 overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
         <img
           src={teacher.picture_url}
           alt={`${teacher.username}'s profile`}
-          className="overflow h-85 w-full object-cover transition-smooth hover:scale-105"
+          className="h-full w-full object-cover transition-transform duration-300 ease-in-out hover:scale-105"
         />
         {teacher.terdaftar && (
           <Badge className="absolute top-4 right-4 bg-accent text-accent-foreground shadow-soft">
@@ -24,7 +24,7 @@ export const TeacherCard = ({ teacher }: TeacherCardProps) => {
       
       <div className="p-6 space-y-4">
         <div className="space-y-2">
-          <h3 className="text-2xl font-bold text-foreground">{teacher.username}</h3>
+          <h3 className="text-2xl font-bold text-foreground min-h-[4rem]">{teacher.username}</h3>
           <p className="text-sm text-muted-foreground font-mono">NIP: {teacher.nip}</p>
         </div>
 
@@ -33,7 +33,7 @@ export const TeacherCard = ({ teacher }: TeacherCardProps) => {
             <div className="w-2 h-2 rounded-full bg-primary mt-1.5"></div>
             <div className="flex-1">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Jabatan</p>
-              <p className="text-sm font-medium text-card-foreground">{teacher.jabatan}</p>
+              <p className="text-sm font-medium text-card-foreground min-h-[2.5rem]">{teacher.jabatan}</p>
             </div>
           </div>
 
@@ -41,7 +41,7 @@ export const TeacherCard = ({ teacher }: TeacherCardProps) => {
             <div className="w-2 h-2 rounded-full bg-accent mt-1.5"></div>
             <div className="flex-1">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Mata Pelajaran</p>
-              <p className="text-sm font-medium text-card-foreground">{teacher.mapel.join(", ")}</p>
+              <p className="text-sm font-medium text-card-foreground min-h-[2.5rem]">{teacher.mapel.join(", ")}</p>
             </div>
           </div>
 
@@ -49,7 +49,7 @@ export const TeacherCard = ({ teacher }: TeacherCardProps) => {
             <div className="w-2 h-2 rounded-full bg-primary mt-1.5"></div>
             <div className="flex-1">
               <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Program Keahlian</p>
-              <p className="text-sm font-medium text-card-foreground">{teacher.kejuruan.join(", ")}</p>
+              <p className="text-sm font-medium text-card-foreground min-h-[2.5rem]">{teacher.kejuruan.join(", ")}</p>
             </div>
           </div>
         </div>

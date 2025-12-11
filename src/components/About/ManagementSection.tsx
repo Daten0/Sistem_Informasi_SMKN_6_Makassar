@@ -6,29 +6,29 @@ import { Link } from "react-router-dom";
 const ManagementSection = () => {
   const departments = [
     {
-      name: "Desain Komunikasi Visual",
-      link: "/dkv",
-    },
-    {
-      name: "Tata Boga",
-      link: "/kuliner"
-    },
-    {
       name: "Perhotelan",
-      link: "/Perhotelan"
+      link: "/jurusan/Perhotelan"
     },
     {
-      name: "Akutansi",
-      link: "/akutansi"
-    },
-    {
-      name: "Tata Kecantikan",
-      link: "/kecantikan"
+      name: "Kuliner",
+      link: "/jurusan/kuliner"
     },
     {
       name: "Busana",
-      link: "/busana"
-    }
+      link: "/jurusan/busana"
+    },
+    {
+      name: "Tata Kecantikan",
+      link: "/jurusan/kecantikan"
+    },
+    {
+      name: "Akutansi dan Lembaga Keuangan",
+      link: "/jurusan/akutansi"
+    },
+    {
+      name: "Desain Komunikasi Visual",
+      link: "/jurusan/dkv",
+    },
   ];
 
   return (

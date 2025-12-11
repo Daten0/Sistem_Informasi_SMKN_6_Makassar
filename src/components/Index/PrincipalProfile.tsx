@@ -30,7 +30,7 @@ const PrincipalProfile = () => {
               Sambutan Kepala Sekolah
             </p>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mt-2 mb-6">
-              Selamat Datang Untukmu Para Pendekar Baru
+              Selamat Datang di SMK Negeri 6 Makassar
             </h2>
             <div className="text-muted-foreground leading-relaxed space-y-4">
               <p>
