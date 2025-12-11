@@ -48,7 +48,7 @@ export const TeacherCarousel = ({
   return (
     <div className="py-12">
       <h2 className="text-3xl font-bold text-center text-card-foreground mb-8">
-        Guru
+        Tenaga Pendidik
       </h2>
       <div className="relative w-full max-w-6xl mx-auto">
         <div className="overflow-hidden" ref={emblaRef}>

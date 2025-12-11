@@ -25,7 +25,7 @@ const AddTeacherPage = () => {
             <ArrowLeft className="h-4 w-4" />
           </Button>
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-white">
-            Tambah Guru Baru
+            Tambah Tenaga Pendidik Baru
           </h1>
         </div>
         <div className="space-y-8">

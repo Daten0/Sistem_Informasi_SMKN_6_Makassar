@@ -42,7 +42,7 @@ const PrincipalProfile = () => {
               <p>
                 Kami mengucapkan selamat datang di website resmi SMK Negeri 6 
                 Makassar yang dapat digunakan sebagai salah satu media penyedia informasi berkualitas
-                terkait pemberitaan mengenai keseharian, Informasi Tiap Kejuruan, dan juga para pengajar di SMK Negeri 6 Makassar
+                terkait pemberitaan mengenai keseharian, Informasi Tiap Kejuruan, dan juga para Tenaga Pendidik di SMK Negeri 6 Makassar
               </p>
               <p>
                 Mari kita berjuang dengan mendorong kualitas pendidikan, dan mengharapkan

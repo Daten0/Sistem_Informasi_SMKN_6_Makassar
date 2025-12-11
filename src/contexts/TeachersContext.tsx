@@ -103,7 +103,7 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
       const { data, error } = await supabase
         .from("guru")
         .select("*")
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: true });
 
       if (error) {
         console.error("Error fetching teachers:", error);
@@ -117,7 +117,7 @@ export function TeachersProvider({ children }: { children: ReactNode }) {
               const { data: retryData, error: retryError } = await supabase
                 .from("guru")
                 .select("*")
-                .order("created_at", { ascending: false });
+                .order("created_at", { ascending: true });
               if (retryError) {
                 toast.error("Gagal memuat data guru", {
                   description: retryError.message,

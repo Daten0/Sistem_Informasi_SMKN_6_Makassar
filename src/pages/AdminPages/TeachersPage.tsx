@@ -92,9 +92,9 @@ const AdminTeachersPage = () => {
     <div className="space-y-6">
       {/* Header Section */}
       <div className="border-b border-border pb-6">
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Manajemen Guru</h1>
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Manajemen Tenaga Pendidik</h1>
         <p className="text-muted-foreground mt-2 ">
-          Kelola data guru dan informasi pengajar di SMKN 6 Makassar
+          Kelola data tenaga pendidikan dan informasi pengajar di SMKN 6 Makassar
         </p>
       </div>
 
@@ -116,16 +116,16 @@ const AdminTeachersPage = () => {
               </div>
               <Button onClick={() => navigate("/admin/teachers/add-teacher")}>
                 <Plus className="mr-2 h-4 w-4" />
-                Tambah Guru
+                Tambah Tenaga Pendidik
               </Button>
             </div>
           </Card>
 
           <Card className="shadow-sm hover:shadow-md transition-shadow">
             <div className="border-b border-border px-6 py-4">
-              <h2 className="text-lg font-semibold text-foreground">Daftar Guru</h2>
+              <h2 className="text-lg font-semibold text-foreground">Daftar Tenaga Pendidik</h2>
               <p className="text-sm text-muted-foreground">
-                {filteredTeachers.length} guru ditampilkan
+                {filteredTeachers.length} tenaga pendidikan ditampilkan
               </p>
             </div>
             <div className="p-4">
@@ -174,7 +174,7 @@ const AdminTeachersPage = () => {
                               </SheetTrigger>
                               <SheetContent className="w-full sm:max-w-[680px] lg:max-w-[800px] p-0 overflow-y-auto">
                                 <SheetHeader className="border-b border-border p-6">
-                                  <SheetTitle className="text-2xl font-bold text-foreground">Detail Guru</SheetTitle>
+                                  <SheetTitle className="text-2xl font-bold text-foreground">Detail Tenaga Pendidik</SheetTitle>
                                 </SheetHeader>
                                 {selectedTeacher && (
                                   <TeachersProfile teacher={selectedTeacher} />
@@ -227,10 +227,10 @@ const AdminTeachersPage = () => {
             <div className="p-4 rounded-full bg-primary/10 w-fit mx-auto mb-4">
               <UsersRound className="h-8 w-8 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold mb-2 text-foreground">Statistik Guru</h3>
+            <h3 className="text-lg font-semibold mb-2 text-foreground">Statistik Tenaga Pendidik</h3>
             <div className="space-y-4 mt-6">
               <div className="text-left p-4 bg-muted/50 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-1">Total Guru Aktif</p>
+                <p className="text-sm text-muted-foreground mb-1">Total Tenaga Pendidik Aktif</p>
                 <p className="text-2xl font-bold text-foreground">{teachers.length}</p>
               </div>
               <div className="text-left p-4 bg-muted/50 rounded-lg">

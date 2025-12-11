@@ -64,7 +64,7 @@ export function TeacherForm({ onSubmit, initialData, isSubmitting }: TeacherForm
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [mapelInput, setMapelInput] = useState("");
   const { currentUser } = useAuth();
-  const kejuruanOptions = ["Perhotelan", "Tata Busana", "Tata Boga", "Akuntansi", "Desain Komunikasi Visual"];
+  const kejuruanOptions = ["-", "Tata Kecantikan", "Perhotelan", "Tata Busana", "Kuliner", "Akuntansi dan Lembaga Keuangan", "Desain Komunikasi Visual"];
 
 
   const form = useForm<TeacherFormValues>({
