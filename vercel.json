@@ -5,12 +5,7 @@
       "dest": "/index.html"
     },
     {
-      "src": "/admin(/.*)?",
-      "status": 404
-    },
-    {
       "src": "/(.*\\..*)"
     }
-  
   ]
 }
