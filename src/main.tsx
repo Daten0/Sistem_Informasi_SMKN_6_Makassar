@@ -5,10 +5,12 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { BrowserRouter } from "react-router-dom";
 import { NewsProvider } from "./contexts/NewsContext.tsx";
 import { TeachersProvider } from "./contexts/TeachersContext.tsx";
+import { HelmetProvider } from "react-helmet-async";
 import { ThemeProvider } from "./components/theme-provider.tsx";
 
 createRoot(document.getElementById("root")!).render(
-    <BrowserRouter>
+    <HelmetProvider>
+        <BrowserRouter>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
             <AuthProvider>
                 <NewsProvider>
@@ -19,4 +21,5 @@ createRoot(document.getElementById("root")!).render(
             </AuthProvider>
         </ThemeProvider>
     </BrowserRouter>
+    </HelmetProvider>
 );

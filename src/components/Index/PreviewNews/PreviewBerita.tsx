@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { useNews } from "@/hooks/useNews";
 import { useEffect, useState } from "react";
 import { NewsItem } from "@/contexts/NewsContext";
@@ -43,6 +44,18 @@ export default function NewsPreview() {
   }
 
   return (
+    <>
+      {newsItem && (
+        <Helmet>
+          <title>{newsItem.judul_berita} - Preview</title>
+          <meta property="og:title" content={newsItem.judul_berita} />
+          <meta property="og:description" content={newsItem.ringkasan} />
+          <meta property="og:type" content="article" />
+          <meta property="og:image" content={newsItem.gambar_berita} />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:image" content={newsItem.gambar_berita} />
+        </Helmet>
+      )}
     <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -121,5 +134,6 @@ export default function NewsPreview() {
         </CardContent>
       </Card>
     </div>
+    </>
   );
 }
