@@ -72,6 +72,8 @@ export default async function middleware(req) {
       },
     });
   } catch (e) {
-    return fetch(req);
+    // Debug: expose error to curl temporarily
+    const debugHtml = `<html><body><h1>Middleware Error</h1><pre>${String(e.message || e)}</pre><p>supabaseUrl=${supabaseUrl ? "yes" : "no"}</p></body></html>`;
+    return new Response(debugHtml, { status: 500, headers: { "content-type": "text/html" } });
   }
 }
