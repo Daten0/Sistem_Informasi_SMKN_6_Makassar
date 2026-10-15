@@ -4,6 +4,10 @@
       "src": "/(.*\\..*)"
     },
     {
+      "src": "/preview/([^/]+)",
+      "dest": "/api/preview?id=$1"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
