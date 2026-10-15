@@ -26,7 +26,7 @@ export default async function handler(req, res) {
   }
 
   const title = item ? String(item.judul_berita) : "Preview Berita";
-  const image = item && item.gambar_berita ? String(item.gambar_berita) : "/src/assets/school-logo.png";
+  const image = item && item.gambar_berita ? String(item.gambar_berita) : "https://sistem-informasi-smkn-6-makassar.vercel.app/school-logo.png";
   const desc = item && item.ringkasan ? String(item.ringkasan) : "Sistem Informasi SMKN 6 Makassar";
 
   const html = `<!DOCTYPE html>
