@@ -5,10 +5,13 @@ export const config = {
 export default async function middleware(req) {
   const url = new URL(req.url);
   const pathname = url.pathname;
-
   const parts = pathname.split("/");
+
+  // Fungsi helper standar Vercel untuk meneruskan request ke aplikasi Vite tanpa infinite loop
+  const passThrough = () => new Response(null, { headers: { "x-middleware-next": "1" } });
+
   if (parts.length < 3 || !parts[2]) {
-    return fetch(req);
+    return passThrough();
   }
 
   const id = parts[2];
@@ -16,7 +19,7 @@ export default async function middleware(req) {
   const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || "";
 
   if (!supabaseUrl || !supabaseKey) {
-    return fetch(req);
+    return passThrough();
   }
 
   try {
@@ -30,35 +33,37 @@ export default async function middleware(req) {
     });
 
     if (!res.ok) {
-      return fetch(req);
+      return passThrough();
     }
 
     const data = await res.json();
     const item = Array.isArray(data) ? data[0] : data;
 
     if (!item || !item.gambar_berita) {
-      return fetch(req);
+      return passThrough();
     }
 
     const indexRes = await fetch(new URL("/index.html", url.origin));
     let html = await indexRes.text();
 
     html = html.replace(
-      /<meta property="og:title" content="[^"]*" \/>/,
+      /<meta property="og:title" content="[^"]*"\s*\/?>/,
       `<meta property="og:title" content="${String(item.judul_berita).replace(/"/g, "&quot;")}" />`
     );
     html = html.replace(
-      /<meta property="og:description" content="[^"]*" \/>/,
+      /<meta property="og:description" content="[^"]*"\s*\/?>/,
       `<meta property="og:description" content="${String(item.ringkasan || "").replace(/"/g, "&quot;")}" />`
     );
     html = html.replace(
-      /<meta property="og:image" content="[^"]*" \/>/,
+      /<meta property="og:image" content="[^"]*"\s*\/?>/,
       `<meta property="og:image" content="${String(item.gambar_berita).replace(/"/g, "&quot;")}" />`
     );
     html = html.replace(
-      /<meta name="twitter:image" content="[^"]*" \/>/,
+      /<meta name="twitter:image" content="[^"]*"\s*\/?>/,
       `<meta name="twitter:image" content="${String(item.gambar_berita).replace(/"/g, "&quot;")}" />`
     );
+    
+    // Perbaikan sintaks dan penambahan spasi pemisah sebelum kata Preview
     html = html.replace(
       /<title>[^<]*<\/title>/,
       `<title>${String(item.judul_berita).replace(/</g, "&lt;").replace(/>/g, "&gt;")} - Preview</title>`
@@ -72,8 +77,7 @@ export default async function middleware(req) {
       },
     });
   } catch (e) {
-    // Debug: expose error to curl temporarily
-    const debugHtml = `<html><body><h1>Middleware Error</h1><pre>${String(e.message || e)}</pre><p>supabaseUrl=${supabaseUrl ? "yes" : "no"}</p></body></html>`;
-    return new Response(debugHtml, { status: 500, headers: { "content-type": "text/html" } });
+    // Jika terjadi error pada fetch atau logika, teruskan saja ke Vite agar web tidak down
+    return passThrough(); 
   }
 }
